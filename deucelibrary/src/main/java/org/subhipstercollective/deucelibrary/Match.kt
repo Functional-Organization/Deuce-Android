@@ -22,15 +22,35 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-class Match(winMinimum:     Int,
-            winMinimumSet:  Int, winMarginSet:  Int,
-            winMinimumGame: Int, winMarginGame: Int)
+class Match(val winMinimum:     Int,
+            val winMinimumSet:  Int, val winMarginSet:  Int,
+            val winMinimumGame: Int, val winMarginGame: Int)
 {
     var sets = ArrayList<Set>()
-    var score = Game(winMinimum, 1)
+    private var mScore = Game(winMinimum, 1)
 
     init
     {
         sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame))
     }
+
+    fun score(player: Player = Player.NONE) = mScore.score(player)
+
+    val currentSet get() = sets.last()
+    val currentGame get() = currentSet.currentGame
+
+    fun addNewSet() = sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame))
+    fun addNewGame() = currentSet.addNewGame()
+
+    /*val winMinimum get() = mScore.winMinimum
+    val winMargin get() = mScore.winMargin
+    val winMinimumSet get() = sets[0].winMinimum
+    val winMarginSet get() = sets[0].winMargin
+    val winMinimumGame get() = sets[0].games[0].winMinimum
+    val winMarginGame get() = sets[0].games[0].winMargin*/
+    val scoreP1 get() = mScore.scoreP1
+    val scoreP2 get() = mScore.scoreP2
+    val winner get() = mScore.winner
+    val setNumber get() = sets.size
+    val gameNumber get() = currentSet.gameNumber
 }

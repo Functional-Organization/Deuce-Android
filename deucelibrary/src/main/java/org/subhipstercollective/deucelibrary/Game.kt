@@ -28,29 +28,58 @@ class Game(winMinimum: Int, winMargin: Int)
         set(value)
         {
             field = value
-            score(Player.NONE)
+            score()
         }
     var winMargin: Int = winMargin
         set(value)
         {
             field = value
-            score(Player.NONE)
+            score()
         }
 
     var scoreP1 = 0
         set(value)
         {
             field = value
-            score(Player.NONE)
+            score()
         }
     var scoreP2 = 0
         set(value)
         {
             field = value
-            score(Player.NONE)
+            score()
         }
     var winner = Player.NONE
         private set
+
+    fun score(player: Player = Player.NONE): Player
+    {
+        when(player)
+        {
+            Player.PLAYER1 ->
+            {
+                ++scoreP1
+                if (scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin)
+                    winner = Player.PLAYER1
+            }
+            Player.PLAYER2 ->
+            {
+                ++scoreP2
+                if (scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin)
+                    winner = Player.PLAYER2
+            }
+            else ->
+            {
+                if (scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin)
+                    winner = Player.PLAYER1
+                else if (scoreP2 > winMinimum && (scoreP2 - scoreP1) >= winMargin)
+                    winner = Player.PLAYER2
+                else
+                    winner = Player.NONE
+            }
+        }
+        return winner
+    }
 
     private fun mapScore(score: Int) = when(score)
     {
@@ -63,38 +92,11 @@ class Game(winMinimum: Int, winMargin: Int)
 
     fun getScoreStrs() = when
     {
+        winner == Player.PLAYER1   -> arrayOf("Winner", "\uD83C\uDFBE")
+        winner == Player.PLAYER2   -> arrayOf("\uD83C\uDFBE", "Winner")
         scoreP1 < 3 || scoreP2 < 3 -> arrayOf(mapScore(scoreP1), mapScore(scoreP2))
         scoreP1 > scoreP2          -> arrayOf("Advantage", "\uD83C\uDFBE")
         scoreP1 < scoreP2          -> arrayOf("\uD83C\uDFBE", "Advantage")
-        else                       -> arrayOf("Love", "Love")
-    }
-
-    fun score(player: Player = Player.NONE): Player
-    {
-        when(player)
-        {
-            Player.PLAYER1 ->
-            {
-                ++scoreP1
-                if (scoreP1 > winMinimum && (scoreP1 - scoreP2) >= winMargin)
-                    winner = Player.PLAYER1
-            }
-            Player.PLAYER2 ->
-            {
-                ++scoreP2
-                if (scoreP2 > winMinimum && (scoreP2 - scoreP1) >= winMargin)
-                    winner = Player.PLAYER2
-            }
-            else ->
-            {
-                if (scoreP1 > winMinimum && (scoreP1 - scoreP2) >= winMargin)
-                    winner = Player.PLAYER1
-                else if (scoreP2 > winMinimum && (scoreP2 - scoreP1) >= winMargin)
-                    winner = Player.PLAYER2
-                else
-                    winner = Player.NONE
-            }
-        }
-        return winner
+        else                       -> arrayOf("Deuce", "Deuce")
     }
 }
