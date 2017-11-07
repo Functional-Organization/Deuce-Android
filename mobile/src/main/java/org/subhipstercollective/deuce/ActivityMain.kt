@@ -28,12 +28,12 @@ import android.view.View
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_activity_main.*
-import org.subhipstercollective.deucelibrary.Match
+import org.subhipstercollective.deucelibrary.ControllerMain
 import org.subhipstercollective.deucelibrary.Player
 
 class ActivityMain : AppCompatActivity()
 {
-    var match = Match(1, 6, 2, 4, 2)
+    //var match = Match(1, 6, 2, 4, 2)
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -46,45 +46,18 @@ class ActivityMain : AppCompatActivity()
                     .setAction("Action", null).show()
         }
 
-        button_score_p1.setOnClickListener(View.OnClickListener { score(Player.PLAYER1) })
-        button_score_p2.setOnClickListener(View.OnClickListener { score(Player.PLAYER2) })
+        val controller = ControllerMain()
 
-        updateDisplay()
-    }
+        button_score_p1.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER1) })
+        button_score_p2.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER2) })
+        controller.displayHeading = text_heading
+        controller.displayScoreP1 = text_score_p1
+        controller.displayScoreP2 = text_score_p2
+        controller.displayLog = text_history
 
-    fun updateDisplay()
-    {
-        text_heading.setText(String.format("Set %d Game %d", match.setNumber, match.gameNumber))
-        var scores = match.currentGame.getScoreStrs()
-        text_score_p1.setText(scores[0])
-        text_score_p2.setText(scores[1])
-    }
+        controller.addMatch()
 
-    fun score(player: Player)
-    {
-        var winnerGame = match.currentGame.score(player)
-        if(winnerGame != Player.NONE)
-        {
-            /*
-            var winnerStr = if(winnerSet == Player.PLAYER1) "Player 1" else "Player 2"
-            text_history.setText(String.format("%s\n%s wins set %d", text_history.text, ))*/
-
-            var winnerSet = match.currentSet.score(winnerGame)
-            if(winnerSet != Player.NONE)
-            {
-                var winnerStr = if(winnerSet == Player.PLAYER1) "Player 1" else "Player 2"
-                text_history.setText(String.format("%s\n%s wins set %d", text_history.text, winnerStr, match.setNumber))
-                match.addNewSet()
-            }
-            else
-            {
-                var winnerStr = if(winnerGame == Player.PLAYER1) "Player 1" else "Player 2"
-                text_history.setText(String.format("%s\n%s wins game %d", text_history.text, winnerStr, match.gameNumber))
-                match.addNewGame()
-            }
-        }
-
-        updateDisplay()
+        controller.updateDisplay()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean

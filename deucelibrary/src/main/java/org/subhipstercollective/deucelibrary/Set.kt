@@ -37,6 +37,8 @@ class Set(val winMinimum:     Int, val winMargin:     Int,
 
     fun addNewGame() = games.add(Game(winMinimumGame, winMarginGame))
 
+    fun getScoreStrs() = ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
+
     val currentGame get() = games.last()
 
     /*val winMinimum get() = mScore.winMinimum

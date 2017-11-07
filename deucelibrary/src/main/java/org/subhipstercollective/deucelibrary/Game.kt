@@ -72,7 +72,7 @@ class Game(winMinimum: Int, winMargin: Int)
             {
                 if (scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin)
                     winner = Player.PLAYER1
-                else if (scoreP2 > winMinimum && (scoreP2 - scoreP1) >= winMargin)
+                else if (scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin)
                     winner = Player.PLAYER2
                 else
                     winner = Player.NONE
@@ -92,11 +92,11 @@ class Game(winMinimum: Int, winMargin: Int)
 
     fun getScoreStrs() = when
     {
-        winner == Player.PLAYER1   -> arrayOf("Winner", "\uD83C\uDFBE")
-        winner == Player.PLAYER2   -> arrayOf("\uD83C\uDFBE", "Winner")
-        scoreP1 < 3 || scoreP2 < 3 -> arrayOf(mapScore(scoreP1), mapScore(scoreP2))
-        scoreP1 > scoreP2          -> arrayOf("Advantage", "\uD83C\uDFBE")
-        scoreP1 < scoreP2          -> arrayOf("\uD83C\uDFBE", "Advantage")
-        else                       -> arrayOf("Deuce", "Deuce")
+        winner == Player.PLAYER1   -> ScoreStrings("\uD83C\uDFC6", "\uD83C\uDFBE")
+        winner == Player.PLAYER2   -> ScoreStrings("\uD83C\uDFBE", "\uD83C\uDFC6")
+        scoreP1 < 3 || scoreP2 < 3 -> ScoreStrings(mapScore(scoreP1), mapScore(scoreP2))
+        scoreP1 > scoreP2          -> ScoreStrings("Advantage", "\uD83C\uDFBE")
+        scoreP1 < scoreP2          -> ScoreStrings("\uD83C\uDFBE", "Advantage")
+        else                       -> ScoreStrings("Deuce", "Deuce")
     }
 }

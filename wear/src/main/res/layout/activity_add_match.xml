@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   ~ Copyright 2017 Jeffrey Thomas Piercy
   ~
@@ -19,15 +18,12 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.wear.widget.BoxInsetLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_grey"
-    android:padding="@dimen/box_inset_layout_padding"
-    tools:context="org.subhipstercollective.deuce.ActivityMain"
-    tools:deviceIds="wear">
+    tools:context="org.subhipstercollective.deuce.ActivityAddMatch">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,41 +31,33 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_heading"
+            android:id="@+id/text_num_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="24sp"
-            tools:text="Game 1 Match 1"/>
+            tools:text="Best of seven"/>
 
-        <TextView
-            android:id="@+id/text_score_p1"
+        <org.subhipstercollective.deucelibrary.SeekBarSets
+            android:id="@+id/seek_num_sets"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            tools:text="Love"/>
+            android:max="4"
+            android:progress="1"/>
+
+        <ToggleButton
+            android:id="@+id/toggle_margin_sets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ToggleButton"
+            android:textOff="@string/set_margin_2"
+            android:textOn="@string/set_margin_1"/>
 
         <Button
-            android:id="@+id/button_score_p1"
+            android:id="@+id/button_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Play 1 Scores"/>
+            android:text="@string/start"/>
 
-        <TextView
-            android:id="@+id/text_score_p2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            tools:text="Love"/>
-
-        <Button
-            android:id="@+id/button_score_p2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Play 2 Scores"/>
     </LinearLayout>
-
-</android.support.wear.widget.BoxInsetLayout>
-
+</android.support.constraint.ConstraintLayout>

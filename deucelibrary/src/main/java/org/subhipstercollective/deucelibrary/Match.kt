@@ -40,7 +40,9 @@ class Match(val winMinimum:     Int,
     val currentGame get() = currentSet.currentGame
 
     fun addNewSet() = sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame))
-    fun addNewGame() = currentSet.addNewGame()
+    //fun addNewGame() = currentSet.addNewGame()
+
+    fun getScoreStrs() = ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
 
     /*val winMinimum get() = mScore.winMinimum
     val winMargin get() = mScore.winMargin
