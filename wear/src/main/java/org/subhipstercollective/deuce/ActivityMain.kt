@@ -25,6 +25,7 @@ import android.support.wearable.activity.WearableActivity
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.ControllerMain
+import org.subhipstercollective.deucelibrary.Game
 import org.subhipstercollective.deucelibrary.Player
 
 class ActivityMain : WearableActivity()
@@ -39,6 +40,8 @@ class ActivityMain : WearableActivity()
 
         // Enables Always-on
         setAmbientEnabled()
+
+        Game.init(this)
 
         button_score_p1.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER1) })
         button_score_p2.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER2) })

@@ -26,7 +26,7 @@ class Set(val winMinimum:     Int, val winMargin:     Int,
           val winMinimumGame: Int, val winMarginGame: Int)
 {
     var games = ArrayList<Game>()
-    private var mScore = Game(winMinimum, winMargin)
+    private var mScore = Score(winMinimum, winMargin)
 
     init
     {

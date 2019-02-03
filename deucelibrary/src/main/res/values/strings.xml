@@ -25,7 +25,8 @@
     <string name="best_of_7">Best of seven sets</string>
     <string name="set_margin_1">Tiebreaker set</string>
     <string name="set_margin_2">Advantage set</string>
-    <string name="start">Start</string>
+    <string name="play">Play</string>
     <string name="key_intent_num_sets">a</string>
     <string name="key_intent_advantage_set">b</string>
+    <string name="love">Love</string>
 </resources>

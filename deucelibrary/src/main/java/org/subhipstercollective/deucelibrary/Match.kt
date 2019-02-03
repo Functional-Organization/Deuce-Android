@@ -27,7 +27,7 @@ class Match(val winMinimum:     Int,
             val winMinimumGame: Int, val winMarginGame: Int)
 {
     var sets = ArrayList<Set>()
-    private var mScore = Game(winMinimum, 1)
+    private var mScore = Score(winMinimum, 1)
 
     init
     {
