@@ -34,41 +34,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_heading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            tools:text="Game 1 Match 1"/>
-
-        <TextView
-            android:id="@+id/text_score_p1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            tools:text="Love"/>
-
         <Button
             android:id="@+id/button_score_p1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Play 1 Scores"/>
-
-        <TextView
-            android:id="@+id/text_score_p2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            tools:text="Love"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:text="Love" />
 
         <Button
             android:id="@+id/button_score_p2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Play 2 Scores"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:text="Love" />
     </LinearLayout>
 
 </android.support.wear.widget.BoxInsetLayout>

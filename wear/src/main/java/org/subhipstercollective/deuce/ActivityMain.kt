@@ -22,10 +22,10 @@ package org.subhipstercollective.deuce
 import android.content.Intent
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
-import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.ControllerMain
 import org.subhipstercollective.deucelibrary.Game
+import org.subhipstercollective.deucelibrary.Key
 import org.subhipstercollective.deucelibrary.Player
 
 class ActivityMain : WearableActivity()
@@ -43,11 +43,8 @@ class ActivityMain : WearableActivity()
 
         Game.init(this)
 
-        button_score_p1.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER1) })
-        button_score_p2.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER2) })
-        controller.displayHeading = text_heading
-        controller.displayScoreP1 = text_score_p1
-        controller.displayScoreP2 = text_score_p2
+        button_score_p1.setOnClickListener { controller.score(Player.PLAYER1) }
+        button_score_p2.setOnClickListener { controller.score(Player.PLAYER2) }
         controller.displayButtonScoreP1 = button_score_p1
         controller.displayButtonScoreP2 = button_score_p2
 
@@ -67,13 +64,8 @@ class ActivityMain : WearableActivity()
             {
                 if(data == null)
                     return
-                controller.winMinimumSet = data.getIntExtra(getString(R.string.key_intent_num_sets), 1)
-                controller.winMarginSet =
-                    if(data.getBooleanExtra(getString(R.string.key_intent_advantage_set), true))
-                        2
-                    else
-                        1
-
+                controller.winMinimumSet = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
+                controller.winMarginSet = if(data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)) 2 else 1
                 controller.addMatch()
             }
         }

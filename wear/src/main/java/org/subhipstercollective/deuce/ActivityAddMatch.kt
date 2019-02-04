@@ -22,9 +22,9 @@ package org.subhipstercollective.deuce
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_add_match.*
+import org.subhipstercollective.deucelibrary.Key
 
 class ActivityAddMatch : Activity()
 {
@@ -44,12 +44,12 @@ class ActivityAddMatch : Activity()
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        button_start.setOnClickListener(View.OnClickListener {
+        button_start.setOnClickListener {
             val result = Intent()
-            result.putExtra(getString(R.string.key_intent_num_sets), seek_num_sets.numSets)
-            result.putExtra(getString(R.string.key_intent_advantage_set), toggle_margin_sets.isChecked)
+            result.putExtra(Key.INTENT_NUM_SETS, seek_num_sets.numSets)
+            result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
             setResult(R.id.code_request_add_match, result)
             finish()
-        })
+        }
     }
 }

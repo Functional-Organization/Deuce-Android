@@ -35,9 +35,6 @@ class ControllerMain
     var winMinimumGame = 4
     var winMarginGame = 2
 
-    var displayHeading: TextView? = null
-    var displayScoreP1: TextView? = null
-    var displayScoreP2: TextView? = null
     var displayLog: TextView? = null
     var displayButtonScoreP1: Button? = null
     var displayButtonScoreP2: Button? = null
@@ -68,10 +65,13 @@ class ControllerMain
     {
         if(matches.size != 0)
         {
-            displayHeading?.setText(String.format("Set %d Game %d", setNumber, gameNumber))
+//            displayHeading?.setText(String.format("Set %d Game %d", setNumber, gameNumber))
+//            val scores = getGameScoreStrs()
+//            displayScoreP1?.setText(scores.player1)
+//            displayScoreP2?.setText(scores.player2)
             val scores = getGameScoreStrs()
-            displayScoreP1?.setText(scores.player1)
-            displayScoreP2?.setText(scores.player2)
+            displayButtonScoreP1?.setText(scores.player1)
+            displayButtonScoreP2?.setText(scores.player2)
         }
     }
 
