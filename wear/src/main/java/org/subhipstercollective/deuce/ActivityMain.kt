@@ -47,6 +47,14 @@ class ActivityMain : WearableActivity()
         button_score_p2.setOnClickListener { controller.score(Player.PLAYER2) }
         controller.displayButtonScoreP1 = button_score_p1
         controller.displayButtonScoreP2 = button_score_p2
+        controller.displayBallTopLeft = image_ball_top_left
+        controller.displayBallTopRight = image_ball_top_right
+        controller.displayBallBottomLeft = image_ball_bottom_left
+        controller.displayBallBottomRight = image_ball_bottom_right
+        controller.displayScoreGameP1 = text_score_game_p1
+        controller.displayScoreGameP2 = text_score_game_p2
+        controller.displayScoreSetP1 = text_score_game_p2
+        controller.displayScoreSetP2 = text_score_set_p2
 
         startActivityForResult(Intent(this, ActivityAddMatch::class.java), R.id.code_request_add_match)
         //controller.addMatch()

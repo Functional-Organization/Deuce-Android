@@ -19,8 +19,7 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.wear.widget.BoxInsetLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,6 +46,124 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             tools:text="Love" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_ball_top_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ball"
+                android:translationY="10dp" />
+
+            <ImageView
+                android:id="@+id/image_ball_top_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ball"
+                android:translationY="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_ball_bottom_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:src="@drawable/ball"
+                android:translationY="-10dp" />
+
+            <ImageView
+                android:id="@+id/image_ball_bottom_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:src="@drawable/ball"
+                android:translationY="-10dp" />
+        </LinearLayout>
+        x
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_score_game_p1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:translationX="-10dp"
+                android:translationY="-5dp"
+                tools:text="1" />
+
+            <TextView
+                android:id="@+id/text_score_set_p1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:translationX="10dp"
+                android:translationY="-5dp"
+                tools:text="2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_score_game_p2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:translationX="-10dp"
+                android:translationY="5dp"
+                tools:text="3" />
+
+            <TextView
+                android:id="@+id/text_score_set_p2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_weight="1"
+                android:translationX="10dp"
+                android:translationY="5dp"
+                tools:text="4" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.wear.widget.BoxInsetLayout>

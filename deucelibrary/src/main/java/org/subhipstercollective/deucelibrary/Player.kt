@@ -22,7 +22,10 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-enum class Player
-{
+enum class Player {
     NONE, PLAYER1, PLAYER2
+}
+
+enum class Serving {
+    PLAYER1_LEFT, PLAYER1_RIGHT, PLAYER2_LEFT, PLAYER2_RIGHT
 }
