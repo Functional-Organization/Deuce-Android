@@ -20,4 +20,6 @@
 
 <resources>
     <item type="id" name="code_request_add_match"/>
+    <item type="id" name="key_intent_num_sets"/>
+    <item type="id" name="key_intent_advantage_sets"/>
 </resources>

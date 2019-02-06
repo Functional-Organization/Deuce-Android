@@ -23,9 +23,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_grey"
+    android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context="org.subhipstercollective.deuce.ActivityMain"
+    tools:context="org.subhipstercollective.deuce.ActivityMainWear"
     tools:deviceIds="wear">
 
     <LinearLayout
@@ -38,6 +38,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="#071F33"
+            android:textColor="@color/blue"
+            android:textSize="36sp"
             tools:text="Love" />
 
         <Button
@@ -45,6 +48,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="#071F33"
+            android:textColor="@color/blue"
+            android:textSize="36sp"
             tools:text="Love" />
     </LinearLayout>
 
@@ -65,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/ball"
-                android:translationY="10dp" />
+                android:translationY="10dp"/>
 
             <ImageView
                 android:id="@+id/image_ball_top_right"
@@ -108,62 +114,35 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_weight="1">
 
             <TextView
-                android:id="@+id/text_score_game_p1"
-                android:layout_width="match_parent"
+                android:id="@+id/text_scores_match_p1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_weight="1"
-                android:textAlignment="textEnd"
-                android:translationX="-10dp"
-                android:translationY="-5dp"
+                android:layout_gravity="bottom|center"
+                android:textColor="#80C6FF"
+                android:translationY="-10dp"
                 tools:text="1" />
+        </FrameLayout>
 
-            <TextView
-                android:id="@+id/text_score_set_p1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:translationX="10dp"
-                android:translationY="-5dp"
-                tools:text="2" />
-        </LinearLayout>
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_weight="1">
 
             <TextView
-                android:id="@+id/text_score_game_p2"
-                android:layout_width="match_parent"
+                android:id="@+id/text_scores_match_p2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_weight="1"
-                android:textAlignment="textEnd"
-                android:translationX="-10dp"
-                android:translationY="5dp"
-                tools:text="3" />
-
-            <TextView
-                android:id="@+id/text_score_set_p2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_weight="1"
-                android:translationX="10dp"
-                android:translationY="5dp"
-                tools:text="4" />
-        </LinearLayout>
-
+                android:layout_gravity="center|top"
+                android:textColor="#80C6FF"
+                android:translationY="10dp"
+                tools:text="2" />
+        </FrameLayout>
     </LinearLayout>
 
 </android.support.wear.widget.BoxInsetLayout>

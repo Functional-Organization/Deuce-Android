@@ -22,16 +22,24 @@ package org.subhipstercollective.deuce
 import android.content.Intent
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
-import org.subhipstercollective.deucelibrary.ControllerMain
-import org.subhipstercollective.deucelibrary.Game
-import org.subhipstercollective.deucelibrary.Key
-import org.subhipstercollective.deucelibrary.Player
+import org.subhipstercollective.deucelibrary.*
 
-class ActivityMain : WearableActivity()
+class ActivityMainWear : WearableActivity(), ActivityMain
 {
+    override lateinit var buttonScoreP1: Button
+    override lateinit var buttonScoreP2: Button
+    override lateinit var imageBallTopLeft: ImageView
+    override lateinit var imageBallTopRight: ImageView
+    override lateinit var imageBallBottomLeft: ImageView
+    override lateinit var imageBallBottomRight: ImageView
+    override lateinit var textScoresMatchP1: TextView
+    override lateinit var textScoresMatchP2: TextView
 
-    val controller = ControllerMain()
+    val controller = ControllerMain(this)
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -41,20 +49,19 @@ class ActivityMain : WearableActivity()
         // Enables Always-on
         setAmbientEnabled()
 
+        buttonScoreP1 = button_score_p1
+        buttonScoreP2 = button_score_p2
+        imageBallTopLeft = image_ball_top_left
+        imageBallTopRight = image_ball_top_right
+        imageBallBottomLeft = image_ball_bottom_left
+        imageBallBottomRight = image_ball_bottom_right
+        textScoresMatchP1 = text_scores_match_p1
+        textScoresMatchP2 = text_scores_match_p2
+
         Game.init(this)
 
         button_score_p1.setOnClickListener { controller.score(Player.PLAYER1) }
         button_score_p2.setOnClickListener { controller.score(Player.PLAYER2) }
-        controller.displayButtonScoreP1 = button_score_p1
-        controller.displayButtonScoreP2 = button_score_p2
-        controller.displayBallTopLeft = image_ball_top_left
-        controller.displayBallTopRight = image_ball_top_right
-        controller.displayBallBottomLeft = image_ball_bottom_left
-        controller.displayBallBottomRight = image_ball_bottom_right
-        controller.displayScoreGameP1 = text_score_game_p1
-        controller.displayScoreGameP2 = text_score_game_p2
-        controller.displayScoreSetP1 = text_score_game_p2
-        controller.displayScoreSetP2 = text_score_set_p2
 
         startActivityForResult(Intent(this, ActivityAddMatch::class.java), R.id.code_request_add_match)
         //controller.addMatch()
@@ -74,7 +81,7 @@ class ActivityMain : WearableActivity()
                     return
                 controller.winMinimumSet = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
                 controller.winMarginSet = if(data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)) 2 else 1
-                controller.addMatch()
+                controller.addMatch(3)
             }
         }
     }

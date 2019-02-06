@@ -55,7 +55,7 @@ class ActivityMain : AppCompatActivity()
         controller.displayScoreP2 = text_score_p2
         controller.displayLog = text_history
 
-        controller.addMatch()
+        controller.addMatch(3)
 
         controller.updateDisplay()
     }

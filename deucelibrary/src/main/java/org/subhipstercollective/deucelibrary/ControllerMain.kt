@@ -28,26 +28,15 @@ import android.widget.TextView
 /**
  * Created by mqduck on 11/6/17.
  */
-class ControllerMain {
+class ControllerMain(private val activityMain: ActivityMain) {
+
     private var matches = ArrayList<Match>()
 
-    var winMinimumMatch = 1
+    //var winMinimumMatch = 3
     var winMinimumSet = 6
     var winMarginSet = 2
     var winMinimumGame = 4
     var winMarginGame = 2
-
-    var displayLog: TextView? = null
-    var displayButtonScoreP1: Button? = null
-    var displayButtonScoreP2: Button? = null
-    var displayBallTopLeft: ImageView? = null
-    var displayBallTopRight: ImageView? = null
-    var displayBallBottomLeft: ImageView? = null
-    var displayBallBottomRight: ImageView? = null
-    var displayScoreGameP1: TextView? = null
-    var displayScoreGameP2: TextView? = null
-    var displayScoreSetP1: TextView? = null
-    var displayScoreSetP2: TextView? = null
 
     var serving = Serving.PLAYER1_LEFT
 
@@ -63,12 +52,12 @@ class ControllerMain {
     fun getSetScoreStrs() = currentSet.getScoreStrs()
     fun getGameScoreStrs() = currentGame.getScoreStrs()
 
-    fun addMatch() {
+    fun addMatch(winMinimumMatch: Int) {
         if (matches.size != 0 && matches.last().winner == Player.NONE)
             matches.removeAt(matches.size - 1)
         matches.add(Match(winMinimumMatch, winMinimumSet, winMarginSet, winMinimumGame, winMarginGame))
-        displayButtonScoreP1?.isEnabled = true
-        displayButtonScoreP2?.isEnabled = true
+        activityMain.buttonScoreP1.isEnabled = true
+        activityMain.buttonScoreP2.isEnabled = true
 
         updateDisplay()
     }
@@ -76,13 +65,22 @@ class ControllerMain {
     fun updateDisplay() {
         if (matches.size != 0) {
             val scores = getGameScoreStrs()
-            displayButtonScoreP1?.text = scores.player1
-            displayButtonScoreP2?.text = scores.player2
+            activityMain.buttonScoreP1.text = scores.player1
+            activityMain.buttonScoreP2.text = scores.player2
 
-            displayBallTopLeft?.visibility = if (serving === Serving.PLAYER2_LEFT) VISIBLE else INVISIBLE
-            displayBallTopRight?.visibility = if (serving === Serving.PLAYER2_RIGHT) VISIBLE else INVISIBLE
-            displayBallBottomLeft?.visibility = if (serving === Serving.PLAYER1_LEFT) VISIBLE else INVISIBLE
-            displayBallBottomRight?.visibility = if (serving === Serving.PLAYER1_RIGHT) VISIBLE else INVISIBLE
+            activityMain.imageBallTopLeft.visibility = if (serving === Serving.PLAYER2_LEFT) VISIBLE else INVISIBLE
+            activityMain.imageBallTopRight.visibility = if (serving === Serving.PLAYER2_RIGHT) VISIBLE else INVISIBLE
+            activityMain.imageBallBottomLeft.visibility = if (serving === Serving.PLAYER1_LEFT) VISIBLE else INVISIBLE
+            activityMain.imageBallBottomRight.visibility = if (serving === Serving.PLAYER1_RIGHT) VISIBLE else INVISIBLE
+
+            var textScoresMatchP1 = ""
+            var textScoreMatchP2 = ""
+            for (set in currentMatch.sets) {
+                textScoresMatchP1 += set.scoreP1.toString() + "  "
+                textScoreMatchP2 += set.scoreP2.toString() + "  "
+            }
+            activityMain.textScoresMatchP1.text = textScoresMatchP1.trim()
+            activityMain.textScoresMatchP2.text = textScoreMatchP2.trim()
         }
     }
 
@@ -93,33 +91,33 @@ class ControllerMain {
             if (winnerSet != Player.NONE) {
                 val winnerMatch = currentMatch.score(winnerGame)
                 if (winnerMatch != Player.NONE) {
-                    val winnerStr = if (winnerMatch == Player.PLAYER1) "Player 1" else "Player 2"
-                    displayLog?.text = String.format(
-                            "%s\n%s wins the match.",
-                            displayLog!!.text,
-                            winnerStr,
-                            setNumber
-                    )
-                    displayButtonScoreP1?.isEnabled = false
-                    displayButtonScoreP2?.isEnabled = false
+//                    val winnerStr = if (winnerMatch == Player.PLAYER1) "Player 1" else "Player 2"
+//                    displayLog?.text = String.format(
+//                            "%s\n%s wins the match.",
+//                            displayLog!!.text,
+//                            winnerStr,
+//                            setNumber
+//                    )
+                    activityMain.buttonScoreP1.isEnabled = false
+                    activityMain.buttonScoreP2.isEnabled = false
                 } else {
-                    val winnerStr = if (winnerSet == Player.PLAYER1) "Player 1" else "Player 2"
-                    displayLog?.text = String.format(
-                            "%s\n%s wins set %d.",
-                            displayLog!!.text,
-                            winnerStr,
-                            setNumber
-                    )
+//                    val winnerStr = if (winnerSet == Player.PLAYER1) "Player 1" else "Player 2"
+//                    displayLog?.text = String.format(
+//                            "%s\n%s wins set %d.",
+//                            displayLog!!.text,
+//                            winnerStr,
+//                            setNumber
+//                    )
                     currentMatch.addNewSet()
                 }
             } else {
                 val winnerStr = if (winnerGame == Player.PLAYER1) "Player 1" else "Player 2"
-                displayLog?.text = String.format(
-                        "%s\n%s wins game %d.",
-                        displayLog!!.text,
-                        winnerStr,
-                        currentMatch.gameNumber
-                )
+//                displayLog?.text = String.format(
+//                        "%s\n%s wins game %d.",
+//                        displayLog!!.text,
+//                        winnerStr,
+//                        currentMatch.gameNumber
+//                )
                 currentSet.addNewGame()
             }
         }
