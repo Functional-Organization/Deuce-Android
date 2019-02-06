@@ -25,21 +25,21 @@ import android.os.Bundle
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_add_match.*
 import org.subhipstercollective.deucelibrary.Key
+import org.subhipstercollective.deucelibrary.Serving
+import kotlin.random.Random
 
-class ActivityAddMatch : Activity()
-{
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+class ActivityAddMatch : Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_match)
 
         text_num_sets.text = seek_num_sets.progressString
 
-        seek_num_sets.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean)
-            {
+        seek_num_sets.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 text_num_sets.text = seek_num_sets.progressString
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
@@ -47,6 +47,13 @@ class ActivityAddMatch : Activity()
         button_start.setOnClickListener {
             val result = Intent()
             result.putExtra(Key.INTENT_NUM_SETS, seek_num_sets.numSets)
+            result.putExtra(
+                Key.INTENT_NUM_SETS,
+                if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(1) == 0))
+                    Serving.PLAYER1_RIGHT
+                else
+                    Serving.PLAYER2_RIGHT
+            )
             result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
             setResult(R.id.code_request_add_match, result)
             finish()

@@ -21,9 +21,6 @@ package org.subhipstercollective.deucelibrary
 
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 
 /**
  * Created by mqduck on 11/6/17.

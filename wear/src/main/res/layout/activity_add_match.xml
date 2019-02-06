@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2017 Jeffrey Thomas Piercy
   ~
   ~ This file is part of Deuce-Android.
@@ -18,8 +17,7 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,34 +28,120 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_num_sets"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            tools:text="Best of seven"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-        <org.subhipstercollective.deucelibrary.SeekBarSets
-            android:id="@+id/seek_num_sets"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="4"
-            android:progress="1"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_num_sets"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    tools:text="Best of seven" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.android.musicfx.SeekBarRotator
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal">
+
+
+                    <org.subhipstercollective.deucelibrary.SeekBarSets
+                        android:id="@+id/seek_num_sets"
+                        style="@style/Widget.AppCompat.SeekBar.Discrete"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="2"
+                        android:progress="2" />
+
+                </com.android.musicfx.SeekBarRotator>
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <!--<org.subhipstercollective.deucelibrary.SeekBarSets-->
+                <!--android:id="@+id/seek_num_sets"-->
+                <!--style="@style/Widget.AppCompat.SeekBar.Discrete"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:max="4"-->
+                <!--android:progress="1"-->
+                <!--android:rotation="270"/>-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Server"
+                    android:textAlignment="center" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:checkedButton="@+id/radio_server_flip">
+
+                    <RadioButton
+                        android:id="@+id/radio_server_opponent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Opponent" />
+
+                    <RadioButton
+                        android:id="@+id/radio_server_flip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Flip coin" />
+
+                    <RadioButton
+                        android:id="@+id/radio_server_me"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Myself" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <ToggleButton
             android:id="@+id/toggle_margin_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="ToggleButton"
             android:textOff="@string/set_margin_2"
-            android:textOn="@string/set_margin_1"/>
+            android:textOn="@string/set_margin_1" />
 
         <Button
             android:id="@+id/button_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/play"/>
+            android:text="@string/play" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

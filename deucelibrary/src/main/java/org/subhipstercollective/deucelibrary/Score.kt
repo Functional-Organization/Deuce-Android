@@ -19,8 +19,6 @@
 
 package org.subhipstercollective.deucelibrary
 
-import android.content.Context
-
 /**
  * Created by mqduck on 10/31/17.
  */

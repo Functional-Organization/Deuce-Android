@@ -34,7 +34,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/button_score_p1"
+            android:id="@+id/button_score_p2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -44,7 +44,7 @@
             tools:text="Love" />
 
         <Button
-            android:id="@+id/button_score_p2"
+            android:id="@+id/button_score_p1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/ball"
-                android:translationY="10dp"/>
+                android:translationY="10dp" />
 
             <ImageView
                 android:id="@+id/image_ball_top_right"

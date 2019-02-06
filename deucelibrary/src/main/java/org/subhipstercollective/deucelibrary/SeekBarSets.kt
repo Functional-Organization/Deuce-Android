@@ -20,33 +20,33 @@
 package org.subhipstercollective.deucelibrary
 
 import android.content.Context
+import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.widget.SeekBar
 
 /**
  * Created by mqduck on 11/6/17.
  */
-class SeekBarSets : SeekBar
-{
+class SeekBarSets : SeekBar {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    @RequiresApi(21)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    val progressString get() = when(progress)
-    {
-        0 -> context.getString(R.string.best_of_1)
-        1 -> context.getString(R.string.best_of_3)
-        2 -> context.getString(R.string.best_of_5)
-        3 -> context.getString(R.string.best_of_7)
-        else -> "ERROR"
-    }
+    val progressString
+        get() = when (progress) {
+            0    -> context.getString(R.string.best_of_1)
+            1    -> context.getString(R.string.best_of_3)
+            2    -> context.getString(R.string.best_of_5)
+            else -> "ERROR"
+        }
 
-    val numSets get() = when(progress)
-    {
-        1 -> 3
-        2 -> 5
-        3 -> 7
-        else -> 1
-    }
+    val numSets
+        get() = when (progress) {
+            1    -> 3
+            2    -> 5
+            3    -> 7
+            else -> 1
+        }
 }

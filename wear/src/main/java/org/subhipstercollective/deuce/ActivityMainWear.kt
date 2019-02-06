@@ -28,8 +28,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.*
 
-class ActivityMainWear : WearableActivity(), ActivityMain
-{
+class ActivityMainWear : WearableActivity(), ActivityMain {
     override lateinit var buttonScoreP1: Button
     override lateinit var buttonScoreP2: Button
     override lateinit var imageBallTopLeft: ImageView
@@ -41,8 +40,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain
 
     val controller = ControllerMain(this)
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -69,18 +67,15 @@ class ActivityMainWear : WearableActivity(), ActivityMain
         controller.updateDisplay()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when(resultCode)
-        {
-            R.id.code_request_add_match ->
-            {
-                if(data == null)
+        when (resultCode) {
+            R.id.code_request_add_match -> {
+                if (data == null)
                     return
                 controller.winMinimumSet = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
-                controller.winMarginSet = if(data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)) 2 else 1
+                controller.winMarginSet = if (data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)) 2 else 1
                 controller.addMatch(3)
             }
         }

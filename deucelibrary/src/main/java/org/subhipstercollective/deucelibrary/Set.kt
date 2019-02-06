@@ -22,14 +22,12 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-class Set(val winMinimum:     Int, val winMargin:     Int,
-          val winMinimumGame: Int, val winMarginGame: Int)
-{
+class Set(val winMinimum: Int, val winMargin: Int,
+          val winMinimumGame: Int, val winMarginGame: Int) {
     var games = ArrayList<Game>()
     private var mScore = Score(winMinimum, winMargin)
 
-    init
-    {
+    init {
         games.add(Game(winMinimumGame, winMarginGame))
     }
 
