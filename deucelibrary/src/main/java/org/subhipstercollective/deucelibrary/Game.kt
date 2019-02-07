@@ -24,11 +24,11 @@ class Game(winMinimum: Int, winMargin: Int) {
     }
 
     fun getScoreStrs() = when {
-        mScore.winner == Player.PLAYER1          -> ScoreStrings("\uD83C\uDFC6", "\uD83C\uDFBE")
-        mScore.winner == Player.PLAYER2          -> ScoreStrings("\uD83C\uDFBE", "\uD83C\uDFC6")
+        mScore.winner == Player.PLAYER1          -> ScoreStrings("\uD83C\uDFC6", "")
+        mScore.winner == Player.PLAYER2          -> ScoreStrings("", "\uD83C\uDFC6")
         mScore.scoreP1 < 3 || mScore.scoreP2 < 3 -> ScoreStrings(mapScore(mScore.scoreP1), mapScore(mScore.scoreP2))
-        mScore.scoreP1 > mScore.scoreP2          -> ScoreStrings("Advantage", "\uD83C\uDFBE")
-        mScore.scoreP1 < mScore.scoreP2          -> ScoreStrings("\uD83C\uDFBE", "Advantage")
+        mScore.scoreP1 > mScore.scoreP2          -> ScoreStrings("Advantage", "")
+        mScore.scoreP1 < mScore.scoreP2          -> ScoreStrings("", "Advantage")
         else                                     -> ScoreStrings("Deuce", "Deuce")
     }
 }

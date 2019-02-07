@@ -31,10 +31,12 @@ import org.subhipstercollective.deucelibrary.*
 class ActivityMainWear : WearableActivity(), ActivityMain {
     override lateinit var buttonScoreP1: Button
     override lateinit var buttonScoreP2: Button
-    override lateinit var imageBallTopLeft: ImageView
-    override lateinit var imageBallTopRight: ImageView
-    override lateinit var imageBallBottomLeft: ImageView
-    override lateinit var imageBallBottomRight: ImageView
+    override lateinit var textScoreP1: TextView
+    override lateinit var textScoreP2: TextView
+    override lateinit var imageBallP2Left: ImageView
+    override lateinit var imageBallP2Right: ImageView
+    override lateinit var imageBallP1Left: ImageView
+    override lateinit var imageBallP1Right: ImageView
     override lateinit var textScoresMatchP1: TextView
     override lateinit var textScoresMatchP2: TextView
 
@@ -49,10 +51,12 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
 
         buttonScoreP1 = button_score_p1
         buttonScoreP2 = button_score_p2
-        imageBallTopLeft = image_ball_top_left
-        imageBallTopRight = image_ball_top_right
-        imageBallBottomLeft = image_ball_bottom_left
-        imageBallBottomRight = image_ball_bottom_right
+        textScoreP1 = button_score_p1
+        textScoreP2 = button_score_p2
+        imageBallP2Left = image_ball_top_left
+        imageBallP2Right = image_ball_top_right
+        imageBallP1Left = image_ball_bottom_left
+        imageBallP1Right = image_ball_bottom_right
         textScoresMatchP1 = text_scores_match_p1
         textScoresMatchP2 = text_scores_match_p2
 
@@ -76,6 +80,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
                     return
                 controller.winMinimumSet = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
                 controller.winMarginSet = if (data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)) 2 else 1
+                controller.serving = data.getSerializableExtra(Key.INTENT_SERVER) as Serving
                 controller.addMatch(3)
             }
         }

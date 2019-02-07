@@ -107,21 +107,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Opponent" />
+                        android:text="Opponent"
+                        android:textColor="#2196F3"
+                        android:textSize="10sp" />
 
                     <RadioButton
                         android:id="@+id/radio_server_flip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Flip coin" />
+                        android:text="Flip coin"
+                        android:textColor="#2196F3"
+                        android:textSize="10sp" />
 
                     <RadioButton
                         android:id="@+id/radio_server_me"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Myself" />
+                        android:text="Myself"
+                        android:textColor="#2196F3"
+                        android:textSize="10sp" />
                 </RadioGroup>
 
             </LinearLayout>

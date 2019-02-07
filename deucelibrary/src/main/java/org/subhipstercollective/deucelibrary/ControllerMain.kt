@@ -19,8 +19,7 @@
 
 package org.subhipstercollective.deucelibrary
 
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View
 
 /**
  * Created by mqduck on 11/6/17.
@@ -62,13 +61,13 @@ class ControllerMain(private val activityMain: ActivityMain) {
     fun updateDisplay() {
         if (matches.size != 0) {
             val scores = getGameScoreStrs()
-            activityMain.buttonScoreP1.text = scores.player1
-            activityMain.buttonScoreP2.text = scores.player2
+            activityMain.textScoreP1.text = scores.player1
+            activityMain.textScoreP2.text = scores.player2
 
-            activityMain.imageBallTopLeft.visibility = if (serving === Serving.PLAYER2_LEFT) VISIBLE else INVISIBLE
-            activityMain.imageBallTopRight.visibility = if (serving === Serving.PLAYER2_RIGHT) VISIBLE else INVISIBLE
-            activityMain.imageBallBottomLeft.visibility = if (serving === Serving.PLAYER1_LEFT) VISIBLE else INVISIBLE
-            activityMain.imageBallBottomRight.visibility = if (serving === Serving.PLAYER1_RIGHT) VISIBLE else INVISIBLE
+            activityMain.imageBallP2Left.visibility = if (serving === Serving.PLAYER2_LEFT) View.VISIBLE else View.INVISIBLE
+            activityMain.imageBallP2Right.visibility = if (serving === Serving.PLAYER2_RIGHT) View.VISIBLE else View.INVISIBLE
+            activityMain.imageBallP1Left.visibility = if (serving === Serving.PLAYER1_LEFT) View.VISIBLE else View.INVISIBLE
+            activityMain.imageBallP1Right.visibility = if (serving === Serving.PLAYER1_RIGHT) View.VISIBLE else View.INVISIBLE
 
             var textScoresMatchP1 = ""
             var textScoreMatchP2 = ""
@@ -116,6 +115,18 @@ class ControllerMain(private val activityMain: ActivityMain) {
 //                        currentMatch.gameNumber
 //                )
                 currentSet.addNewGame()
+            }
+
+            serving = when (serving) {
+                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> Serving.PLAYER2_RIGHT
+                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> Serving.PLAYER1_RIGHT
+            }
+        } else {
+            serving = when (serving) {
+                Serving.PLAYER1_LEFT -> Serving.PLAYER1_RIGHT
+                Serving.PLAYER1_RIGHT -> Serving.PLAYER1_LEFT
+                Serving.PLAYER2_LEFT -> Serving.PLAYER2_RIGHT
+                Serving.PLAYER2_RIGHT -> Serving.PLAYER2_LEFT
             }
         }
 

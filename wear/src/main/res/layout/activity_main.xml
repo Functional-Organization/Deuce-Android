@@ -39,8 +39,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
-            android:textColor="@color/blue"
-            android:textSize="36sp"
+            android:textSize="30sp"
             tools:text="Love" />
 
         <Button
@@ -49,8 +48,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
-            android:textColor="@color/blue"
-            android:textSize="36sp"
+            android:textSize="30sp"
             tools:text="Love" />
     </LinearLayout>
 
@@ -120,7 +118,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/text_scores_match_p1"
+                android:id="@+id/text_scores_match_p2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
@@ -135,7 +133,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/text_scores_match_p2"
+                android:id="@+id/text_scores_match_p1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
