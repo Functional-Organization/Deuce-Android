@@ -47,7 +47,7 @@
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:visibility="visible"
-                tools:text="Best of\nfive sets" />
+                tools:text="Best of\nthree sets" />
 
             <com.android.musicfx.SeekBarRotator
                 android:layout_width="wrap_content"

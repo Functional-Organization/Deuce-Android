@@ -19,9 +19,9 @@
 
 <resources>
     <string name="app_name" translatable="false">Deuce</string>
-    <string name="best_of_1">One set</string>
-    <string name="best_of_3">Best of three sets</string>
-    <string name="best_of_5">Best of five sets</string>
+    <string name="best_of_1">\nOne set</string>
+    <string name="best_of_3">Best of\nthree sets</string>
+    <string name="best_of_5">Best of\nfive sets</string>
     <string name="set_margin_1">Tiebreaker set</string>
     <string name="set_margin_2">Advantage set</string>
     <string name="play">Play</string>

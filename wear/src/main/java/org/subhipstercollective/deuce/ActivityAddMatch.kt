@@ -21,6 +21,7 @@ package org.subhipstercollective.deuce
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_add_match.*
@@ -58,5 +59,13 @@ class ActivityAddMatch : Activity() {
             setResult(R.id.code_request_add_match, result)
             finish()
         }
+
+        // Set text_num_sets width to largest necessary
+        val paint = Paint()
+        text_num_sets.width = maxOf(
+                paint.measureText(getString(R.string.best_of_1)),
+                paint.measureText(getString(R.string.best_of_3)),
+                paint.measureText(getString(R.string.best_of_5))
+        ).toInt()
     }
 }

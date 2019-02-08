@@ -37,27 +37,29 @@
             android:id="@+id/button_score_p2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="-5dp"
+            android:layout_marginTop="-7dp"
+            android:layout_marginRight="-5dp"
+            android:layout_marginBottom="-2dp"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
             android:textSize="30sp"
-            tools:text="Love"
-            android:layout_marginTop="-7dp"
-            android:layout_marginBottom="-2dp"
-            android:layout_marginLeft="-5dp"
-            android:layout_marginRight="-5dp" />
+            android:theme="@style/ScoreButton"
+            tools:text="Love" />
 
         <Button
             android:id="@+id/button_score_p1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="-5dp"
+            android:layout_marginTop="-2dp"
+            android:layout_marginRight="-5dp"
+            android:layout_marginBottom="-7dp"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
             android:textSize="30sp"
-            tools:text="Love"
-            android:layout_marginTop="-2dp"
-            android:layout_marginBottom="-7dp"
-            android:layout_marginLeft="-5dp"
-            android:layout_marginRight="-5dp" />
+            android:theme="@style/ScoreButton"
+            tools:text="Love" />
     </LinearLayout>
 
     <LinearLayout
