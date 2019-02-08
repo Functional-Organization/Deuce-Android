@@ -26,48 +26,59 @@ class Score(winMinimum: Int, winMargin: Int) {
     var winMinimum: Int = winMinimum
         set(value) {
             field = value
-            score()
+            updateWinner()
         }
     var winMargin: Int = winMargin
         set(value) {
             field = value
-            score()
+            updateWinner()
         }
 
     var scoreP1 = 0
         set(value) {
             field = value
-            score()
+            updateWinner()
         }
     var scoreP2 = 0
         set(value) {
             field = value
-            score()
+            updateWinner()
         }
     var winner = Player.NONE
         private set
 
+    private fun updateWinner() {
+        if (scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin)
+            winner = Player.PLAYER1
+        else if (scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin)
+            winner = Player.PLAYER2
+        else
+            winner = Player.NONE
+    }
+
     fun score(player: Player = Player.NONE): Player {
         when (player) {
-            Player.PLAYER1 -> {
-                ++scoreP1
-                if (scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin)
-                    winner = Player.PLAYER1
-            }
-            Player.PLAYER2 -> {
-                ++scoreP2
-                if (scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin)
-                    winner = Player.PLAYER2
-            }
-            else           -> {
-                if (scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin)
-                    winner = Player.PLAYER1
-                else if (scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin)
-                    winner = Player.PLAYER2
-                else
-                    winner = Player.NONE
+            Player.PLAYER1 -> ++scoreP1
+            Player.PLAYER2 -> ++scoreP2
+            else -> {
             }
         }
         return winner
+    }
+
+    fun descore(player: Player = Player.NONE): Player {
+        when (player) {
+            Player.PLAYER1 -> --scoreP1
+            Player.PLAYER2 -> --scoreP2
+            else -> {
+            }
+        }
+        return winner
+    }
+
+    fun getScore(player: Player) = when (player) {
+        Player.NONE -> -1
+        Player.PLAYER1 -> scoreP1
+        Player.PLAYER2 -> scoreP2
     }
 }

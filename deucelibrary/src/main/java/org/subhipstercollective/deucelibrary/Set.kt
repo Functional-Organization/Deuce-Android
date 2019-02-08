@@ -33,7 +33,11 @@ class Set(val winMinimum: Int, val winMargin: Int,
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
 
+    fun descore(player: Player) = mScore.descore(player)
+
     fun addNewGame() = games.add(Game(winMinimumGame, winMarginGame, controller))
+
+    fun getScore(player: Player) = mScore.getScore(player)
 
     fun getScoreStrs() = ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
 

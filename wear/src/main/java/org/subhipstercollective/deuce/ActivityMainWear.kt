@@ -21,12 +21,17 @@ package org.subhipstercollective.deuce
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.view.GestureDetectorCompat
 import android.support.wearable.activity.WearableActivity
+import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.*
+
 
 class ActivityMainWear : WearableActivity(), ActivityMain {
     override lateinit var buttonScoreP1: Button
@@ -42,6 +47,8 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
     override val context = this
 
     val controller = ControllerMain(this)
+
+    private lateinit var mDetector: GestureDetectorCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +69,18 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
         textScoresMatchP2 = text_scores_match_p2
 
         Game.init(this)
+
+        mDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                Log.d("debug", "" + event2.x + ", " + event1.x + ", " + velocityX)
+                if (event1.x - event2.x >= 100 && velocityX <= -100) {
+                    Log.d("debug", "undoing")
+                    controller.undo()
+                    return true
+                }
+                return false
+            }
+        })
 
         button_score_p1.setOnClickListener { controller.score(Player.PLAYER1) }
         button_score_p2.setOnClickListener { controller.score(Player.PLAYER2) }
@@ -85,5 +104,9 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
                 controller.addMatch(3)
             }
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        return mDetector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }
 }

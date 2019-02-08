@@ -15,6 +15,8 @@ class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMa
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
 
+    fun descore(player: Player) = mScore.descore(player)
+
     private fun mapScore(score: Int) = when (score) {
         0 -> Game.strLove
         1 -> "15"
@@ -22,6 +24,8 @@ class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMa
         3 -> "40"
         else -> "ERROR"
     }
+
+    fun getScore(player: Player) = mScore.getScore(player)
 
     fun getScoreStrs() = when {
         mScore.winner == Player.PLAYER1 -> ScoreStrings("\uD83C\uDFC6", "")

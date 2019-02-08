@@ -39,6 +39,7 @@ class ControllerMain(val activityMain: ActivityMain) {
     private val currentMatch get() = matches.last()
     private val currentSet get() = currentMatch.currentSet
     private val currentGame get() = currentMatch.currentGame
+    private val scoreLog = ArrayList<Player>()
 
     val matchNumber get() = matches.size
     val setNumber get() = currentMatch.setNumber
@@ -81,39 +82,20 @@ class ControllerMain(val activityMain: ActivityMain) {
     }
 
     fun score(player: Player) {
+        scoreLog.add(player)
+
         val winnerGame = currentGame.score(player)
         if (winnerGame != Player.NONE) {
             val winnerSet = currentSet.score(winnerGame)
             if (winnerSet != Player.NONE) {
                 val winnerMatch = currentMatch.score(winnerGame)
                 if (winnerMatch != Player.NONE) {
-//                    val winnerStr = if (winnerMatch == Player.PLAYER1) "Player 1" else "Player 2"
-//                    displayLog?.text = String.format(
-//                            "%s\n%s wins the match.",
-//                            displayLog!!.text,
-//                            winnerStr,
-//                            setNumber
-//                    )
                     activityMain.buttonScoreP1.isEnabled = false
                     activityMain.buttonScoreP2.isEnabled = false
                 } else {
-//                    val winnerStr = if (winnerSet == Player.PLAYER1) "Player 1" else "Player 2"
-//                    displayLog?.text = String.format(
-//                            "%s\n%s wins set %d.",
-//                            displayLog!!.text,
-//                            winnerStr,
-//                            setNumber
-//                    )
                     currentMatch.addNewSet()
                 }
             } else {
-//                val winnerStr = if (winnerGame == Player.PLAYER1) "Player 1" else "Player 2"
-//                displayLog?.text = String.format(
-//                        "%s\n%s wins game %d.",
-//                        displayLog!!.text,
-//                        winnerStr,
-//                        currentMatch.gameNumber
-//                )
                 currentSet.addNewGame()
             }
 
@@ -128,6 +110,23 @@ class ControllerMain(val activityMain: ActivityMain) {
                 Serving.PLAYER2_LEFT -> Serving.PLAYER2_RIGHT
                 Serving.PLAYER2_RIGHT -> Serving.PLAYER2_LEFT
             }
+        }
+
+        updateDisplay()
+    }
+
+    fun undo() {
+        val player = scoreLog.last()
+        scoreLog.removeAt(scoreLog.size - 1)
+
+        if (currentGame.getScore(Player.PLAYER1) == 0 && currentGame.getScore(Player.PLAYER2) == 0) {
+            if (currentSet.getScore(Player.PLAYER1) == 0 && currentSet.getScore(Player.PLAYER2) == 0) {
+                currentMatch.descore(player)
+            } else {
+                currentSet.descore(player)
+            }
+        } else {
+            currentGame.descore(player)
         }
 
         updateDisplay()
