@@ -24,7 +24,7 @@ import android.view.View
 /**
  * Created by mqduck on 11/6/17.
  */
-class ControllerMain(private val activityMain: ActivityMain) {
+class ControllerMain(val activityMain: ActivityMain) {
 
     private var matches = ArrayList<Match>()
 
@@ -51,7 +51,7 @@ class ControllerMain(private val activityMain: ActivityMain) {
     fun addMatch(winMinimumMatch: Int) {
         if (matches.size != 0 && matches.last().winner == Player.NONE)
             matches.removeAt(matches.size - 1)
-        matches.add(Match(winMinimumMatch, winMinimumSet, winMarginSet, winMinimumGame, winMarginGame))
+        matches.add(Match(winMinimumMatch, winMinimumSet, winMarginSet, winMinimumGame, winMarginGame, this))
         activityMain.buttonScoreP1.isEnabled = true
         activityMain.buttonScoreP2.isEnabled = true
 
@@ -107,7 +107,7 @@ class ControllerMain(private val activityMain: ActivityMain) {
                     currentMatch.addNewSet()
                 }
             } else {
-                val winnerStr = if (winnerGame == Player.PLAYER1) "Player 1" else "Player 2"
+//                val winnerStr = if (winnerGame == Player.PLAYER1) "Player 1" else "Player 2"
 //                displayLog?.text = String.format(
 //                        "%s\n%s wins game %d.",
 //                        displayLog!!.text,

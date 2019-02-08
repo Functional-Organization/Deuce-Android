@@ -49,7 +49,7 @@ class ActivityAddMatch : Activity() {
             result.putExtra(Key.INTENT_NUM_SETS, seek_num_sets.numSets)
             result.putExtra(
                 Key.INTENT_SERVER,
-                if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(1) == 0))
+                    if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0))
                     Serving.PLAYER1_RIGHT
                 else
                     Serving.PLAYER2_RIGHT

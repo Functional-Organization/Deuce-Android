@@ -24,12 +24,12 @@ package org.subhipstercollective.deucelibrary
  */
 class Match(val winMinimum: Int,
             val winMinimumSet: Int, val winMarginSet: Int,
-            val winMinimumGame: Int, val winMarginGame: Int) {
+            val winMinimumGame: Int, val winMarginGame: Int, private val controller: ControllerMain) {
     var sets = ArrayList<Set>()
     private var mScore = Score(winMinimum, 1)
 
     init {
-        sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame))
+        sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame, controller))
     }
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
@@ -37,7 +37,7 @@ class Match(val winMinimum: Int,
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
 
-    fun addNewSet() = sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame))
+    fun addNewSet() = sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame, controller))
     //fun addNewGame() = currentSet.addNewGame()
 
     fun getScoreStrs() = ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())

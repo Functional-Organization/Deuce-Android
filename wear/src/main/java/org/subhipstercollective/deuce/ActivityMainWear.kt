@@ -39,6 +39,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
     override lateinit var imageBallP1Right: ImageView
     override lateinit var textScoresMatchP1: TextView
     override lateinit var textScoresMatchP2: TextView
+    override val context = this
 
     val controller = ControllerMain(this)
 
@@ -53,8 +54,8 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
         buttonScoreP2 = button_score_p2
         textScoreP1 = button_score_p1
         textScoreP2 = button_score_p2
-        imageBallP2Left = image_ball_top_left
-        imageBallP2Right = image_ball_top_right
+        imageBallP2Left = image_ball_top_right
+        imageBallP2Right = image_ball_top_left
         imageBallP1Left = image_ball_bottom_left
         imageBallP1Right = image_ball_bottom_right
         textScoresMatchP1 = text_scores_match_p1

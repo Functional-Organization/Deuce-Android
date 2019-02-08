@@ -23,17 +23,17 @@ package org.subhipstercollective.deucelibrary
  * Created by mqduck on 10/31/17.
  */
 class Set(val winMinimum: Int, val winMargin: Int,
-          val winMinimumGame: Int, val winMarginGame: Int) {
+          val winMinimumGame: Int, val winMarginGame: Int, private val controller: ControllerMain) {
     var games = ArrayList<Game>()
     private var mScore = Score(winMinimum, winMargin)
 
     init {
-        games.add(Game(winMinimumGame, winMarginGame))
+        games.add(Game(winMinimumGame, winMarginGame, controller))
     }
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
 
-    fun addNewGame() = games.add(Game(winMinimumGame, winMarginGame))
+    fun addNewGame() = games.add(Game(winMinimumGame, winMarginGame, controller))
 
     fun getScoreStrs() = ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
 

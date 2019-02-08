@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Deuce Library</string>
     <string name="love">Zéro</string>
-    <string name="best_of_3">2 sets gagnants</string>
-    <string name="best_of_5">3 sets gagnants</string>
-    <string name="best_of_1">1 set</string>
+    <string name="best_of_3">2 sets\ngagnants</string>
+    <string name="best_of_5">3 sets\ngagnants</string>
+    <string name="best_of_1">1 set\n</string>
     <string name="set_margin_1">Sets à tiebreak</string>
     <string name="set_margin_2">Sets à l\'avantage</string>
     <string name="play">Jouer</string>
+    <string name="ad_in">Av serv</string>
+    <string name="ad_out">Av ret</string>
+    <string name="deuce">Egalité</string>
 </resources>

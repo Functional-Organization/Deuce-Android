@@ -1,5 +1,6 @@
 package org.subhipstercollective.deucelibrary
 
+import android.content.Context
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,4 +16,5 @@ interface ActivityMain {
     var imageBallP2Right: ImageView
     var textScoresMatchP1: TextView
     var textScoresMatchP2: TextView
+    val context: Context
 }
