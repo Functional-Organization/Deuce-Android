@@ -26,13 +26,21 @@ import android.os.Bundle
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_add_match.*
 import org.subhipstercollective.deucelibrary.Key
-import org.subhipstercollective.deucelibrary.Serving
+import org.subhipstercollective.deucelibrary.Player
 import kotlin.random.Random
 
 class ActivityAddMatch : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_match)
+
+        // Set text_num_sets width to largest necessary
+        val paint = Paint()
+        text_num_sets.width = maxOf(
+                paint.measureText(getString(R.string.best_of_1)),
+                paint.measureText(getString(R.string.best_of_3)),
+                paint.measureText(getString(R.string.best_of_5))
+        ).toInt()
 
         text_num_sets.text = seek_num_sets.progressString
 
@@ -51,21 +59,13 @@ class ActivityAddMatch : Activity() {
             result.putExtra(
                 Key.INTENT_SERVER,
                     if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0))
-                    Serving.PLAYER1_RIGHT
+                        Player.PLAYER1
                 else
-                    Serving.PLAYER2_RIGHT
+                        Player.PLAYER2
             )
-            result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
+//            result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
             setResult(R.id.code_request_add_match, result)
             finish()
         }
-
-        // Set text_num_sets width to largest necessary
-        val paint = Paint()
-        text_num_sets.width = maxOf(
-                paint.measureText(getString(R.string.best_of_1)),
-                paint.measureText(getString(R.string.best_of_3)),
-                paint.measureText(getString(R.string.best_of_5))
-        ).toInt()
     }
 }

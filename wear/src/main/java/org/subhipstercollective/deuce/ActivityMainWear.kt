@@ -100,8 +100,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
                     return
                 controller.winMinimumSet = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
                 controller.winMarginSet = if (data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)) 2 else 1
-                controller.serving = data.getSerializableExtra(Key.INTENT_SERVER) as Serving
-                controller.addMatch(3)
+                controller.addMatch(3, data.getSerializableExtra(Key.INTENT_SERVER) as Player)
             }
         }
     }

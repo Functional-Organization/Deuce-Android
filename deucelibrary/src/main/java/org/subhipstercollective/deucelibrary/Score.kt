@@ -66,16 +66,6 @@ class Score(winMinimum: Int, winMargin: Int) {
         return winner
     }
 
-    fun descore(player: Player = Player.NONE): Player {
-        when (player) {
-            Player.PLAYER1 -> --scoreP1
-            Player.PLAYER2 -> --scoreP2
-            else -> {
-            }
-        }
-        return winner
-    }
-
     fun getScore(player: Player) = when (player) {
         Player.NONE -> -1
         Player.PLAYER1 -> scoreP1

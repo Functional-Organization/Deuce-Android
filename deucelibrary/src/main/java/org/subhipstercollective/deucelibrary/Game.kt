@@ -15,8 +15,6 @@ class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMa
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
 
-    fun descore(player: Player) = mScore.descore(player)
-
     private fun mapScore(score: Int) = when (score) {
         0 -> Game.strLove
         1 -> "15"

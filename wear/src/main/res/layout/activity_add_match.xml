@@ -129,7 +129,6 @@
             android:id="@+id/toggle_margin_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="ToggleButton"
             android:textOff="@string/set_margin_2"
             android:textOn="@string/set_margin_1" />

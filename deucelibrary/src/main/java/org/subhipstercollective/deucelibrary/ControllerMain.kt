@@ -49,10 +49,11 @@ class ControllerMain(val activityMain: ActivityMain) {
     fun getSetScoreStrs() = currentSet.getScoreStrs()
     fun getGameScoreStrs() = currentGame.getScoreStrs()
 
-    fun addMatch(winMinimumMatch: Int) {
+    fun addMatch(winMinimumMatch: Int, startingServer: Player) {
         if (matches.size != 0 && matches.last().winner == Player.NONE)
             matches.removeAt(matches.size - 1)
-        matches.add(Match(winMinimumMatch, winMinimumSet, winMarginSet, winMinimumGame, winMarginGame, this))
+        matches.add(Match(winMinimumMatch, winMinimumSet, winMarginSet, winMinimumGame, winMarginGame, startingServer, this))
+        serving = if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
         activityMain.buttonScoreP1.isEnabled = true
         activityMain.buttonScoreP2.isEnabled = true
 
@@ -81,9 +82,7 @@ class ControllerMain(val activityMain: ActivityMain) {
         }
     }
 
-    fun score(player: Player) {
-        scoreLog.add(player)
-
+    fun score(player: Player, updateLog: Boolean = true) {
         val winnerGame = currentGame.score(player)
         if (winnerGame != Player.NONE) {
             val winnerSet = currentSet.score(winnerGame)
@@ -112,23 +111,26 @@ class ControllerMain(val activityMain: ActivityMain) {
             }
         }
 
-        updateDisplay()
+        if (updateLog) {
+            scoreLog.add(player)
+            updateDisplay()
+        }
     }
 
     fun undo() {
-        val player = scoreLog.last()
-        scoreLog.removeAt(scoreLog.size - 1)
+        if (scoreLog.size != 0) {
+            scoreLog.removeAt(scoreLog.size - 1)
+            val winMinimumMatch = matches.last().winMinimum
+            val startingServer = matches.last().startingServer
+            matches.removeAt(matches.size - 1)
+            addMatch(winMinimumMatch, startingServer)
 
-        if (currentGame.getScore(Player.PLAYER1) == 0 && currentGame.getScore(Player.PLAYER2) == 0) {
-            if (currentSet.getScore(Player.PLAYER1) == 0 && currentSet.getScore(Player.PLAYER2) == 0) {
-                currentMatch.descore(player)
-            } else {
-                currentSet.descore(player)
+            val numScores = scoreLog.size
+            for (i in 0 until numScores) {
+                score(scoreLog[i], false)
             }
-        } else {
-            currentGame.descore(player)
-        }
 
-        updateDisplay()
+            updateDisplay()
+        }
     }
 }

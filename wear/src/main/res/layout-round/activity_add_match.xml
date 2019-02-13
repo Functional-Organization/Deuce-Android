@@ -44,8 +44,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_margin="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="0dp"
+                android:padding="0dp"
+                android:paddingStart="0dp"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingEnd="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
                 android:textAlignment="center"
                 android:textSize="18sp"
+                android:translationY="5dp"
                 android:visibility="visible"
                 tools:text="Best of\nthree sets" />
 
@@ -54,7 +69,8 @@
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:translationY="10dp">
 
 
                 <org.subhipstercollective.deucelibrary.SeekBarSets
@@ -71,7 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:checkedButton="@+id/radio_server_flip"
-                android:layoutDirection="rtl">
+                android:layoutDirection="rtl"
+                android:translationY="10dp">
 
                 <RadioButton
                     android:id="@+id/radio_server_opponent"
@@ -109,6 +126,7 @@
                 android:text="Server"
                 android:textAlignment="center"
                 android:textSize="18sp"
+                android:translationY="10dp"
                 android:visibility="visible" />
 
             <Space
@@ -117,15 +135,6 @@
                 android:layout_weight="1" />
 
         </LinearLayout>
-
-        <ToggleButton
-            android:id="@+id/toggle_margin_sets"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ToggleButton"
-            android:textOff="@string/set_margin_2"
-            android:textOn="@string/set_margin_1" />
 
         <Button
             android:id="@+id/button_start"

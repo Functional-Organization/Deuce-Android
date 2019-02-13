@@ -24,7 +24,9 @@ package org.subhipstercollective.deucelibrary
  */
 class Match(val winMinimum: Int,
             val winMinimumSet: Int, val winMarginSet: Int,
-            val winMinimumGame: Int, val winMarginGame: Int, private val controller: ControllerMain) {
+            val winMinimumGame: Int, val winMarginGame: Int,
+            val startingServer: Player,
+            private val controller: ControllerMain) {
     var sets = ArrayList<Set>()
     private var mScore = Score(winMinimum, 1)
 
@@ -33,8 +35,6 @@ class Match(val winMinimum: Int,
     }
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
-
-    fun descore(player: Player) = mScore.descore(player)
 
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
