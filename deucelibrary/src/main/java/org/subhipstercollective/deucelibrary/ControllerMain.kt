@@ -28,7 +28,6 @@ class ControllerMain(val activityMain: ActivityMain) {
 
     private var matches = ArrayList<Match>()
 
-    //var winMinimumMatch = 3
     var winMinimumSet = 6
     var winMarginSet = 2
     var winMinimumGame = 4
@@ -40,14 +39,6 @@ class ControllerMain(val activityMain: ActivityMain) {
     private val currentSet get() = currentMatch.currentSet
     private val currentGame get() = currentMatch.currentGame
     private val scoreLog = ArrayList<Player>()
-
-    val matchNumber get() = matches.size
-    val setNumber get() = currentMatch.setNumber
-    val gameNumber get() = currentSet.gameNumber
-
-    fun getMatchScoreStrs() = currentMatch.getScoreStrs()
-    fun getSetScoreStrs() = currentSet.getScoreStrs()
-    fun getGameScoreStrs() = currentGame.getScoreStrs()
 
     fun addMatch(winMinimumMatch: Int, startingServer: Player) {
         if (matches.size != 0 && matches.last().winner == Player.NONE)
@@ -62,7 +53,7 @@ class ControllerMain(val activityMain: ActivityMain) {
 
     fun updateDisplay() {
         if (matches.size != 0) {
-            val scores = getGameScoreStrs()
+            val scores = currentGame.getScoreStrs()
             activityMain.textScoreP1.text = scores.player1
             activityMain.textScoreP2.text = scores.player2
 

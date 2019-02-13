@@ -2,7 +2,7 @@ package org.subhipstercollective.deucelibrary
 
 import android.content.Context
 
-class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMain) {
+class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMain, val tiebreak: Boolean = false) {
     companion object {
         private var strLove: String = ""
 
@@ -15,12 +15,18 @@ class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMa
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
 
-    private fun mapScore(score: Int) = when (score) {
-        0 -> Game.strLove
-        1 -> "15"
-        2 -> "30"
-        3 -> "40"
-        else -> "ERROR"
+    private fun mapScore(score: Int): String {
+        return if (tiebreak) {
+            score.toString()
+        } else {
+            when (score) {
+                0 -> Game.strLove
+                1 -> "15"
+                2 -> "30"
+                3 -> "40"
+                else -> "ERROR"
+            }
+        }
     }
 
     fun getScore(player: Player) = mScore.getScore(player)
