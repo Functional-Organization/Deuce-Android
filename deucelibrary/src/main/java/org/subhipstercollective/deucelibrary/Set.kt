@@ -34,6 +34,7 @@ class Set(val winMinimum: Int, val winMargin: Int,
     fun score(player: Player = Player.NONE) = mScore.score(player)
 
     fun addNewGame() = games.add(Game(winMinimumGame, winMarginGame, controller))
+    fun addNewGame(winMinimumGame: Int, winMarginGame: Int, advantage: Boolean) = games.add(Game(winMinimumGame, winMarginGame, controller, advantage))
 
     fun getScore(player: Player) = mScore.getScore(player)
 

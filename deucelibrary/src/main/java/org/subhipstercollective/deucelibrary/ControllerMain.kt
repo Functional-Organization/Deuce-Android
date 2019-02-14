@@ -25,19 +25,22 @@ import android.view.View
  * Created by mqduck on 11/6/17.
  */
 class ControllerMain(val activityMain: ActivityMain) {
-    private var match = Match(0, 0, 0, 0, 0, Player.PLAYER1, this)
+    private var match = Match(0, 0, 0, 0, 0, Player.PLAYER1, false, this)
     var serving = Serving.PLAYER1_LEFT
 
-    var winMinimumSet = 6
-    var winMarginSet = 2
+    var winMinimumMatch = 7
+    var winMinimumSet = 7
+    var winMarginSet = 1
     var winMinimumGame = 4
     var winMarginGame = 2
+    var winMinimumGameTiebreak = 7
+    var winMarginGameTiebreak = 1
 
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame
     private val scoreLog = ArrayList<Player>()
 
-    fun addMatch(winMinimumMatch: Int, startingServer: Player) {
+    fun addMatch(startingServer: Player, advantage: Boolean) {
         match = Match(
                 winMinimumMatch,
                 winMinimumSet,
@@ -45,6 +48,7 @@ class ControllerMain(val activityMain: ActivityMain) {
                 winMinimumGame,
                 winMarginGame,
                 startingServer,
+                advantage,
                 this)
         serving = if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
         activityMain.buttonScoreP1.isEnabled = true
@@ -80,13 +84,20 @@ class ControllerMain(val activityMain: ActivityMain) {
             if (winnerSet != Player.NONE) {
                 val winnerMatch = match.score(winnerGame)
                 if (winnerMatch != Player.NONE) {
+                    // Match is over
                     activityMain.buttonScoreP1.isEnabled = false
                     activityMain.buttonScoreP2.isEnabled = false
                 } else {
+                    // Set is over
                     match.addNewSet()
                 }
             } else {
-                currentSet.addNewGame()
+                // Game is over
+                if (!match.advantage && currentSet.scoreP1 == currentSet.scoreP2 && currentSet.scoreP1 == winMinimumSet - 1) {
+                    currentSet.addNewGame(winMinimumGameTiebreak, winMarginGameTiebreak, true)
+                } else {
+                    currentSet.addNewGame()
+                }
             }
 
             serving = when (serving) {
@@ -111,7 +122,7 @@ class ControllerMain(val activityMain: ActivityMain) {
     fun undo() {
         if (scoreLog.size != 0) {
             scoreLog.removeAt(scoreLog.size - 1)
-            addMatch(match.winMinimum, match.startingServer)
+            addMatch(match.startingServer, match.advantage)
 
             val numScores = scoreLog.size
             for (i in 0 until numScores) {

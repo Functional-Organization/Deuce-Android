@@ -98,9 +98,10 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
             R.id.code_request_add_match -> {
                 if (data == null)
                     return
-                controller.winMinimumSet = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
-                controller.winMarginSet = if (data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)) 2 else 1
-                controller.addMatch(3, data.getSerializableExtra(Key.INTENT_SERVER) as Player)
+                controller.winMinimumMatch = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
+                val advantage = data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, false)
+                controller.winMarginSet = if (advantage) 2 else 1
+                controller.addMatch(data.getSerializableExtra(Key.INTENT_SERVER) as Player, advantage)
             }
         }
     }
