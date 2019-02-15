@@ -10,10 +10,14 @@ interface ActivityMain {
     var buttonScoreP2: Button
     var textScoreP1: TextView
     var textScoreP2: TextView
-    var imageBallP1Left: ImageView
-    var imageBallP1Right: ImageView
-    var imageBallP2Left: ImageView
-    var imageBallP2Right: ImageView
+    var imageBallP1LeftServing: ImageView
+    var imageBallP1RightServing: ImageView
+    var imageBallP2LeftServing: ImageView
+    var imageBallP2RightServing: ImageView
+    var imageBallP1LeftNotServing: ImageView
+    var imageBallP1RightNotServing: ImageView
+    var imageBallP2LeftNotServing: ImageView
+    var imageBallP2RightNotServing: ImageView
     var textScoresMatchP1: TextView
     var textScoresMatchP2: TextView
     val context: Context

@@ -4,13 +4,13 @@ import android.content.Context
 
 class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMain, val tiebreak: Boolean = false) {
     companion object {
-        private lateinit var scoreMap: Array<String>
+        private val scoreMap = arrayOf("Love", "15", "30", "40", "")
         private lateinit var strAdIn: String
         private lateinit var strAdOut: String
         private lateinit var strDeuce: String
 
         fun init(context: Context) {
-            scoreMap = arrayOf(context.resources.getString(R.string.love), "15", "30", "40", "")
+            scoreMap[0] = context.resources.getString(R.string.love)
             strAdIn = context.getString(R.string.ad_in)
             strAdOut = context.getString(R.string.ad_out)
             strDeuce = context.getString(R.string.deuce)

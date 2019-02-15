@@ -74,22 +74,22 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/image_ball_top_left"
+                android:id="@+id/image_ball_top_left_serving"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/ball_green"
+                android:src="@drawable/ball_orange"
                 android:translationX="-10dp"
                 android:translationY="-6dp" />
 
             <ImageView
-                android:id="@+id/image_ball_top_right"
+                android:id="@+id/image_ball_top_right_serving"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/ball_green"
+                android:src="@drawable/ball_orange"
                 android:translationX="10dp"
                 android:translationY="-6dp" />
         </LinearLayout>
@@ -101,7 +101,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/image_ball_bottom_left"
+                android:id="@+id/image_ball_bottom_left_serving"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -111,7 +111,7 @@
                 android:translationY="8dp" />
 
             <ImageView
-                android:id="@+id/image_ball_bottom_right"
+                android:id="@+id/image_ball_bottom_right_serving"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -119,6 +119,67 @@
                 android:src="@drawable/ball_green"
                 android:translationX="10dp"
                 android:translationY="8dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_ball_top_left_notserving"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ball_darkgreen"
+                android:translationX="-10dp"
+                android:translationY="20dp" />
+
+            <ImageView
+                android:id="@+id/image_ball_top_right_notserving"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ball_darkgreen"
+                android:translationX="10dp"
+                android:translationY="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_ball_bottom_left_notserving"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ball_darkorange"
+                android:translationX="-10dp"
+                android:translationY="-18dp" />
+
+            <ImageView
+                android:id="@+id/image_ball_bottom_right_notserving"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ball_darkorange"
+                android:translationX="10dp"
+                android:translationY="-18dp" />
         </LinearLayout>
 
     </LinearLayout>

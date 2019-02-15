@@ -38,10 +38,14 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
     override lateinit var buttonScoreP2: Button
     override lateinit var textScoreP1: TextView
     override lateinit var textScoreP2: TextView
-    override lateinit var imageBallP2Left: ImageView
-    override lateinit var imageBallP2Right: ImageView
-    override lateinit var imageBallP1Left: ImageView
-    override lateinit var imageBallP1Right: ImageView
+    override lateinit var imageBallP2LeftServing: ImageView
+    override lateinit var imageBallP2RightServing: ImageView
+    override lateinit var imageBallP1LeftServing: ImageView
+    override lateinit var imageBallP1RightServing: ImageView
+    override lateinit var imageBallP2LeftNotServing: ImageView
+    override lateinit var imageBallP2RightNotServing: ImageView
+    override lateinit var imageBallP1LeftNotServing: ImageView
+    override lateinit var imageBallP1RightNotServing: ImageView
     override lateinit var textScoresMatchP1: TextView
     override lateinit var textScoresMatchP2: TextView
     override val context = this
@@ -61,10 +65,17 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
         buttonScoreP2 = button_score_p2
         textScoreP1 = button_score_p1
         textScoreP2 = button_score_p2
-        imageBallP2Left = image_ball_top_right
-        imageBallP2Right = image_ball_top_left
-        imageBallP1Left = image_ball_bottom_left
-        imageBallP1Right = image_ball_bottom_right
+
+        imageBallP1LeftServing = image_ball_bottom_left_serving
+        imageBallP1RightServing = image_ball_bottom_right_serving
+        imageBallP1LeftNotServing = image_ball_bottom_left_notserving
+        imageBallP1RightNotServing = image_ball_bottom_right_notserving
+
+        imageBallP2LeftServing = image_ball_top_right_serving
+        imageBallP2RightServing = image_ball_top_left_serving
+        imageBallP2LeftNotServing = image_ball_top_right_notserving
+        imageBallP2RightNotServing = image_ball_top_left_notserving
+
         textScoresMatchP1 = text_scores_match_p1
         textScoresMatchP2 = text_scores_match_p2
 
