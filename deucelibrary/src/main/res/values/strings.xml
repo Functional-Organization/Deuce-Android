@@ -29,4 +29,8 @@
     <string name="ad_in">Ad-In</string>
     <string name="ad_out">Ad-Out</string>
     <string name="deuce">Deuce</string>
+    <string name="server">Server</string>
+    <string name="opponent">Opponent</string>
+    <string name="flip_coin">Flip coin</string>
+    <string name="myself">Myself</string>
 </resources>

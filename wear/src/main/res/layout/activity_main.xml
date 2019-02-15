@@ -23,8 +23,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     android:padding="@dimen/box_inset_layout_padding"
+    tools:background="@color/black"
     tools:context="org.subhipstercollective.deuce.ActivityMainWear"
     tools:deviceIds="wear">
 
@@ -40,7 +40,8 @@
             android:layout_weight="1"
             android:backgroundTint="#071F33"
             android:textSize="36dp"
-            tools:text="Love" />
+            tools:text="Love"
+            tools:ignore="SpUsage" />
 
         <Button
             android:id="@+id/button_score_p1"
@@ -49,7 +50,8 @@
             android:layout_weight="1"
             android:backgroundTint="#071F33"
             android:textSize="36dp"
-            tools:text="Love" />
+            tools:text="Love"
+            tools:ignore="SpUsage" />
     </LinearLayout>
 
     <LinearLayout
@@ -69,7 +71,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/ball_orange"
-                android:translationY="10dp" />
+                android:translationY="10dp"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/image_ball_top_right_serving"
@@ -77,7 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/ball_orange"
-                android:translationY="10dp" />
+                android:translationY="10dp"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <LinearLayout
@@ -93,7 +97,8 @@
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:src="@drawable/ball_green"
-                android:translationY="-10dp" />
+                android:translationY="-10dp"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/image_ball_bottom_right_serving"
@@ -102,7 +107,8 @@
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:src="@drawable/ball_green"
-                android:translationY="-10dp" />
+                android:translationY="-10dp"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
     </LinearLayout>
@@ -125,7 +131,8 @@
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:src="@drawable/ball_darkgreen"
-                android:translationY="-10dp" />
+                android:translationY="-10dp"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/image_ball_top_right_notserving"
@@ -134,7 +141,8 @@
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:src="@drawable/ball_darkgreen"
-                android:translationY="-10dp" />
+                android:translationY="-10dp"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <LinearLayout
@@ -149,7 +157,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/ball_darkorange"
-                android:translationY="10dp" />
+                android:translationY="10dp"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/image_ball_bottom_right_notserving"
@@ -157,7 +166,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/ball_darkorange"
-                android:translationY="10dp" />
+                android:translationY="10dp"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
     </LinearLayout>
@@ -180,7 +190,8 @@
                 android:textColor="#80C6FF"
                 android:textSize="24dp"
                 android:translationY="-10dp"
-                tools:text="1" />
+                tools:text="1"
+                tools:ignore="SpUsage" />
         </FrameLayout>
 
         <FrameLayout
@@ -196,7 +207,8 @@
                 android:textColor="#80C6FF"
                 android:textSize="24dp"
                 android:translationY="10dp"
-                tools:text="2" />
+                tools:text="2"
+                tools:ignore="SpUsage" />
         </FrameLayout>
     </LinearLayout>
 
