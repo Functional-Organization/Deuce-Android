@@ -25,8 +25,6 @@ package org.subhipstercollective.deucelibrary
 class Match(val winMinimum: Int,
             val winMinimumSet: Int, val winMarginSet: Int,
             val winMinimumGame: Int, val winMarginGame: Int,
-            val startingServer: Player,
-            val advantage: Boolean,
             private val controller: ControllerMain) {
     var sets = ArrayList<Set>()
     private var mScore = Score(winMinimum, 1)

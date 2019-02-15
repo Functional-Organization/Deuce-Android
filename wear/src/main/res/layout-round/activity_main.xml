@@ -81,7 +81,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ball_green"
                 android:translationX="-10dp"
-                android:translationY="-8dp" />
+                android:translationY="-6dp" />
 
             <ImageView
                 android:id="@+id/image_ball_top_right"
@@ -91,7 +91,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ball_green"
                 android:translationX="10dp"
-                android:translationY="-8dp" />
+                android:translationY="-6dp" />
         </LinearLayout>
 
         <LinearLayout

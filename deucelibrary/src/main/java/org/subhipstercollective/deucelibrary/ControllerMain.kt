@@ -25,9 +25,6 @@ import android.view.View
  * Created by mqduck on 11/6/17.
  */
 class ControllerMain(val activityMain: ActivityMain) {
-    private var match = Match(0, 0, 0, 0, 0, Player.PLAYER1, false, this)
-    var serving = Serving.PLAYER1_LEFT
-
     var winMinimumMatch = 0
     var winMinimumSet = WIN_MINIMUM_SET
     var winMarginSet = WIN_MARGIN_SET
@@ -36,19 +33,24 @@ class ControllerMain(val activityMain: ActivityMain) {
     var winMinimumGameTiebreak = WIN_MINIMUM_GAME_TIEBREAK
     var winMarginGameTiebreak = WIN_MARGIN_GAME_TIEBREAK
 
+    private var match = Match(0, 0, 0, 0, 0, this)
+    var serving = Serving.PLAYER1_LEFT
+
+    var advantage = false
+    var doubles = true
+    var startingServer = Player.PLAYER1
+
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame
     private val scoreLog = ArrayList<Player>()
 
-    fun addMatch(startingServer: Player, advantage: Boolean) {
+    fun addMatch() {
         match = Match(
                 winMinimumMatch,
                 winMinimumSet,
                 winMarginSet,
                 winMinimumGame,
                 winMarginGame,
-                startingServer,
-                advantage,
                 this)
         serving = if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
         activityMain.buttonScoreP1.isEnabled = true
@@ -62,10 +64,105 @@ class ControllerMain(val activityMain: ActivityMain) {
         activityMain.textScoreP1.text = scores.player1
         activityMain.textScoreP2.text = scores.player2
 
-        activityMain.imageBallP2Left.visibility = if (serving === Serving.PLAYER2_LEFT) View.VISIBLE else View.INVISIBLE
-        activityMain.imageBallP2Right.visibility = if (serving === Serving.PLAYER2_RIGHT) View.VISIBLE else View.INVISIBLE
-        activityMain.imageBallP1Left.visibility = if (serving === Serving.PLAYER1_LEFT) View.VISIBLE else View.INVISIBLE
-        activityMain.imageBallP1Right.visibility = if (serving === Serving.PLAYER1_RIGHT) View.VISIBLE else View.INVISIBLE
+//        activityMain.imageBallP2Left.visibility = if (serving === Serving.PLAYER2_LEFT) View.VISIBLE else View.INVISIBLE
+//        activityMain.imageBallP2Right.visibility = if (serving === Serving.PLAYER2_RIGHT) View.VISIBLE else View.INVISIBLE
+//        activityMain.imageBallP1Left.visibility = if (serving === Serving.PLAYER1_LEFT) View.VISIBLE else View.INVISIBLE
+//        activityMain.imageBallP1Right.visibility = if (serving === Serving.PLAYER1_RIGHT) View.VISIBLE else View.INVISIBLE
+
+        when (serving) {
+            Serving.PLAYER1_LEFT -> {
+                if (doubles) {
+                    activityMain.imageBallP1Left.setImageResource(R.drawable.ball_green)
+                    activityMain.imageBallP1Right.setImageResource(R.drawable.ball_darkorange)
+                    activityMain.imageBallP1Left.visibility = View.VISIBLE
+                    activityMain.imageBallP1Right.visibility = View.VISIBLE
+                    activityMain.imageBallP2Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Right.visibility = View.INVISIBLE
+                } else {
+                    activityMain.imageBallP1Left.visibility = View.VISIBLE
+                    activityMain.imageBallP1Right.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Right.visibility = View.INVISIBLE
+                }
+            }
+            Serving.PLAYER1_RIGHT -> {
+                if (doubles) {
+                    activityMain.imageBallP1Left.setImageResource(R.drawable.ball_darkorange)
+                    activityMain.imageBallP1Right.setImageResource(R.drawable.ball_green)
+                    activityMain.imageBallP1Left.visibility = View.VISIBLE
+                    activityMain.imageBallP1Right.visibility = View.VISIBLE
+                    activityMain.imageBallP2Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Right.visibility = View.INVISIBLE
+                } else {
+                    activityMain.imageBallP1Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP1Right.visibility = View.VISIBLE
+                    activityMain.imageBallP2Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Right.visibility = View.INVISIBLE
+                }
+            }
+            Serving.PLAYER2_LEFT -> {
+                if (doubles) {
+                    activityMain.imageBallP2Left.setImageResource(R.drawable.ball_green)
+                    activityMain.imageBallP2Right.setImageResource(R.drawable.ball_darkorange)
+                    activityMain.imageBallP1Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP1Right.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Left.visibility = View.VISIBLE
+                    activityMain.imageBallP2Right.visibility = View.VISIBLE
+                } else {
+                    activityMain.imageBallP1Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP1Right.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Left.visibility = View.VISIBLE
+                    activityMain.imageBallP2Right.visibility = View.INVISIBLE
+                }
+            }
+            Serving.PLAYER2_RIGHT -> {
+                if (doubles) {
+                    activityMain.imageBallP2Left.setImageResource(R.drawable.ball_darkorange)
+                    activityMain.imageBallP2Right.setImageResource(R.drawable.ball_green)
+                    activityMain.imageBallP1Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP1Right.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Left.visibility = View.VISIBLE
+                    activityMain.imageBallP2Right.visibility = View.VISIBLE
+                } else {
+                    activityMain.imageBallP1Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP1Right.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Left.visibility = View.INVISIBLE
+                    activityMain.imageBallP2Right.visibility = View.VISIBLE
+                }
+            }
+            Serving.PLAYER3_LEFT -> {
+                activityMain.imageBallP1Left.setImageResource(R.drawable.ball_orange)
+                activityMain.imageBallP1Right.setImageResource(R.drawable.ball_darkgreen)
+                activityMain.imageBallP1Left.visibility = View.VISIBLE
+                activityMain.imageBallP1Right.visibility = View.VISIBLE
+                activityMain.imageBallP2Left.visibility = View.INVISIBLE
+                activityMain.imageBallP2Right.visibility = View.INVISIBLE
+            }
+            Serving.PLAYER3_RIGHT -> {
+                activityMain.imageBallP1Left.setImageResource(R.drawable.ball_darkgreen)
+                activityMain.imageBallP1Right.setImageResource(R.drawable.ball_orange)
+                activityMain.imageBallP1Left.visibility = View.VISIBLE
+                activityMain.imageBallP1Right.visibility = View.VISIBLE
+                activityMain.imageBallP2Left.visibility = View.INVISIBLE
+                activityMain.imageBallP2Right.visibility = View.INVISIBLE
+            }
+            Serving.PLAYER4_LEFT -> {
+                activityMain.imageBallP2Left.setImageResource(R.drawable.ball_orange)
+                activityMain.imageBallP2Right.setImageResource(R.drawable.ball_darkgreen)
+                activityMain.imageBallP1Left.visibility = View.INVISIBLE
+                activityMain.imageBallP1Right.visibility = View.INVISIBLE
+                activityMain.imageBallP2Left.visibility = View.VISIBLE
+                activityMain.imageBallP2Right.visibility = View.VISIBLE
+            }
+            Serving.PLAYER4_RIGHT -> {
+                activityMain.imageBallP2Left.setImageResource(R.drawable.ball_darkgreen)
+                activityMain.imageBallP2Right.setImageResource(R.drawable.ball_orange)
+                activityMain.imageBallP1Left.visibility = View.INVISIBLE
+                activityMain.imageBallP1Right.visibility = View.INVISIBLE
+                activityMain.imageBallP2Left.visibility = View.VISIBLE
+                activityMain.imageBallP2Right.visibility = View.VISIBLE
+            }
+        }
 
         var textScoresMatchP1 = ""
         var textScoreMatchP2 = ""
@@ -93,7 +190,7 @@ class ControllerMain(val activityMain: ActivityMain) {
                 }
             } else {
                 // Game is over
-                if (!match.advantage && currentSet.scoreP1 == currentSet.scoreP2 && currentSet.scoreP1 == winMinimumSet - 1) {
+                if (advantage && currentSet.scoreP1 == currentSet.scoreP2 && currentSet.scoreP1 == winMinimumSet - 1) {
                     currentSet.addNewGame(winMinimumGameTiebreak, winMarginGameTiebreak, true)
                 } else {
                     currentSet.addNewGame()
@@ -101,8 +198,10 @@ class ControllerMain(val activityMain: ActivityMain) {
             }
 
             serving = when (serving) {
-                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> Serving.PLAYER2_RIGHT
-                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> Serving.PLAYER1_RIGHT
+                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER2_RIGHT else Serving.PLAYER4_RIGHT
+                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Player.PLAYER1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
+                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
             }
         } else {
             serving = when (serving) {
@@ -110,6 +209,10 @@ class ControllerMain(val activityMain: ActivityMain) {
                 Serving.PLAYER1_RIGHT -> Serving.PLAYER1_LEFT
                 Serving.PLAYER2_LEFT -> Serving.PLAYER2_RIGHT
                 Serving.PLAYER2_RIGHT -> Serving.PLAYER2_LEFT
+                Serving.PLAYER3_LEFT -> Serving.PLAYER3_RIGHT
+                Serving.PLAYER3_RIGHT -> Serving.PLAYER3_LEFT
+                Serving.PLAYER4_LEFT -> Serving.PLAYER4_RIGHT
+                Serving.PLAYER4_RIGHT -> Serving.PLAYER4_LEFT
             }
         }
 
@@ -122,7 +225,7 @@ class ControllerMain(val activityMain: ActivityMain) {
     fun undo() {
         if (scoreLog.size != 0) {
             scoreLog.removeAt(scoreLog.size - 1)
-            addMatch(match.startingServer, match.advantage)
+            addMatch()
 
             val numScores = scoreLog.size
             for (i in 0 until numScores) {

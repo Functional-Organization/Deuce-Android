@@ -32,12 +32,12 @@ class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMa
                 mScore.winner == Player.PLAYER2 -> ScoreStrings("", "\uD83C\uDFC6")
                 mScore.scoreP1 < 3 || mScore.scoreP2 < 3 -> ScoreStrings(scoreMap[mScore.scoreP1], scoreMap[mScore.scoreP2])
                 mScore.scoreP1 > mScore.scoreP2 -> when (controller.serving) {
-                    Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> ScoreStrings(strAdIn, "")
-                    Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> ScoreStrings(strAdOut, "")
+                    Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> ScoreStrings(strAdIn, "")
+                    Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> ScoreStrings(strAdOut, "")
                 }
                 mScore.scoreP1 < mScore.scoreP2 -> when (controller.serving) {
-                    Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> ScoreStrings("", strAdOut)
-                    Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> ScoreStrings("", strAdIn)
+                    Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> ScoreStrings("", strAdOut)
+                    Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> ScoreStrings("", strAdIn)
                 }
                 else -> ScoreStrings(strDeuce, strDeuce)
             }
