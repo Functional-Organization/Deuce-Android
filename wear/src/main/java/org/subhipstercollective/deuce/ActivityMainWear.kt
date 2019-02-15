@@ -86,8 +86,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
         button_score_p2.setOnClickListener { controller.score(Player.PLAYER2) }
 
         startActivityForResult(Intent(this, ActivityAddMatch::class.java), R.id.code_request_add_match)
-        //controller.addMatch()
-
+        4
         controller.updateDisplay()
     }
 
@@ -98,9 +97,8 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
             R.id.code_request_add_match -> {
                 if (data == null)
                     return
-                controller.winMinimumMatch = data.getIntExtra(Key.INTENT_NUM_SETS, 1)
+                controller.winMinimumMatch = data.getIntExtra(Key.INTENT_NUM_SETS, 0)
                 val advantage = data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, false)
-                controller.winMarginSet = if (advantage) 2 else 1
                 controller.addMatch(data.getSerializableExtra(Key.INTENT_SERVER) as Player, advantage)
             }
         }

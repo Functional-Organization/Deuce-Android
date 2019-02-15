@@ -34,7 +34,7 @@ class SeekBarSets : SeekBar {
     @RequiresApi(21)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    val progressString
+    val progressString: String
         get() = when (progress) {
             0    -> context.getString(R.string.best_of_1)
             1    -> context.getString(R.string.best_of_3)

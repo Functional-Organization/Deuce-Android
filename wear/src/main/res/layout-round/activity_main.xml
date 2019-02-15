@@ -43,7 +43,7 @@
             android:layout_marginBottom="-2dp"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
-            android:textSize="30sp"
+            android:textSize="36dp"
             android:theme="@style/ScoreButton"
             tools:text="Love" />
 
@@ -57,7 +57,7 @@
             android:layout_marginBottom="-7dp"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
-            android:textSize="30sp"
+            android:textSize="36dp"
             android:theme="@style/ScoreButton"
             tools:text="Love" />
     </LinearLayout>
@@ -79,8 +79,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
-                android:translationY="10dp" />
+                android:src="@drawable/ball_green"
+                android:translationX="-10dp"
+                android:translationY="-8dp" />
 
             <ImageView
                 android:id="@+id/image_ball_top_right"
@@ -88,8 +89,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
-                android:translationY="10dp" />
+                android:src="@drawable/ball_green"
+                android:translationX="10dp"
+                android:translationY="-8dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -104,8 +106,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
-                android:translationY="-10dp" />
+                android:src="@drawable/ball_green"
+                android:translationX="-10dp"
+                android:translationY="8dp" />
 
             <ImageView
                 android:id="@+id/image_ball_bottom_right"
@@ -113,10 +116,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
-                android:translationY="-10dp" />
+                android:src="@drawable/ball_green"
+                android:translationX="10dp"
+                android:translationY="8dp" />
         </LinearLayout>
-        x
+
     </LinearLayout>
 
     <LinearLayout
@@ -135,6 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
                 android:textColor="#80C6FF"
+                android:textSize="24dp"
                 android:translationY="-10dp"
                 tools:text="1" />
         </FrameLayout>
@@ -150,6 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
                 android:textColor="#80C6FF"
+                android:textSize="24dp"
                 android:translationY="10dp"
                 tools:text="2" />
         </FrameLayout>

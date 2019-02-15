@@ -28,13 +28,13 @@ class ControllerMain(val activityMain: ActivityMain) {
     private var match = Match(0, 0, 0, 0, 0, Player.PLAYER1, false, this)
     var serving = Serving.PLAYER1_LEFT
 
-    var winMinimumMatch = 7
-    var winMinimumSet = 7
-    var winMarginSet = 1
-    var winMinimumGame = 4
-    var winMarginGame = 2
-    var winMinimumGameTiebreak = 7
-    var winMarginGameTiebreak = 1
+    var winMinimumMatch = 0
+    var winMinimumSet = WIN_MINIMUM_SET
+    var winMarginSet = WIN_MARGIN_SET
+    var winMinimumGame = WIN_MINIMUM_GAME
+    var winMarginGame = WIN_MARGIN_GAME
+    var winMinimumGameTiebreak = WIN_MINIMUM_GAME_TIEBREAK
+    var winMarginGameTiebreak = WIN_MARGIN_GAME_TIEBREAK
 
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame

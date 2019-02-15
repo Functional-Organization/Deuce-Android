@@ -39,7 +39,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
-            android:textSize="30sp"
+            android:textSize="36dp"
             tools:text="Love" />
 
         <Button
@@ -48,7 +48,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#071F33"
-            android:textSize="30sp"
+            android:textSize="36dp"
             tools:text="Love" />
     </LinearLayout>
 
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
+                android:src="@drawable/ball_green"
                 android:translationY="10dp" />
 
             <ImageView
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
+                android:src="@drawable/ball_green"
                 android:translationY="10dp" />
         </LinearLayout>
 
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
+                android:src="@drawable/ball_green"
                 android:translationY="-10dp" />
 
             <ImageView
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
-                android:src="@drawable/ball"
+                android:src="@drawable/ball_green"
                 android:translationY="-10dp" />
         </LinearLayout>
         x
@@ -123,6 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
                 android:textColor="#80C6FF"
+                android:textSize="24dp"
                 android:translationY="-10dp"
                 tools:text="1" />
         </FrameLayout>
@@ -138,6 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
                 android:textColor="#80C6FF"
+                android:textSize="24dp"
                 android:translationY="10dp"
                 tools:text="2" />
         </FrameLayout>
