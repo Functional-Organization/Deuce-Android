@@ -29,15 +29,16 @@ interface ActivityMain {
     var buttonScoreP2: Button
     var textScoreP1: TextView
     var textScoreP2: TextView
-    var imageBallP1LeftServing: ImageView
-    var imageBallP1RightServing: ImageView
-    var imageBallP2LeftServing: ImageView
-    var imageBallP2RightServing: ImageView
-    var imageBallP1LeftNotServing: ImageView
-    var imageBallP1RightNotServing: ImageView
-    var imageBallP2LeftNotServing: ImageView
-    var imageBallP2RightNotServing: ImageView
+    var imageBallServingT1: ImageView
+    var imageBallNotservingT1: ImageView
+    var imageBallServingT2: ImageView
+    var imageBallNotservingT2: ImageView
     var textScoresMatchP1: TextView
     var textScoresMatchP2: TextView
     val context: Context
+
+    var posXBallLeftT1: Float
+    var posXBallRightT1: Float
+    var posXBallLeftT2: Float
+    var posXBallRightT2: Float
 }

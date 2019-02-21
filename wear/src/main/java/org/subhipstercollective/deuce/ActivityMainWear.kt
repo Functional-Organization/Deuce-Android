@@ -38,16 +38,24 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
     override lateinit var buttonScoreP2: Button
     override lateinit var textScoreP1: TextView
     override lateinit var textScoreP2: TextView
-    override lateinit var imageBallP2LeftServing: ImageView
-    override lateinit var imageBallP2RightServing: ImageView
-    override lateinit var imageBallP1LeftServing: ImageView
-    override lateinit var imageBallP1RightServing: ImageView
-    override lateinit var imageBallP2LeftNotServing: ImageView
-    override lateinit var imageBallP2RightNotServing: ImageView
-    override lateinit var imageBallP1LeftNotServing: ImageView
-    override lateinit var imageBallP1RightNotServing: ImageView
+    //    override lateinit var imageBallP2LeftServing: ImageView
+//    override lateinit var imageBallP2RightServing: ImageView
+//    override lateinit var imageBallP1LeftServing: ImageView
+//    override lateinit var imageBallP1RightServing: ImageView
+//    override lateinit var imageBallP2LeftNotServing: ImageView
+//    override lateinit var imageBallP2RightNotServing: ImageView
+//    override lateinit var imageBallP1LeftNotServing: ImageView
+//    override lateinit var imageBallP1RightNotServing: ImageView
+    override lateinit var imageBallServingT1: ImageView
+    override lateinit var imageBallNotservingT1: ImageView
+    override lateinit var imageBallServingT2: ImageView
+    override lateinit var imageBallNotservingT2: ImageView
     override lateinit var textScoresMatchP1: TextView
     override lateinit var textScoresMatchP2: TextView
+    override var posXBallLeftT1 = 0f
+    override var posXBallRightT1 = 0f
+    override var posXBallLeftT2 = 0f
+    override var posXBallRightT2 = 0f
     override val context = this
 
     val controller = ControllerMain(this)
@@ -66,18 +74,16 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
         textScoreP1 = button_score_p1
         textScoreP2 = button_score_p2
 
-        imageBallP1LeftServing = image_ball_bottom_left_serving
-        imageBallP1RightServing = image_ball_bottom_right_serving
-        imageBallP1LeftNotServing = image_ball_bottom_left_notserving
-        imageBallP1RightNotServing = image_ball_bottom_right_notserving
-
-        imageBallP2LeftServing = image_ball_top_right_serving
-        imageBallP2RightServing = image_ball_top_left_serving
-        imageBallP2LeftNotServing = image_ball_top_right_notserving
-        imageBallP2RightNotServing = image_ball_top_left_notserving
+        imageBallServingT1 = ball_serving_t1
+        imageBallNotservingT1 = ball_notserving_t1
+        imageBallServingT2 = ball_serving_t2
+        imageBallNotservingT2 = ball_notserving_t2
 
         textScoresMatchP1 = text_scores_match_p1
         textScoresMatchP2 = text_scores_match_p2
+
+        posXBallLeftT1 = ball_notserving_t1.x
+        posXBallRightT2 = posXBallLeftT1
 
         Game.init(this)
 
@@ -97,6 +103,13 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
         button_score_p2.setOnClickListener { controller.score(Player.PLAYER2) }
 
         startActivityForResult(Intent(this, ActivityAddMatch::class.java), R.id.code_request_add_match)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+
+        posXBallRightT1 = layout_main.width - ball_notserving_t1.x - ball_notserving_t1.width
+        posXBallLeftT2 = posXBallRightT1
 
         controller.updateDisplay()
     }

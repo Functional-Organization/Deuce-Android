@@ -21,6 +21,7 @@
 
 <android.support.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
@@ -40,8 +41,8 @@
             android:layout_weight="1"
             android:backgroundTint="#071F33"
             android:textSize="36dp"
-            tools:text="Love"
-            tools:ignore="SpUsage" />
+            tools:ignore="SpUsage"
+            tools:text="Love" />
 
         <Button
             android:id="@+id/button_score_p1"
@@ -50,126 +51,8 @@
             android:layout_weight="1"
             android:backgroundTint="#071F33"
             android:textSize="36dp"
-            tools:text="Love"
-            tools:ignore="SpUsage" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/image_ball_top_left_serving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ball_orange"
-                android:translationY="10dp"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/image_ball_top_right_serving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ball_orange"
-                android:translationY="10dp"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/image_ball_bottom_left_serving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:src="@drawable/ball_green"
-                android:translationY="-10dp"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/image_ball_bottom_right_serving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:src="@drawable/ball_green"
-                android:translationY="-10dp"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/image_ball_top_left_notserving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:src="@drawable/ball_darkgreen"
-                android:translationY="-10dp"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/image_ball_top_right_notserving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:src="@drawable/ball_darkgreen"
-                android:translationY="-10dp"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/image_ball_bottom_left_notserving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ball_darkorange"
-                android:translationY="10dp"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/image_ball_bottom_right_notserving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ball_darkorange"
-                android:translationY="10dp"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
+            tools:ignore="SpUsage"
+            tools:text="Love" />
     </LinearLayout>
 
     <LinearLayout
@@ -190,8 +73,8 @@
                 android:textColor="#80C6FF"
                 android:textSize="24dp"
                 android:translationY="-10dp"
-                tools:text="1"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage"
+                tools:text="1" />
         </FrameLayout>
 
         <FrameLayout
@@ -207,10 +90,39 @@
                 android:textColor="#80C6FF"
                 android:textSize="24dp"
                 android:translationY="10dp"
-                tools:text="2"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage"
+                tools:text="2" />
         </FrameLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ball_notserving_t2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ball_darkorange" />
+
+        <ImageView
+            android:id="@+id/ball_notserving_t1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ball_darkorange" />
+
+        <ImageView
+            android:id="@+id/ball_serving_t2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ball_green" />
+
+        <ImageView
+            android:id="@+id/ball_serving_t1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ball_green" />
+    </FrameLayout>
 
 </android.support.wear.widget.BoxInsetLayout>
 
