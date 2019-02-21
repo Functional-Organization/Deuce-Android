@@ -65,6 +65,23 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
+            <ImageView
+                android:id="@+id/ball_serving_t2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ball_green"
+                android:translationX="15dp"
+                android:translationY="15dp" />
+
+            <ImageView
+                android:id="@+id/ball_notserving_t2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:src="@drawable/ball_darkorange"
+                android:translationX="15dp"
+                android:translationY="-15dp" />
+
             <TextView
                 android:id="@+id/text_scores_match_p2"
                 android:layout_width="wrap_content"
@@ -81,6 +98,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/ball_serving_t1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:src="@drawable/ball_green"
+                android:translationX="15dp"
+                android:translationY="-15dp" />
+
+            <ImageView
+                android:id="@+id/ball_notserving_t1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ball_darkorange"
+                android:translationX="15dp"
+                android:translationY="15dp" />
 
             <TextView
                 android:id="@+id/text_scores_match_p1"
@@ -99,29 +133,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/ball_notserving_t2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ball_darkorange" />
-
-        <ImageView
-            android:id="@+id/ball_notserving_t1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ball_darkorange" />
-
-        <ImageView
-            android:id="@+id/ball_serving_t2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ball_green" />
-
-        <ImageView
-            android:id="@+id/ball_serving_t1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ball_green" />
     </FrameLayout>
 
 </android.support.wear.widget.BoxInsetLayout>
