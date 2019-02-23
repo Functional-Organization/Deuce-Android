@@ -23,7 +23,7 @@ package org.subhipstercollective.deucelibrary
  * Created by mqduck on 10/31/17.
  */
 class Set(val winMinimum: Int, val winMargin: Int,
-          val winMinimumGame: Int, val winMarginGame: Int, private val controller: ControllerMain) {
+          val winMinimumGame: Int, val winMarginGame: Int, private val controller: ControllerMain, val tiebreak: Boolean) {
     var games = ArrayList<Game>()
     private var mScore = Score(winMinimum, winMargin)
 
@@ -33,8 +33,14 @@ class Set(val winMinimum: Int, val winMargin: Int,
 
     fun score(player: Player = Player.NONE) = mScore.score(player)
 
-    fun addNewGame() = games.add(Game(winMinimumGame, winMarginGame, controller))
-    fun addNewGame(winMinimumGame: Int, winMarginGame: Int, tiebreak: Boolean) = games.add(Game(winMinimumGame, winMarginGame, controller, tiebreak))
+    fun addNewGame() {
+        if (tiebreak && mScore.scoreP1 == winMinimum && mScore.scoreP2 == winMinimum) {
+            mScore.winMargin = 1
+            games.add(Game(winMinimumGame, winMarginGame, controller, true))
+        } else {
+            games.add(Game(winMinimumGame, winMarginGame, controller, false))
+        }
+    }
 
     fun getScore(player: Player) = mScore.getScore(player)
 

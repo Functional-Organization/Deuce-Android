@@ -38,12 +38,12 @@ class ControllerMain(val activityMain: ActivityMain) {
 
     private var nextAnimationDuration = 0L
 
-    private var match = Match(0, 0, 0, 0, 0, this)
-    var serving = Serving.PLAYER1_LEFT
-
     var tiebreak = false
     var doubles = true
     var startingServer = Player.PLAYER1
+
+    private var match = Match(0, 0, 0, 0, 0, this, tiebreak)
+    var serving = Serving.PLAYER1_LEFT
 
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame
@@ -56,7 +56,8 @@ class ControllerMain(val activityMain: ActivityMain) {
                 winMarginSet,
                 winMinimumGame,
                 winMarginGame,
-                this)
+                this,
+                tiebreak)
         serving = if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
 
         activityMain.buttonScoreP1.isEnabled = true
@@ -204,11 +205,7 @@ class ControllerMain(val activityMain: ActivityMain) {
                 }
             } else {
                 // Game is over
-                if (tiebreak && currentSet.scoreP1 == currentSet.scoreP2 && currentSet.scoreP1 == winMinimumSet) {
-                    currentSet.addNewGame(winMinimumGameTiebreak, winMarginGameTiebreak, true)
-                } else {
-                    currentSet.addNewGame()
-                }
+                currentSet.addNewGame()
             }
 
             nextAnimationDuration = 0
