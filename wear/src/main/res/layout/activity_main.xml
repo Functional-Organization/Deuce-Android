@@ -58,7 +58,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="ContentDescription">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -128,12 +129,6 @@
                 tools:text="2" />
         </FrameLayout>
     </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </FrameLayout>
 
 </android.support.wear.widget.BoxInsetLayout>
 

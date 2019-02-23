@@ -41,7 +41,7 @@ class ControllerMain(val activityMain: ActivityMain) {
     private var match = Match(0, 0, 0, 0, 0, this)
     var serving = Serving.PLAYER1_LEFT
 
-    var advantage = false
+    var tiebreak = false
     var doubles = true
     var startingServer = Player.PLAYER1
 
@@ -204,7 +204,7 @@ class ControllerMain(val activityMain: ActivityMain) {
                 }
             } else {
                 // Game is over
-                if (advantage && currentSet.scoreP1 == currentSet.scoreP2 && currentSet.scoreP1 == winMinimumSet - 1) {
+                if (tiebreak && currentSet.scoreP1 == currentSet.scoreP2 && currentSet.scoreP1 == winMinimumSet) {
                     currentSet.addNewGame(winMinimumGameTiebreak, winMarginGameTiebreak, true)
                 } else {
                     currentSet.addNewGame()

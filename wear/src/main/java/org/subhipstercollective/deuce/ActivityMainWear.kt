@@ -123,7 +123,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
                     return
                 controller.winMinimumMatch = data.getIntExtra(Key.INTENT_NUM_SETS, 0)
                 controller.startingServer = data.getSerializableExtra(Key.INTENT_SERVER) as Player
-                controller.advantage = data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, false)
+                controller.tiebreak = data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)
                 controller.addMatch()
             }
         }
