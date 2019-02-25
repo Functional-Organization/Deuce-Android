@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Jeffrey Thomas Piercy
+ * Copyright (C) 2019 Jeffrey Thomas Piercy
  *
  * This file is part of Deuce-Android.
  *
@@ -23,9 +23,6 @@ import android.animation.ObjectAnimator
 import android.view.View
 import android.widget.ImageView
 
-/**
- * Created by mqduck on 11/6/17.
- */
 class ControllerMain(val activityMain: ActivityMain) {
     var winMinimumMatch = 0
     var winMinimumSet = WIN_MINIMUM_SET
@@ -206,6 +203,15 @@ class ControllerMain(val activityMain: ActivityMain) {
             } else {
                 // Game is over
                 currentSet.addNewGame()
+                if (currentGame.tiebreak) {
+                    serving = when (serving) {
+                        Serving.PLAYER1_RIGHT -> Serving.PLAYER1_LEFT
+                        Serving.PLAYER2_RIGHT -> Serving.PLAYER2_LEFT
+                        Serving.PLAYER3_RIGHT -> Serving.PLAYER3_LEFT
+                        Serving.PLAYER4_RIGHT -> Serving.PLAYER4_LEFT
+                        else -> Serving.PLAYER1_RIGHT
+                    }
+                }
             }
 
             nextAnimationDuration = 0
@@ -215,6 +221,13 @@ class ControllerMain(val activityMain: ActivityMain) {
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Player.PLAYER1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
                 Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
                 Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
+            }
+        } else if (currentGame.tiebreak && (currentGame.getScore(Player.PLAYER1) + currentGame.getScore(Player.PLAYER2)) % 2 == 1) {
+            serving = when (serving) {
+                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (doubles && startingServer == Player.PLAYER2) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Player.PLAYER1) Serving.PLAYER3_LEFT else Serving.PLAYER1_LEFT
+                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER1_LEFT else Serving.PLAYER3_LEFT
             }
         } else {
             serving = when (serving) {

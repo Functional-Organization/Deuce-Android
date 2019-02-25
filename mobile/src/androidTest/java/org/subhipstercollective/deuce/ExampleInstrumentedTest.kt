@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Jeffrey Thomas Piercy
+ * Copyright (C) 2019 Jeffrey Thomas Piercy
  *
  * This file is part of Deuce-Android.
  *
