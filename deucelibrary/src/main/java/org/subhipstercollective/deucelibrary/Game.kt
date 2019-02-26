@@ -38,7 +38,7 @@ class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMa
 
     private val mScore = Score(winMinimum, winMargin)
 
-    fun score(team: Team = Team.NONE) = mScore.score(team)
+    fun score(team: Team) = mScore.score(team)
 
     fun getScore(team: Team) = mScore.getScore(team)
 

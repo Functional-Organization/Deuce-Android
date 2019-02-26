@@ -34,7 +34,7 @@ class Match(val winMinimum: Int,
         sets.add(Set(winMinimumSet, winMarginSet, winMinimumGame, winMarginGame, controller, tiebreak))
     }
 
-    fun score(team: Team = Team.NONE) = mScore.score(team)
+    fun score(team: Team) = mScore.score(team)
 
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame

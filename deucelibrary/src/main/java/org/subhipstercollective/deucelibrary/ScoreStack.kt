@@ -83,7 +83,12 @@ class ScoreStack : List<Team> {
         return true
     }
 
-    override fun get(index: Int) = boolToPlayer(bitSet[index])
+    override fun get(index: Int): Team {
+        if (index < 0 || index >= size) {
+            throw IndexOutOfBoundsException()
+        }
+        return boolToPlayer(bitSet[index])
+    }
 
     override fun indexOf(element: Team): Int {
         val bool = playerToBool(element)

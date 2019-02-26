@@ -23,9 +23,14 @@ package org.subhipstercollective.deucelibrary
  * Created by mqduck on 10/31/17.
  */
 enum class Team {
+    TEAM1, TEAM2
+}
+
+enum class Winner {
     NONE, TEAM1, TEAM2
 }
 
+// If playing doubles, player 3 is teamed with player 1 and player 4 is teamed with player 2.
 enum class Serving {
     PLAYER1_LEFT,
     PLAYER1_RIGHT,

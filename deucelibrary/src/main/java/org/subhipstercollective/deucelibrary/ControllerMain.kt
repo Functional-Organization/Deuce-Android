@@ -188,11 +188,11 @@ class ControllerMain(val activityMain: ActivityMain) {
 
     fun score(team: Team, updateLog: Boolean = true) {
         val winnerGame = currentGame.score(team)
-        if (winnerGame != Team.NONE) {
-            val winnerSet = currentSet.score(winnerGame)
-            if (winnerSet != Team.NONE) {
-                val winnerMatch = match.score(winnerGame)
-                if (winnerMatch != Team.NONE) {
+        if (winnerGame != Winner.NONE) {
+            val winnerSet = currentSet.score(team)
+            if (winnerSet != Winner.NONE) {
+                val winnerMatch = match.score(team)
+                if (winnerMatch != Winner.NONE) {
                     // Match is over
                     activityMain.buttonScoreP1.isEnabled = false
                     activityMain.buttonScoreP2.isEnabled = false
