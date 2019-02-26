@@ -99,8 +99,8 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
             }
         })
 
-        button_score_p1.setOnClickListener { controller.score(Player.PLAYER1) }
-        button_score_p2.setOnClickListener { controller.score(Player.PLAYER2) }
+        button_score_p1.setOnClickListener { controller.score(Team.TEAM1) }
+        button_score_p2.setOnClickListener { controller.score(Team.TEAM2) }
 
         startActivityForResult(Intent(this, ActivityAddMatch::class.java), R.id.code_request_add_match)
     }
@@ -122,7 +122,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
                 if (data == null)
                     return
                 controller.winMinimumMatch = data.getIntExtra(Key.INTENT_NUM_SETS, 0)
-                controller.startingServer = data.getSerializableExtra(Key.INTENT_SERVER) as Player
+                controller.startingServer = data.getSerializableExtra(Key.INTENT_SERVER) as Team
                 controller.tiebreak = data.getBooleanExtra(Key.INTENT_ADVANTAGE_SET, true)
                 controller.addMatch()
             }

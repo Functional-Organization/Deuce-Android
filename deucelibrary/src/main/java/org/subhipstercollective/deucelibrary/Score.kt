@@ -46,30 +46,30 @@ class Score(winMinimum: Int, winMargin: Int) {
             updateWinner()
         }
 
-    var winner = Player.NONE
+    var winner = Team.NONE
         private set
 
     private fun updateWinner() {
         winner = when {
-            scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin -> Player.PLAYER1
-            scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin -> Player.PLAYER2
-            else -> Player.NONE
+            scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin -> Team.TEAM1
+            scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin -> Team.TEAM2
+            else -> Team.NONE
         }
     }
 
-    fun score(player: Player = Player.NONE): Player {
-        when (player) {
-            Player.PLAYER1 -> ++scoreP1
-            Player.PLAYER2 -> ++scoreP2
+    fun score(team: Team = Team.NONE): Team {
+        when (team) {
+            Team.TEAM1 -> ++scoreP1
+            Team.TEAM2 -> ++scoreP2
             else -> {
             }
         }
         return winner
     }
 
-    fun getScore(player: Player) = when (player) {
-        Player.NONE -> -1
-        Player.PLAYER1 -> scoreP1
-        Player.PLAYER2 -> scoreP2
+    fun getScore(team: Team) = when (team) {
+        Team.NONE -> -1
+        Team.TEAM1 -> scoreP1
+        Team.TEAM2 -> scoreP2
     }
 }

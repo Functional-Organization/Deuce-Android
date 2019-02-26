@@ -29,7 +29,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_activity_main.*
 import org.subhipstercollective.deucelibrary.ControllerMain
-import org.subhipstercollective.deucelibrary.Player
+import org.subhipstercollective.deucelibrary.Team
 
 class ActivityMain : AppCompatActivity()
 {
@@ -48,8 +48,8 @@ class ActivityMain : AppCompatActivity()
 
         val controller = ControllerMain()
 
-        button_score_p1.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER1) })
-        button_score_p2.setOnClickListener(View.OnClickListener { controller.score(Player.PLAYER2) })
+        button_score_p1.setOnClickListener(View.OnClickListener { controller.score(Team.TEAM1) })
+        button_score_p2.setOnClickListener(View.OnClickListener { controller.score(Team.TEAM2) })
         controller.displayHeading = text_heading
         controller.displayScoreP1 = text_score_p1
         controller.displayScoreP2 = text_score_p2

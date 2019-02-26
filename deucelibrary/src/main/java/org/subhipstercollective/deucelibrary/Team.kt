@@ -22,8 +22,8 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-enum class Player {
-    NONE, PLAYER1, PLAYER2
+enum class Team {
+    NONE, TEAM1, TEAM2
 }
 
 enum class Serving {

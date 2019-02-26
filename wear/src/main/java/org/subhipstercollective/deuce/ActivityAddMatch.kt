@@ -26,7 +26,7 @@ import android.os.Bundle
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_add_match.*
 import org.subhipstercollective.deucelibrary.Key
-import org.subhipstercollective.deucelibrary.Player
+import org.subhipstercollective.deucelibrary.Team
 import kotlin.random.Random
 
 class ActivityAddMatch : Activity() {
@@ -59,9 +59,9 @@ class ActivityAddMatch : Activity() {
             result.putExtra(
                 Key.INTENT_SERVER,
                     if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0))
-                        Player.PLAYER1
+                        Team.TEAM1
                 else
-                        Player.PLAYER2
+                        Team.TEAM2
             )
 //            result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
             setResult(R.id.code_request_add_match, result)

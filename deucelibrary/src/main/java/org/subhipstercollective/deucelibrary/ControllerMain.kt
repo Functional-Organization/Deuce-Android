@@ -37,7 +37,7 @@ class ControllerMain(val activityMain: ActivityMain) {
 
     var tiebreak = false
     var doubles = true
-    var startingServer = Player.PLAYER1
+    var startingServer = Team.TEAM1
 
     private var match = Match(0, 0, 0, 0, 0, this, tiebreak)
     var serving = Serving.PLAYER1_LEFT
@@ -55,7 +55,7 @@ class ControllerMain(val activityMain: ActivityMain) {
                 winMarginGame,
                 this,
                 tiebreak)
-        serving = if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
 
         activityMain.buttonScoreP1.isEnabled = true
         activityMain.buttonScoreP2.isEnabled = true
@@ -186,13 +186,13 @@ class ControllerMain(val activityMain: ActivityMain) {
         activityMain.textScoresMatchP2.text = textScoreMatchP2.trim()
     }
 
-    fun score(player: Player, updateLog: Boolean = true) {
-        val winnerGame = currentGame.score(player)
-        if (winnerGame != Player.NONE) {
+    fun score(team: Team, updateLog: Boolean = true) {
+        val winnerGame = currentGame.score(team)
+        if (winnerGame != Team.NONE) {
             val winnerSet = currentSet.score(winnerGame)
-            if (winnerSet != Player.NONE) {
+            if (winnerSet != Team.NONE) {
                 val winnerMatch = match.score(winnerGame)
-                if (winnerMatch != Player.NONE) {
+                if (winnerMatch != Team.NONE) {
                     // Match is over
                     activityMain.buttonScoreP1.isEnabled = false
                     activityMain.buttonScoreP2.isEnabled = false
@@ -217,17 +217,17 @@ class ControllerMain(val activityMain: ActivityMain) {
             nextAnimationDuration = 0
 
             serving = when (serving) {
-                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (doubles && startingServer == Player.PLAYER2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
-                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Player.PLAYER1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
-                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
-                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
+                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
+                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
             }
-        } else if (currentGame.tiebreak && (currentGame.getScore(Player.PLAYER1) + currentGame.getScore(Player.PLAYER2)) % 2 == 1) {
+        } else if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 2 == 1) {
             serving = when (serving) {
-                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (doubles && startingServer == Player.PLAYER2) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
-                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Player.PLAYER1) Serving.PLAYER3_LEFT else Serving.PLAYER1_LEFT
-                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
-                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Player.PLAYER1) Serving.PLAYER1_LEFT else Serving.PLAYER3_LEFT
+                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_LEFT else Serving.PLAYER1_LEFT
+                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER1_LEFT else Serving.PLAYER3_LEFT
             }
         } else {
             serving = when (serving) {
@@ -243,7 +243,7 @@ class ControllerMain(val activityMain: ActivityMain) {
         }
 
         if (updateLog) {
-            scoreLog.push(player)
+            scoreLog.push(team)
             updateDisplay()
         }
     }

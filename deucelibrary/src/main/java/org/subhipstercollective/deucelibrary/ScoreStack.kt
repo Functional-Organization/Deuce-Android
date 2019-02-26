@@ -21,27 +21,27 @@ package org.subhipstercollective.deucelibrary
 
 import java.util.*
 
-class ScoreStack : List<Player> {
+class ScoreStack : List<Team> {
     private val bitSet = BitSet()
 
-    private inner class Itr : Iterator<Player> {
+    private inner class Itr : Iterator<Team> {
         internal var cursor = 0
 
         override fun hasNext() = cursor < size
 
-        override fun next(): Player {
+        override fun next(): Team {
             val player = get(cursor)
             ++cursor
             return player
         }
     }
 
-    private inner class ListItr(internal var cursor: Int = 0) : ListIterator<Player> {
+    private inner class ListItr(internal var cursor: Int = 0) : ListIterator<Team> {
         override fun hasNext() = cursor < size
 
         override fun hasPrevious() = cursor != 0
 
-        override fun next(): Player {
+        override fun next(): Team {
             val player = get(cursor)
             ++cursor
             return player
@@ -49,7 +49,7 @@ class ScoreStack : List<Player> {
 
         override fun nextIndex() = cursor
 
-        override fun previous(): Player {
+        override fun previous(): Team {
             --cursor
             return get(cursor)
         }
@@ -58,13 +58,13 @@ class ScoreStack : List<Player> {
 
     }
 
-    private fun boolToPlayer(playerInt: Boolean) = if (playerInt) Player.PLAYER2 else Player.PLAYER1
-    private fun playerToBool(player: Player) = player != Player.PLAYER1
+    private fun boolToPlayer(playerInt: Boolean) = if (playerInt) Team.TEAM2 else Team.TEAM1
+    private fun playerToBool(team: Team) = team != Team.TEAM1
 
     override var size = 0
         private set
 
-    override fun contains(element: Player): Boolean {
+    override fun contains(element: Team): Boolean {
         val bool = playerToBool(element)
         for (i in 0 until size) {
             if (bool == bitSet[i]) {
@@ -74,7 +74,7 @@ class ScoreStack : List<Player> {
         return false
     }
 
-    override fun containsAll(elements: Collection<Player>): Boolean {
+    override fun containsAll(elements: Collection<Team>): Boolean {
         for (element in elements) {
             if (!contains(element)) {
                 return false
@@ -85,7 +85,7 @@ class ScoreStack : List<Player> {
 
     override fun get(index: Int) = boolToPlayer(bitSet[index])
 
-    override fun indexOf(element: Player): Int {
+    override fun indexOf(element: Team): Int {
         val bool = playerToBool(element)
         for (i in 0 until size) {
             if (bool == bitSet[i]) {
@@ -99,11 +99,11 @@ class ScoreStack : List<Player> {
         return bitSet.isEmpty
     }
 
-    override fun iterator(): Iterator<Player> {
+    override fun iterator(): Iterator<Team> {
         return Itr()
     }
 
-    override fun lastIndexOf(element: Player): Int {
+    override fun lastIndexOf(element: Team): Int {
         val bool = playerToBool(element)
         for (i in size - 1 downTo 0) {
             if (bool == bitSet[i]) {
@@ -113,20 +113,20 @@ class ScoreStack : List<Player> {
         return -1
     }
 
-    override fun listIterator(): ListIterator<Player> {
+    override fun listIterator(): ListIterator<Team> {
         return ListItr()
     }
 
-    override fun listIterator(index: Int): ListIterator<Player> {
+    override fun listIterator(index: Int): ListIterator<Team> {
         return ListItr(index)
     }
 
-    override fun subList(fromIndex: Int, toIndex: Int): List<Player> {
+    override fun subList(fromIndex: Int, toIndex: Int): List<Team> {
         //TODO: do
         return ScoreStack()
     }
 
-    fun push(element: Player) {
+    fun push(element: Team) {
         bitSet[size] = playerToBool(element)
         ++size
     }

@@ -31,7 +31,7 @@ class Set(val winMinimum: Int, val winMargin: Int,
         games.add(Game(winMinimumGame, winMarginGame, controller))
     }
 
-    fun score(player: Player = Player.NONE) = mScore.score(player)
+    fun score(team: Team = Team.NONE) = mScore.score(team)
 
     fun addNewGame() {
         if (tiebreak && mScore.scoreP1 == winMinimum && mScore.scoreP2 == winMinimum) {
@@ -42,7 +42,7 @@ class Set(val winMinimum: Int, val winMargin: Int,
         }
     }
 
-    fun getScore(player: Player) = mScore.getScore(player)
+    fun getScore(team: Team) = mScore.getScore(team)
 
     fun getScoreStrs() = ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
 
