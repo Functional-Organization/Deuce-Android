@@ -44,7 +44,7 @@ class ControllerMain(val activityMain: ActivityMain) {
 
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame
-    private val scoreLog = ArrayList<Player>()
+    private val scoreLog = ScoreStack()
 
     fun addMatch() {
         match = Match(
@@ -243,14 +243,14 @@ class ControllerMain(val activityMain: ActivityMain) {
         }
 
         if (updateLog) {
-            scoreLog.add(player)
+            scoreLog.push(player)
             updateDisplay()
         }
     }
 
     fun undo() {
         if (scoreLog.size != 0) {
-            scoreLog.removeAt(scoreLog.size - 1)
+            scoreLog.pop()
             addMatch()
 
             val numScores = scoreLog.size
