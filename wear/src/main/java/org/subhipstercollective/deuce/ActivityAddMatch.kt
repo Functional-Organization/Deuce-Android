@@ -42,6 +42,15 @@ class ActivityAddMatch : Activity() {
                 paint.measureText(getString(R.string.best_of_5))
         ).toInt()
 
+        if (savedInstanceState != null) {
+            seek_num_sets.progress = savedInstanceState.getInt("num_sets")
+            when (savedInstanceState.getString("server")) {
+                "me" -> radio_server_me.isChecked = true
+                "opponent" -> radio_server_opponent.isChecked = true
+                else -> radio_server_flip.isChecked = true
+            }
+        }
+
         text_num_sets.text = seek_num_sets.progressString
 
         seek_num_sets.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -57,15 +66,26 @@ class ActivityAddMatch : Activity() {
             val result = Intent()
             result.putExtra(Key.INTENT_NUM_SETS, seek_num_sets.numSets)
             result.putExtra(
-                Key.INTENT_SERVER,
+                    Key.INTENT_SERVER,
                     if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0))
                         Team.TEAM1
-                else
+                    else
                         Team.TEAM2
             )
 //            result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
             setResult(R.id.code_request_add_match, result)
             finish()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("num_sets", seek_num_sets.progress)
+        outState.putString("server", when {
+            radio_server_me.isChecked -> "me"
+            radio_server_opponent.isChecked -> "opponent"
+            else -> "flip"
+        })
     }
 }

@@ -44,8 +44,8 @@ class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMa
 
     fun getScoreStrs(): ScoreStrings {
         return when {
-            mScore.winner == Team.TEAM1 -> ScoreStrings("\uD83C\uDFC6", "")
-            mScore.winner == Team.TEAM2 -> ScoreStrings("", "\uD83C\uDFC6")
+            mScore.winner == Winner.TEAM1 -> ScoreStrings("\uD83C\uDFC6", "")
+            mScore.winner == Winner.TEAM2 -> ScoreStrings("", "\uD83C\uDFC6")
             tiebreak -> ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
             mScore.scoreP1 < 3 || mScore.scoreP2 < 3 -> ScoreStrings(scoreMap[mScore.scoreP1], scoreMap[mScore.scoreP2])
             mScore.scoreP1 > mScore.scoreP2 -> when (controller.serving) {

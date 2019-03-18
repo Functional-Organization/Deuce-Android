@@ -23,7 +23,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.support.wearable.activity.WearableActivity
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Button
@@ -38,14 +37,6 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
     override lateinit var buttonScoreP2: Button
     override lateinit var textScoreP1: TextView
     override lateinit var textScoreP2: TextView
-    //    override lateinit var imageBallP2LeftServing: ImageView
-//    override lateinit var imageBallP2RightServing: ImageView
-//    override lateinit var imageBallP1LeftServing: ImageView
-//    override lateinit var imageBallP1RightServing: ImageView
-//    override lateinit var imageBallP2LeftNotServing: ImageView
-//    override lateinit var imageBallP2RightNotServing: ImageView
-//    override lateinit var imageBallP1LeftNotServing: ImageView
-//    override lateinit var imageBallP1RightNotServing: ImageView
     override lateinit var imageBallServingT1: ImageView
     override lateinit var imageBallNotservingT1: ImageView
     override lateinit var imageBallServingT2: ImageView
@@ -58,7 +49,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
     override var posXBallRightT2 = 0f
     override val context = this
 
-    val controller = ControllerMain(this)
+    lateinit var controller: ControllerMain
 
     private lateinit var mDetector: GestureDetectorCompat
 
@@ -68,6 +59,8 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
 
         // Enables Always-on
         setAmbientEnabled()
+
+        Game.init(this)
 
         buttonScoreP1 = button_score_p1
         buttonScoreP2 = button_score_p2
@@ -85,13 +78,12 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
         posXBallLeftT1 = ball_notserving_t1.x
         posXBallRightT2 = posXBallLeftT1
 
-        Game.init(this)
+        button_score_p1.setOnClickListener { controller.score(Team.TEAM1) }
+        button_score_p2.setOnClickListener { controller.score(Team.TEAM2) }
 
         mDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                Log.d("debug", "" + event2.x + ", " + event1.x + ", " + velocityX)
                 if (event1.x - event2.x >= 100 && velocityX <= -100) {
-                    Log.d("debug", "undoing")
                     controller.undo()
                     return true
                 }
@@ -99,10 +91,16 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
             }
         })
 
-        button_score_p1.setOnClickListener { controller.score(Team.TEAM1) }
-        button_score_p2.setOnClickListener { controller.score(Team.TEAM2) }
+        controller = ControllerMain(this, savedInstanceState)
 
-        startActivityForResult(Intent(this, ActivityAddMatch::class.java), R.id.code_request_add_match)
+        if (savedInstanceState == null) {
+            startActivityForResult(Intent(this, ActivityAddMatch::class.java), R.id.code_request_add_match)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        controller.saveState(outState)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

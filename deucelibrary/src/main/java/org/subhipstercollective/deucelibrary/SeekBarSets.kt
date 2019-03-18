@@ -24,9 +24,6 @@ import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.widget.SeekBar
 
-/**
- * Created by mqduck on 11/6/17.
- */
 class SeekBarSets : SeekBar {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)

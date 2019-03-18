@@ -19,10 +19,24 @@
 
 package org.subhipstercollective.deucelibrary
 
+import android.os.Parcel
+import android.os.Parcelable
 import java.util.*
 
-class ScoreStack : List<Team> {
-    private val bitSet = BitSet()
+class ScoreStack : List<Team>, Parcelable {
+    private val bitSet: BitSet
+    override var size: Int
+        private set
+
+    constructor() {
+        size = 0
+        bitSet = BitSet()
+    }
+
+    constructor(parcel: Parcel) {
+        size = parcel.readInt()
+        bitSet = BitSet.valueOf(parcel.createLongArray())
+    }
 
     private inner class Itr : Iterator<Team> {
         internal var cursor = 0
@@ -58,14 +72,11 @@ class ScoreStack : List<Team> {
 
     }
 
-    private fun boolToPlayer(playerInt: Boolean) = if (playerInt) Team.TEAM2 else Team.TEAM1
-    private fun playerToBool(team: Team) = team != Team.TEAM1
-
-    override var size = 0
-        private set
+    private fun boolToTeam(playerInt: Boolean) = if (playerInt) Team.TEAM2 else Team.TEAM1
+    private fun teamToBool(team: Team) = team != Team.TEAM1
 
     override fun contains(element: Team): Boolean {
-        val bool = playerToBool(element)
+        val bool = teamToBool(element)
         for (i in 0 until size) {
             if (bool == bitSet[i]) {
                 return true
@@ -87,11 +98,11 @@ class ScoreStack : List<Team> {
         if (index < 0 || index >= size) {
             throw IndexOutOfBoundsException()
         }
-        return boolToPlayer(bitSet[index])
+        return boolToTeam(bitSet[index])
     }
 
     override fun indexOf(element: Team): Int {
-        val bool = playerToBool(element)
+        val bool = teamToBool(element)
         for (i in 0 until size) {
             if (bool == bitSet[i]) {
                 return i
@@ -109,7 +120,7 @@ class ScoreStack : List<Team> {
     }
 
     override fun lastIndexOf(element: Team): Int {
-        val bool = playerToBool(element)
+        val bool = teamToBool(element)
         for (i in size - 1 downTo 0) {
             if (bool == bitSet[i]) {
                 return i
@@ -126,13 +137,25 @@ class ScoreStack : List<Team> {
         return ListItr(index)
     }
 
-    override fun subList(fromIndex: Int, toIndex: Int): List<Team> {
-        //TODO: do
-        return ScoreStack()
+    override fun subList(fromIndex: Int, toIndex: Int): List<Team> { //TODO: Test (not that it will ever be used...)
+        if (fromIndex < 0)
+            throw IndexOutOfBoundsException("fromIndex = $fromIndex")
+        if (toIndex > size)
+            throw IndexOutOfBoundsException("toIndex = $toIndex")
+        if (fromIndex > toIndex)
+            throw IllegalArgumentException("fromIndex($fromIndex) > toIndex($toIndex)")
+
+        val sublist = ScoreStack()
+        sublist.size = toIndex - fromIndex
+        for (i in 0 until sublist.size) {
+            sublist.bitSet[i] = bitSet[i + fromIndex]
+        }
+
+        return sublist
     }
 
     fun push(element: Team) {
-        bitSet[size] = playerToBool(element)
+        bitSet[size] = teamToBool(element)
         ++size
     }
 
@@ -140,6 +163,25 @@ class ScoreStack : List<Team> {
         if (size > 0) {
             --size
             bitSet.clear(size)
+        }
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(size)
+        parcel.writeLongArray(bitSet.toLongArray())
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ScoreStack> {
+        override fun createFromParcel(parcel: Parcel): ScoreStack {
+            return ScoreStack(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ScoreStack?> {
+            return Array(size) { ScoreStack() }
         }
     }
 }
