@@ -35,7 +35,12 @@ class ScoreStack : List<Team>, Parcelable {
 
     constructor(parcel: Parcel) {
         size = parcel.readInt()
-        bitSet = BitSet.valueOf(parcel.createLongArray())
+        bitSet = parcel.readSerializable() as BitSet
+    }
+
+    private constructor(size: Int, bitSet: BitSet) {
+        this.size = size
+        this.bitSet = bitSet
     }
 
     private inner class Itr : Iterator<Team> {
@@ -137,7 +142,7 @@ class ScoreStack : List<Team>, Parcelable {
         return ListItr(index)
     }
 
-    override fun subList(fromIndex: Int, toIndex: Int): List<Team> { //TODO: Test (not that it will ever be used...)
+    override fun subList(fromIndex: Int, toIndex: Int): List<Team> {
         if (fromIndex < 0)
             throw IndexOutOfBoundsException("fromIndex = $fromIndex")
         if (toIndex > size)
@@ -145,13 +150,7 @@ class ScoreStack : List<Team>, Parcelable {
         if (fromIndex > toIndex)
             throw IllegalArgumentException("fromIndex($fromIndex) > toIndex($toIndex)")
 
-        val sublist = ScoreStack()
-        sublist.size = toIndex - fromIndex
-        for (i in 0 until sublist.size) {
-            sublist.bitSet[i] = bitSet[i + fromIndex]
-        }
-
-        return sublist
+        return ScoreStack(toIndex - fromIndex, bitSet.get(fromIndex, toIndex))
     }
 
     fun push(element: Team) {
@@ -168,12 +167,10 @@ class ScoreStack : List<Team>, Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(size)
-        parcel.writeLongArray(bitSet.toLongArray())
+        parcel.writeSerializable(bitSet)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents() = 0
 
     companion object CREATOR : Parcelable.Creator<ScoreStack> {
         override fun createFromParcel(parcel: Parcel): ScoreStack {
