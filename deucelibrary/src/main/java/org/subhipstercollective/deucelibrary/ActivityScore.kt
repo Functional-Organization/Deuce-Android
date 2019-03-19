@@ -17,27 +17,28 @@
  * along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.subhipstercollective.deuce
+package org.subhipstercollective.deucelibrary
 
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import android.content.Context
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest
-{
-    @Test
-    fun useAppContext()
-    {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("org.subhipstercollective.deuce", appContext.packageName)
-    }
+interface ActivityScore {
+    var buttonScoreP1: Button
+    var buttonScoreP2: Button
+    var textScoreP1: TextView
+    var textScoreP2: TextView
+    var imageBallServingT1: ImageView
+    var imageBallNotservingT1: ImageView
+    var imageBallServingT2: ImageView
+    var imageBallNotservingT2: ImageView
+    var textScoresMatchP1: TextView
+    var textScoresMatchP2: TextView
+    val context: Context
+
+    var posXBallLeftT1: Float
+    var posXBallRightT1: Float
+    var posXBallLeftT2: Float
+    var posXBallRightT2: Float
 }

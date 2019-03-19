@@ -17,4 +17,4 @@
  * along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include ':mobile', ':wear', ':deucelibrary'
+include ':wear', ':deucelibrary'

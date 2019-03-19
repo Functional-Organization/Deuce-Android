@@ -26,7 +26,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
     tools:background="@color/black"
-    tools:context="org.subhipstercollective.deuce.ActivityMainWear"
+    tools:context="org.subhipstercollective.deuce.ActivityScoreWear"
     tools:deviceIds="wear">
 
     <LinearLayout

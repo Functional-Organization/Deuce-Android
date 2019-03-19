@@ -28,11 +28,11 @@ import android.view.MotionEvent
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_score.*
 import org.subhipstercollective.deucelibrary.*
 
 
-class ActivityMainWear : WearableActivity(), ActivityMain {
+class ActivityScoreWear : WearableActivity(), ActivityScore {
     override lateinit var buttonScoreP1: Button
     override lateinit var buttonScoreP2: Button
     override lateinit var textScoreP1: TextView
@@ -55,7 +55,7 @@ class ActivityMainWear : WearableActivity(), ActivityMain {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_score)
 
         // Enables Always-on
         setAmbientEnabled()
