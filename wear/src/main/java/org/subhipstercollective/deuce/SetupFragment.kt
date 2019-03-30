@@ -19,7 +19,6 @@
 
 package org.subhipstercollective.deuce
 
-import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,11 +27,12 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_setup.*
-import org.subhipstercollective.deucelibrary.Key
 import org.subhipstercollective.deucelibrary.Team
 import kotlin.random.Random
 
 class SetupFragment : Fragment() {
+    lateinit var mainActivity: MainActivity
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_setup, container, false)
     }
@@ -69,19 +69,24 @@ class SetupFragment : Fragment() {
         })
 
         button_start.setOnClickListener {
-            val result = Intent()
-            result.putExtra(Key.INTENT_NUM_SETS, seek_num_sets.numSets)
-            result.putExtra(
-                Key.INTENT_SERVER,
-                if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0))
-                    Team.TEAM1
-                else
-                    Team.TEAM2
-            )
-//            result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
-
+            //            val result = Intent()
+//            result.putExtra(Key.INTENT_NUM_SETS, seek_num_sets.numSets)
+//            result.putExtra(
+//                Key.INTENT_SERVER,
+//                if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0))
+//                    Team.TEAM1
+//                else
+//                    Team.TEAM2
+//            )
+////            result.putExtra(Key.INTENT_ADVANTAGE_SET, toggle_margin_sets.isChecked)
 //            setResult(R.id.code_request_add_match, result)
 //            finish()
+
+            mainActivity.newMatch(
+                seek_num_sets.numSets,
+                if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0)) Team.TEAM1 else Team.TEAM2,
+                false
+            )
         }
     }
 }

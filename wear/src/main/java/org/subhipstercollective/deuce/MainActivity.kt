@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.Game
+import org.subhipstercollective.deucelibrary.Team
 
 class MainActivity : FragmentActivity() {
     private val setupFragment = SetupFragment()
@@ -33,6 +34,8 @@ class MainActivity : FragmentActivity() {
     val fragmentManager = supportFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setupFragment.mainActivity = this
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -44,9 +47,9 @@ class MainActivity : FragmentActivity() {
         navigation_drawer.setAdapter(navigationAdapter)
         navigation_drawer.addOnItemSelectedListener {
             fragmentManager.beginTransaction().replace(
-                R.id.fragment_container, when (it) {
-                    0 -> setupFragment
-                    else -> scoreFragment
+                R.id.fragment_container, when (if (scoreFragment.setup) it else it + 1) {
+                    0 -> scoreFragment
+                    else -> setupFragment
                 }
             ).commit()
         }
@@ -58,20 +61,29 @@ class MainActivity : FragmentActivity() {
 
     private val navigationAdapter = object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
         private val items = arrayOf(
-            NavigationItem("Setup", R.drawable.ball_orange),
-            NavigationItem("Match", R.drawable.ball_green)
+            NavigationItem("Match", R.drawable.ball_green),
+            NavigationItem("Setup", R.drawable.ball_orange)
         )
 
         override fun getItemText(pos: Int): CharSequence {
-            return items[pos].text
+            return items[if (scoreFragment.setup) pos else pos + 1].text
         }
 
         override fun getItemDrawable(pos: Int): Drawable? {
-            return getDrawable(items[pos].drawableId)
+            return getDrawable(items[if (scoreFragment.setup) pos else pos + 1].drawableId)
         }
 
         override fun getCount(): Int {
-            return items.size
+            return if (scoreFragment.setup) items.size else items.size - 1
         }
+    }
+
+    fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
+        scoreFragment.winMinimumMatch = winMinimumMatch
+        scoreFragment.startingServer = startingServer
+        scoreFragment.tiebreak = tiebreak
+        scoreFragment.newMatch()
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
+        navigationAdapter.notifyDataSetChanged()
     }
 }

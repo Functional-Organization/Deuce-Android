@@ -28,9 +28,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
+import org.subhipstercollective.deucelibrary.ScoreController
 import org.subhipstercollective.deucelibrary.ScoreView
+import org.subhipstercollective.deucelibrary.Team
 
-class ScoreFragment : Fragment(), ScoreView {
+class ScoreFragment() : Fragment(), ScoreView {
     override lateinit var buttonScoreP1: Button
     override lateinit var buttonScoreP2: Button
     override lateinit var textScoreP1: TextView
@@ -45,6 +47,15 @@ class ScoreFragment : Fragment(), ScoreView {
     override var posXBallRightT1 = 0f
     override var posXBallLeftT2 = 0f
     override var posXBallRightT2 = 0f
+
+    var winMinimumMatch: Int = 0
+    var startingServer = Team.TEAM1
+    var tiebreak = false
+
+    private var controller: ScoreController? = null
+
+    var setup = false
+        private set
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -68,7 +79,27 @@ class ScoreFragment : Fragment(), ScoreView {
 
         posXBallLeftT1 = ball_notserving_t1.x
         posXBallRightT2 = posXBallLeftT1
-        posXBallRightT1 = view.width - ball_notserving_t1.x - ball_notserving_t1.width
-        posXBallLeftT2 = posXBallRightT1
+
+        view.post {
+            posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
+            posXBallLeftT2 = posXBallRightT1
+            controller?.redrawDisplay()
+        }
+
+        controller = ScoreController(this, savedInstanceState)
+        if (savedInstanceState == null) {
+            controller!!.winMinimumMatch = winMinimumMatch
+            controller!!.startingServer = startingServer
+            controller!!.tiebreak = tiebreak
+            controller!!.addMatch()
+        }
+
+        button_score_p1.setOnClickListener { controller!!.score(Team.TEAM1) }
+        button_score_p2.setOnClickListener { controller!!.score(Team.TEAM2) }
+    }
+
+    fun newMatch() {
+        controller?.addMatch()
+        setup = true
     }
 }

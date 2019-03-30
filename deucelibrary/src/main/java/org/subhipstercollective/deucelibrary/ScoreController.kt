@@ -95,7 +95,12 @@ class ScoreController(val activityScore: ScoreView, savedInstanceState: Bundle?)
         updateDisplay()
     }
 
-    fun updateDisplay() {
+    fun redrawDisplay() {
+        nextAnimationDuration = 0
+        updateDisplay()
+    }
+
+    private fun updateDisplay() {
         fun moveBall(ball: ImageView, xPos: Float) {
             ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
                 duration = nextAnimationDuration
