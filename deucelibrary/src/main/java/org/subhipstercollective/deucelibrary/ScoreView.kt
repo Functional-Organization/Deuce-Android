@@ -19,12 +19,11 @@
 
 package org.subhipstercollective.deucelibrary
 
-import android.content.Context
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 
-interface ActivityScore {
+interface ScoreView {
     var buttonScoreP1: Button
     var buttonScoreP2: Button
     var textScoreP1: TextView
@@ -35,7 +34,7 @@ interface ActivityScore {
     var imageBallNotservingT2: ImageView
     var textScoresMatchP1: TextView
     var textScoresMatchP2: TextView
-    val context: Context
+//    val context: Context
 
     var posXBallLeftT1: Float
     var posXBallRightT1: Float

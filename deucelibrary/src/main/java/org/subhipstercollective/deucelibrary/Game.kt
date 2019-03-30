@@ -21,7 +21,7 @@ package org.subhipstercollective.deucelibrary
 
 import android.content.Context
 
-class Game(winMinimum: Int, winMargin: Int, private val controller: ControllerMain, val tiebreak: Boolean = false) {
+class Game(winMinimum: Int, winMargin: Int, private val controller: ScoreController, val tiebreak: Boolean = false) {
     companion object {
         private val scoreMap = arrayOf("Love", "15", "30", "40", "")
         private lateinit var strAdIn: String

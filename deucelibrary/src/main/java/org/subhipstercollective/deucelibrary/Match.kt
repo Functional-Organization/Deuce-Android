@@ -26,7 +26,7 @@ class Match(
     val winMinimum: Int,
     val winMinimumSet: Int, val winMarginSet: Int,
     val winMinimumGame: Int, val winMarginGame: Int,
-    private val controller: ControllerMain,
+    private val controller: ScoreController,
     val tiebreak: Boolean
 ) {
     var sets = ArrayList<Set>()

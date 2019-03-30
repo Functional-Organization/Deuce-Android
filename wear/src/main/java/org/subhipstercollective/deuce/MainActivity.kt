@@ -24,8 +24,13 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
+import org.subhipstercollective.deucelibrary.Game
 
 class MainActivity : FragmentActivity() {
+    private val setupFragment = SetupFragment()
+    private val scoreFragment = ScoreFragment()
+
+    val fragmentManager = supportFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +39,19 @@ class MainActivity : FragmentActivity() {
         /*// Enables Always-on
         setAmbientEnabled()*/
 
-        navigation_drawer.setAdapter(navigationAdapter)
+        Game.init(this)
 
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val setupFragment = SetupFragment()
-        fragmentTransaction.add(R.id.fragment_container, setupFragment)
-        fragmentTransaction.commit()
+        navigation_drawer.setAdapter(navigationAdapter)
+        navigation_drawer.addOnItemSelectedListener {
+            fragmentManager.beginTransaction().replace(
+                R.id.fragment_container, when (it) {
+                    0 -> setupFragment
+                    else -> scoreFragment
+                }
+            ).commit()
+        }
+
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, setupFragment).commit()
     }
 
     private class NavigationItem(val text: CharSequence, val drawableId: Int)
