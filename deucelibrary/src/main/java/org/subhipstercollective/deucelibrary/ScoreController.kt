@@ -24,7 +24,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 
-class ScoreController(val activityScore: ScoreView, savedInstanceState: Bundle?) {
+class ScoreController(val activityScore: ScoreView) {
     var winMinimumMatch = 0
     var winMinimumSet = WIN_MINIMUM_SET
     var winMarginSet = WIN_MARGIN_SET
@@ -45,29 +45,28 @@ class ScoreController(val activityScore: ScoreView, savedInstanceState: Bundle?)
 
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame
-    private val scoreLog: ScoreStack
+    private var scoreLog = ScoreStack()
 
-    init {
-        if (savedInstanceState != null && savedInstanceState.containsKey("scores")) {
-            winMinimumMatch = savedInstanceState.getInt("winMinimumMatch")
-            winMinimumSet = savedInstanceState.getInt("winMinimumSet")
-            winMarginSet = savedInstanceState.getInt("winMarginSet")
-            winMinimumGame = savedInstanceState.getInt("winMinimumGame")
-            winMarginGame = savedInstanceState.getInt("winMarginGame")
-            winMinimumGameTiebreak = savedInstanceState.getInt("winMinimumGameTiebreak")
-            winMarginGameTiebreak = savedInstanceState.getInt("winMarginGameTiebreak")
-            animationDuration = savedInstanceState.getLong("animationDuration")
-            nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")
-            tiebreak = savedInstanceState.getBoolean("tiebreak")
-            doubles = savedInstanceState.getBoolean("doubles")
-            startingServer = savedInstanceState.getSerializable("startingServer") as Team
-            scoreLog = savedInstanceState.getParcelable("scores")!!
+    var matchAdded = false
+        private set
 
-            addMatch()
-            loadScores()
-        } else {
-            scoreLog = ScoreStack()
-        }
+    fun loadState(savedInstanceState: Bundle) {
+        winMinimumMatch = savedInstanceState.getInt("winMinimumMatch")
+        winMinimumSet = savedInstanceState.getInt("winMinimumSet")
+        winMarginSet = savedInstanceState.getInt("winMarginSet")
+        winMinimumGame = savedInstanceState.getInt("winMinimumGame")
+        winMarginGame = savedInstanceState.getInt("winMarginGame")
+        winMinimumGameTiebreak = savedInstanceState.getInt("winMinimumGameTiebreak")
+        winMarginGameTiebreak = savedInstanceState.getInt("winMarginGameTiebreak")
+        animationDuration = savedInstanceState.getLong("animationDuration")
+        nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")
+        tiebreak = savedInstanceState.getBoolean("tiebreak")
+        doubles = savedInstanceState.getBoolean("doubles")
+        startingServer = savedInstanceState.getSerializable("startingServer") as Team
+        scoreLog = savedInstanceState.getParcelable("scores")!!
+
+        addMatch()
+        loadScores()
     }
 
     private fun loadScores() {
@@ -78,6 +77,7 @@ class ScoreController(val activityScore: ScoreView, savedInstanceState: Bundle?)
     }
 
     fun addMatch() {
+        matchAdded = true
         match = Match(
             winMinimumMatch,
             winMinimumSet,

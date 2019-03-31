@@ -28,14 +28,12 @@ import org.subhipstercollective.deucelibrary.Game
 import org.subhipstercollective.deucelibrary.Team
 
 class MainActivity : FragmentActivity() {
-    private val setupFragment = SetupFragment()
+    private lateinit var setupFragment: SetupFragment
     private val scoreFragment = ScoreFragment()
 
     val fragmentManager = supportFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setupFragment.mainActivity = this
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -43,6 +41,13 @@ class MainActivity : FragmentActivity() {
         setAmbientEnabled()*/
 
         Game.init(this)
+
+        if (savedInstanceState == null) {
+            setupFragment = SetupFragment()
+        } else {
+            setupFragment = fragmentManager.getFragment(savedInstanceState, "setupFragment") as SetupFragment
+        }
+        setupFragment.mainActivity = this
 
         navigation_drawer.setAdapter(navigationAdapter)
         navigation_drawer.addOnItemSelectedListener {
@@ -55,6 +60,12 @@ class MainActivity : FragmentActivity() {
         }
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container, setupFragment).commit()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        fragmentManager.putFragment(outState, "setupFragment", setupFragment)
     }
 
     private class NavigationItem(val text: CharSequence, val drawableId: Int)
@@ -79,11 +90,8 @@ class MainActivity : FragmentActivity() {
     }
 
     fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
-        scoreFragment.winMinimumMatch = winMinimumMatch
-        scoreFragment.startingServer = startingServer
-        scoreFragment.tiebreak = tiebreak
-        scoreFragment.newMatch()
         fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
+        scoreFragment.newMatch(winMinimumMatch, startingServer, tiebreak)
         navigationAdapter.notifyDataSetChanged()
     }
 }

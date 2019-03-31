@@ -48,15 +48,6 @@ class SetupFragment : Fragment() {
             paint.measureText(getString(R.string.best_of_5))
         ).toInt()
 
-        if (savedInstanceState != null) {
-            seek_num_sets.progress = savedInstanceState.getInt("num_sets")
-            when (savedInstanceState.getString("server")) {
-                "me" -> radio_server_me.isChecked = true
-                "opponent" -> radio_server_opponent.isChecked = true
-                else -> radio_server_flip.isChecked = true
-            }
-        }
-
         text_num_sets.text = seek_num_sets.progressString
 
         seek_num_sets.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -88,5 +79,31 @@ class SetupFragment : Fragment() {
                 false
             )
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            seek_num_sets.progress = savedInstanceState.getInt("num_sets")
+            when (savedInstanceState.getString("server")) {
+                "me" -> radio_server_me.isChecked = true
+                "opponent" -> radio_server_opponent.isChecked = true
+                else -> radio_server_flip.isChecked = true
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("num_sets", seek_num_sets.progress)
+        outState.putString(
+            "server", when {
+                radio_server_me.isChecked -> "me"
+                radio_server_opponent.isChecked -> "opponent"
+                else -> "flip"
+            }
+        )
     }
 }
