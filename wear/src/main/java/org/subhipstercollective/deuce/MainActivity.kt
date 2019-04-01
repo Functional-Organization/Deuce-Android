@@ -33,9 +33,12 @@ import org.subhipstercollective.deucelibrary.Team
 
 class MainActivity : FragmentActivity() {
     private val setupFragment = SetupFragment()
+    private val advancedSetupFragment = AdvancedSetupFragment()
     private val scoreFragment = ScoreFragment()
-    private var setupState: Fragment.SavedState? = null
+
+    //private var setupState: Fragment.SavedState? = null
     private var scoreState: Fragment.SavedState? = null
+
     private val fragmentManager = supportFragmentManager
     private var currentFragment = FragmentEnum.SETUP
     private var matchAdded = false
@@ -86,6 +89,7 @@ class MainActivity : FragmentActivity() {
         fragmentManager.beginTransaction().replace(
             R.id.fragment_container, when (currentFragment) {
                 FragmentEnum.SETUP -> setupFragment
+                FragmentEnum.ADVANCED_SETUP -> advancedSetupFragment
                 FragmentEnum.SCORE -> scoreFragment
             }
         ).commit()
@@ -121,6 +125,7 @@ class MainActivity : FragmentActivity() {
             fragmentManager.beginTransaction().replace(
                 R.id.fragment_container, when (fragment) {
                     FragmentEnum.SETUP -> setupFragment
+                    FragmentEnum.ADVANCED_SETUP -> advancedSetupFragment
                     FragmentEnum.SCORE -> scoreFragment
                 }
             ).commit()
@@ -140,6 +145,7 @@ class MainActivity : FragmentActivity() {
     private val navigationAdapter = object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
         private val items = arrayOf(
             NavigationItem("Setup", R.drawable.ball_orange, FragmentEnum.SETUP),
+            NavigationItem("Advanced Setup", R.drawable.ball_darkorange, FragmentEnum.ADVANCED_SETUP),
             NavigationItem("Match", R.drawable.ball_green, FragmentEnum.SCORE)
         )
 
@@ -169,5 +175,5 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private enum class FragmentEnum { SETUP, SCORE }
+    private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 }
