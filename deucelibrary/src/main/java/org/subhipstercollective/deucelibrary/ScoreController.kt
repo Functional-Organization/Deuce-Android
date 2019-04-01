@@ -234,13 +234,13 @@ class ScoreController(val activityScore: ScoreView) {
         nextAnimationDuration = animationDuration
 
         var textScoresMatchP1 = ""
-        var textScoreMatchP2 = ""
+        var textScoresMatchP2 = ""
         for (set in match.sets) {
             textScoresMatchP1 += set.scoreP1.toString() + "  "
-            textScoreMatchP2 += set.scoreP2.toString() + "  "
+            textScoresMatchP2 += set.scoreP2.toString() + "  "
         }
         activityScore.textScoresMatchP1.text = textScoresMatchP1.trim()
-        activityScore.textScoresMatchP2.text = textScoreMatchP2.trim()
+        activityScore.textScoresMatchP2.text = textScoresMatchP2.trim()
     }
 
     fun score(team: Team, updateLog: Boolean = true) {

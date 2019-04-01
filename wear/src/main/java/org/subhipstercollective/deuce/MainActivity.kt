@@ -46,7 +46,7 @@ class MainActivity : FragmentActivity() {
 
         Game.init(this)
 
-        if (savedInstanceState != null) {
+        savedInstanceState?.let {
             if (savedInstanceState.containsKey("setupState")) {
                 setupFragment.setInitialSavedState(savedInstanceState.getParcelable("setupState"))
             }
@@ -81,12 +81,8 @@ class MainActivity : FragmentActivity() {
         super.onSaveInstanceState(outState)
 
         saveCurrentFragment()
-        if (setupState != null) {
-            outState.putParcelable("setupState", setupState)
-        }
-        if (scoreState != null) {
-            outState.putParcelable("scoreState", scoreState)
-        }
+        setupState?.let { outState.putParcelable("setupState", setupState) }
+        scoreState?.let { outState.putParcelable("scoreState", scoreState) }
 
         outState.putSerializable("currentFragment", currentFragment)
         outState.putBoolean("matchAdded", matchAdded)

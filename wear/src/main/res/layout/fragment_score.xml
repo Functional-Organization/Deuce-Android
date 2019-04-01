@@ -55,7 +55,7 @@
                 android:textColor="#80C6FF"
                 android:textSize="24dp"
                 android:translationY="-10dp"
-                android:translationZ="2dp"
+                android:translationZ="10dp"
                 tools:ignore="SpUsage"
                 tools:text="1" />
         </FrameLayout>
@@ -87,7 +87,7 @@
                 android:textColor="#80C6FF"
                 android:textSize="24dp"
                 android:translationY="10dp"
-                android:translationZ="2dp"
+                android:translationZ="10dp"
                 tools:ignore="SpUsage"
                 tools:text="2" />
         </FrameLayout>
