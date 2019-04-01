@@ -21,6 +21,9 @@ package org.subhipstercollective.deuce
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
+import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
@@ -36,6 +39,7 @@ class MainActivity : FragmentActivity() {
     private val fragmentManager = supportFragmentManager
     private var currentFragment = FragmentEnum.SETUP
     private var matchAdded = false
+    private lateinit var mDetector: GestureDetectorCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +68,21 @@ class MainActivity : FragmentActivity() {
             switchFragment(navigationAdapter.getItemEnum(it))
         }
 
+        mDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(
+                event1: MotionEvent,
+                event2: MotionEvent,
+                velocityX: Float,
+                velocityY: Float
+            ): Boolean {
+                if (currentFragment == FragmentEnum.SCORE && event1.x - event2.x >= 100 && velocityX <= -100) {
+                    scoreFragment.undo()
+                    return true
+                }
+                return false
+            }
+        })
+
         fragmentManager.beginTransaction().replace(
             R.id.fragment_container, when (currentFragment) {
                 FragmentEnum.SETUP -> setupFragment
@@ -81,6 +100,10 @@ class MainActivity : FragmentActivity() {
 
         outState.putSerializable("currentFragment", currentFragment)
         outState.putBoolean("matchAdded", matchAdded)
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        return mDetector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }
 
     fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {

@@ -112,7 +112,7 @@ class ScoreController(val activityScore: ScoreView) {
         activityScore.buttonScoreP1.isEnabled = true
         activityScore.buttonScoreP2.isEnabled = true
 
-        updateDisplay()
+        redrawDisplay()
     }
 
     fun redrawDisplay() {
@@ -312,7 +312,7 @@ class ScoreController(val activityScore: ScoreView) {
 
             loadScores()
 
-            updateDisplay()
+            redrawDisplay()
         }
     }
 }

@@ -108,4 +108,8 @@ class ScoreFragment() : Fragment(), ScoreView {
             controller.addMatch()
         }
     }
+
+    fun undo() {
+        controller.undo()
+    }
 }
