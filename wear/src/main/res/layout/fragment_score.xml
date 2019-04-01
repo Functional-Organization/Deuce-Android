@@ -17,7 +17,7 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -93,44 +93,46 @@
         </FrameLayout>
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="ContentDescription">
+    <ImageView
+        android:id="@+id/ball_serving_t1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:src="@drawable/ball_green"
+        android:translationX="33dp"
+        android:translationY="-39dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/ball_serving_t1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:src="@drawable/ball_green"
-            android:translationX="33dp"
-            android:translationY="-39dp" />
+    <ImageView
+        android:id="@+id/ball_notserving_t2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ball_darkorange"
+        android:translationX="33dp"
+        android:translationY="66dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/ball_notserving_t1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:src="@drawable/ball_darkorange"
-            android:translationX="33dp"
-            android:translationY="-66dp" />
+    <ImageView
+        android:id="@+id/ball_serving_t2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ball_green"
+        android:translationX="33dp"
+        android:translationY="39dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/ball_notserving_t2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ball_darkorange"
-            android:translationX="33dp"
-            android:translationY="66dp" />
+    <ImageView
+        android:id="@+id/ball_notserving_t1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:src="@drawable/ball_darkorange"
+        android:translationX="33dp"
+        android:translationY="-66dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/ball_serving_t2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ball_green"
-            android:translationX="33dp"
-            android:translationY="39dp" />
-    </FrameLayout>
-
-</androidx.wear.widget.BoxInsetLayout>
+</FrameLayout>

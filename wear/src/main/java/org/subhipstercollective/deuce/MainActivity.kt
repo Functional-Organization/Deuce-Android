@@ -34,7 +34,7 @@ class MainActivity : FragmentActivity() {
     private var setupState: Fragment.SavedState? = null
     private var scoreState: Fragment.SavedState? = null
     private val fragmentManager = supportFragmentManager
-    private var currentFragment = MainFragment.SETUP
+    private var currentFragment = FragmentEnum.SETUP
     private var matchAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class MainActivity : FragmentActivity() {
             if (savedInstanceState.containsKey("scoreState")) {
                 scoreFragment.setInitialSavedState(savedInstanceState.getParcelable("scoreState"))
             }
-            currentFragment = savedInstanceState.getSerializable("currentFragment") as MainFragment
+            currentFragment = savedInstanceState.getSerializable("currentFragment") as FragmentEnum
             matchAdded = savedInstanceState.getBoolean("matchAdded")
             navigationAdapter.notifyDataSetChanged()
         }
@@ -61,18 +61,13 @@ class MainActivity : FragmentActivity() {
 
         navigation_drawer.setAdapter(navigationAdapter)
         navigation_drawer.addOnItemSelectedListener {
-            switchFragment(
-                when (if (matchAdded) it else it + 1) {
-                    0 -> MainFragment.SCORE
-                    else -> MainFragment.SETUP
-                }
-            )
+            switchFragment(navigationAdapter.getItemEnum(it))
         }
 
         fragmentManager.beginTransaction().replace(
             R.id.fragment_container, when (currentFragment) {
-                MainFragment.SETUP -> setupFragment
-                MainFragment.SCORE -> scoreFragment
+                FragmentEnum.SETUP -> setupFragment
+                FragmentEnum.SCORE -> scoreFragment
             }
         ).commit()
     }
@@ -88,57 +83,67 @@ class MainActivity : FragmentActivity() {
         outState.putBoolean("matchAdded", matchAdded)
     }
 
-    private class NavigationItem(val text: CharSequence, val drawableId: Int)
-
-    private val navigationAdapter = object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
-        private val items = arrayOf(
-            NavigationItem("Match", R.drawable.ball_green),
-            NavigationItem("Setup", R.drawable.ball_orange)
-        )
-
-        override fun getItemText(pos: Int): CharSequence {
-            return items[if (matchAdded) pos else pos + 1].text
-        }
-
-        override fun getItemDrawable(pos: Int): Drawable? {
-            return getDrawable(items[if (matchAdded) pos else pos + 1].drawableId)
-        }
-
-        override fun getCount(): Int {
-            return if (matchAdded) items.size else items.size - 1
-        }
-    }
-
     fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
-        switchFragment(MainFragment.SCORE)
-        scoreFragment.newMatch(winMinimumMatch, startingServer, tiebreak)
         matchAdded = true
         navigationAdapter.notifyDataSetChanged()
+        switchFragment(FragmentEnum.SCORE)
+        scoreFragment.newMatch(winMinimumMatch, startingServer, tiebreak)
     }
 
-    private fun switchFragment(fragment: MainFragment) {
+    private fun switchFragment(fragment: FragmentEnum) {
         if (fragment != currentFragment) {
             saveCurrentFragment()
             currentFragment = fragment
-            when (fragment) {
-                MainFragment.SETUP -> fragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    setupFragment
-                ).commit()
-                MainFragment.SCORE -> fragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    scoreFragment
-                ).commit()
-            }
+            navigation_drawer.setCurrentItem(navigationAdapter.getEnumPos(fragment), false)
+            fragmentManager.beginTransaction().replace(
+                R.id.fragment_container, when (fragment) {
+                    FragmentEnum.SETUP -> setupFragment
+                    FragmentEnum.SCORE -> scoreFragment
+                }
+            ).commit()
         }
     }
 
     private fun saveCurrentFragment() {
         when (currentFragment) {
-            MainFragment.SETUP -> setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
-            MainFragment.SCORE -> scoreState = fragmentManager.saveFragmentInstanceState(scoreFragment)
+            FragmentEnum.SETUP -> setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
+            FragmentEnum.SCORE -> scoreState = fragmentManager.saveFragmentInstanceState(scoreFragment)
         }
     }
 
-    private enum class MainFragment { SETUP, SCORE }
+    private class NavigationItem(val text: CharSequence, val drawableId: Int, val enum: FragmentEnum)
+
+    private val navigationAdapter = object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
+        private val items = arrayOf(
+            NavigationItem("Setup", R.drawable.ball_orange, FragmentEnum.SETUP),
+            NavigationItem("Match", R.drawable.ball_green, FragmentEnum.SCORE)
+        )
+
+        override fun getItemText(pos: Int): CharSequence {
+            return items[pos].text
+        }
+
+        override fun getItemDrawable(pos: Int): Drawable? {
+            return getDrawable(items[pos].drawableId)
+        }
+
+        override fun getCount(): Int {
+            return if (matchAdded) items.size else items.size - 1
+        }
+
+        fun getItemEnum(pos: Int): FragmentEnum {
+            return items[pos].enum
+        }
+
+        fun getEnumPos(enum: FragmentEnum): Int {
+            for (i in 0 until items.size) {
+                if (items[i].enum == enum) {
+                    return i
+                }
+            }
+            return -1
+        }
+    }
+
+    private enum class FragmentEnum { SETUP, SCORE }
 }

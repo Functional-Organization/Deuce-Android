@@ -40,13 +40,15 @@ class SetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set text_num_sets width to largest necessary
-        val paint = Paint()
-        text_num_sets.width = maxOf(
-            paint.measureText(getString(R.string.best_of_1)),
-            paint.measureText(getString(R.string.best_of_3)),
-            paint.measureText(getString(R.string.best_of_5))
-        ).toInt()
+        view.post {
+            // Set text_num_sets width to largest necessary
+            val paint = Paint()
+            text_num_sets.width = maxOf(
+                paint.measureText(getString(R.string.best_of_1)),
+                paint.measureText(getString(R.string.best_of_3)),
+                paint.measureText(getString(R.string.best_of_5))
+            ).toInt()
+        }
 
         text_num_sets.text = seek_num_sets.progressString
 
