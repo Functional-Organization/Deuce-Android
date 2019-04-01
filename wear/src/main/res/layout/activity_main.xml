@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2019 Jeffrey Thomas Piercy
   ~
   ~ This file is part of Deuce-Android.
@@ -19,116 +17,22 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_main"
+<androidx.wear.widget.drawer.WearableDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/box_inset_layout_padding"
-    tools:background="@color/black"
-    tools:context="org.subhipstercollective.deuce.ActivityMainWear"
-    tools:deviceIds="wear">
-
-    <LinearLayout
+    android:layout_height="match_parent">
+    <!--<ScrollView-->
+    <!--android:id="@+id/content"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:nestedScrollingEnabled="true">-->
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/button_score_p2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="#071F33"
-            android:textSize="36dp"
-            tools:ignore="SpUsage"
-            tools:text="Love" />
-
-        <Button
-            android:id="@+id/button_score_p1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="#071F33"
-            android:textSize="36dp"
-            tools:ignore="SpUsage"
-            tools:text="Love" />
-    </LinearLayout>
-
-    <LinearLayout
+        android:layout_height="match_parent" />
+    <!--</ScrollView>-->
+    <androidx.wear.widget.drawer.WearableNavigationDrawerView
+        android:id="@+id/navigation_drawer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:ignore="ContentDescription">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/ball_serving_t2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ball_green"
-                android:translationX="15dp"
-                android:translationY="15dp" />
-
-            <ImageView
-                android:id="@+id/ball_notserving_t2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:src="@drawable/ball_darkorange"
-                android:translationX="15dp"
-                android:translationY="-15dp" />
-
-            <TextView
-                android:id="@+id/text_scores_match_p2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
-                android:textColor="#80C6FF"
-                android:textSize="24dp"
-                android:translationY="-10dp"
-                tools:ignore="SpUsage"
-                tools:text="1" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/ball_serving_t1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:src="@drawable/ball_green"
-                android:translationX="15dp"
-                android:translationY="-15dp" />
-
-            <ImageView
-                android:id="@+id/ball_notserving_t1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ball_darkorange"
-                android:translationX="15dp"
-                android:translationY="15dp" />
-
-            <TextView
-                android:id="@+id/text_scores_match_p1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|top"
-                android:textColor="#80C6FF"
-                android:textSize="24dp"
-                android:translationY="10dp"
-                tools:ignore="SpUsage"
-                tools:text="2" />
-        </FrameLayout>
-    </LinearLayout>
-
-</android.support.wear.widget.BoxInsetLayout>
-
+        android:layout_height="match_parent" />
+</androidx.wear.widget.drawer.WearableDrawerLayout>

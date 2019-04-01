@@ -22,8 +22,10 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-class Set(val winMinimum: Int, val winMargin: Int,
-          val winMinimumGame: Int, val winMarginGame: Int, private val controller: ControllerMain, val tiebreak: Boolean) {
+class Set(
+    val winMinimum: Int, val winMargin: Int,
+    val winMinimumGame: Int, val winMarginGame: Int, private val controller: ScoreController, val tiebreak: Boolean
+) {
     var games = ArrayList<Game>()
     private var mScore = Score(winMinimum, winMargin)
 

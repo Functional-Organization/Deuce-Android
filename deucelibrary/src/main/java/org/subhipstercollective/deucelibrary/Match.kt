@@ -22,11 +22,13 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-class Match(val winMinimum: Int,
-            val winMinimumSet: Int, val winMarginSet: Int,
-            val winMinimumGame: Int, val winMarginGame: Int,
-            private val controller: ControllerMain,
-            val tiebreak: Boolean) {
+class Match(
+    val winMinimum: Int,
+    val winMinimumSet: Int, val winMarginSet: Int,
+    val winMinimumGame: Int, val winMarginGame: Int,
+    private val controller: ScoreController,
+    val tiebreak: Boolean
+) {
     var sets = ArrayList<Set>()
     private var mScore = Score(winMinimum, 1)
 

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2019 Jeffrey Thomas Piercy
+  ~
+  ~ This file is part of Deuce-Android.
+  ~
+  ~ Deuce-Android is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Deuce-Android is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_score_p2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginTop="-7dp"
+                android:layout_marginRight="-5dp"
+                android:layout_marginBottom="-2dp"
+                android:backgroundTint="#071F33"
+                android:textSize="36dp"
+                android:theme="@style/ScoreButton"
+                tools:ignore="SpUsage"
+                tools:text="Love" />
+
+            <TextView
+                android:id="@+id/text_scores_match_p2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:textColor="#80C6FF"
+                android:textSize="24dp"
+                android:translationY="-10dp"
+                android:translationZ="10dp"
+                tools:ignore="SpUsage"
+                tools:text="1" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_score_p1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginTop="-2dp"
+                android:layout_marginRight="-5dp"
+                android:layout_marginBottom="-7dp"
+                android:backgroundTint="#071F33"
+                android:textSize="36dp"
+                android:theme="@style/ScoreButton"
+                tools:ignore="SpUsage"
+                tools:text="Love" />
+
+            <TextView
+                android:id="@+id/text_scores_match_p1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|top"
+                android:textColor="#80C6FF"
+                android:textSize="24dp"
+                android:translationY="10dp"
+                android:translationZ="10dp"
+                tools:ignore="SpUsage"
+                tools:text="2" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ball_serving_t1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:src="@drawable/ball_green"
+        android:translationX="33dp"
+        android:translationY="-39dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/ball_notserving_t2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ball_darkorange"
+        android:translationX="33dp"
+        android:translationY="66dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/ball_serving_t2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ball_green"
+        android:translationX="33dp"
+        android:translationY="39dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/ball_notserving_t1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:src="@drawable/ball_darkorange"
+        android:translationX="33dp"
+        android:translationY="-66dp"
+        android:translationZ="10dp"
+        tools:ignore="ContentDescription" />
+
+</FrameLayout>
