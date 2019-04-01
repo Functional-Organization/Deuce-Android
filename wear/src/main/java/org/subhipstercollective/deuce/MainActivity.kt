@@ -21,6 +21,7 @@ package org.subhipstercollective.deuce
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,10 +29,13 @@ import org.subhipstercollective.deucelibrary.Game
 import org.subhipstercollective.deucelibrary.Team
 
 class MainActivity : FragmentActivity() {
-    private lateinit var setupFragment: SetupFragment
+    private val setupFragment = SetupFragment()
     private val scoreFragment = ScoreFragment()
-
-    val fragmentManager = supportFragmentManager
+    private var setupState: Fragment.SavedState? = null
+    private var scoreState: Fragment.SavedState? = null
+    private val fragmentManager = supportFragmentManager
+    private var currentFragment = MainFragment.SETUP
+    private var matchAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,30 +46,50 @@ class MainActivity : FragmentActivity() {
 
         Game.init(this)
 
-        if (savedInstanceState == null) {
-            setupFragment = SetupFragment()
-        } else {
-            setupFragment = fragmentManager.getFragment(savedInstanceState, "setupFragment") as SetupFragment
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("setupState")) {
+                setupFragment.setInitialSavedState(savedInstanceState.getParcelable("setupState"))
+            }
+            if (savedInstanceState.containsKey("scoreState")) {
+                scoreFragment.setInitialSavedState(savedInstanceState.getParcelable("scoreState"))
+            }
+            currentFragment = savedInstanceState.getSerializable("currentFragment") as MainFragment
+            matchAdded = savedInstanceState.getBoolean("matchAdded")
+            navigationAdapter.notifyDataSetChanged()
         }
         setupFragment.mainActivity = this
 
         navigation_drawer.setAdapter(navigationAdapter)
         navigation_drawer.addOnItemSelectedListener {
-            fragmentManager.beginTransaction().replace(
-                R.id.fragment_container, when (if (scoreFragment.setup) it else it + 1) {
-                    0 -> scoreFragment
-                    else -> setupFragment
+            switchFragment(
+                when (if (matchAdded) it else it + 1) {
+                    0 -> MainFragment.SCORE
+                    else -> MainFragment.SETUP
                 }
-            ).commit()
+            )
         }
 
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, setupFragment).commit()
+        fragmentManager.beginTransaction().replace(
+            R.id.fragment_container, when (currentFragment) {
+                MainFragment.SETUP -> setupFragment
+                MainFragment.SCORE -> scoreFragment
+            }
+        ).commit()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        fragmentManager.putFragment(outState, "setupFragment", setupFragment)
+        saveCurrentFragment()
+        if (setupState != null) {
+            outState.putParcelable("setupState", setupState)
+        }
+        if (scoreState != null) {
+            outState.putParcelable("scoreState", scoreState)
+        }
+
+        outState.putSerializable("currentFragment", currentFragment)
+        outState.putBoolean("matchAdded", matchAdded)
     }
 
     private class NavigationItem(val text: CharSequence, val drawableId: Int)
@@ -77,21 +101,48 @@ class MainActivity : FragmentActivity() {
         )
 
         override fun getItemText(pos: Int): CharSequence {
-            return items[if (scoreFragment.setup) pos else pos + 1].text
+            return items[if (matchAdded) pos else pos + 1].text
         }
 
         override fun getItemDrawable(pos: Int): Drawable? {
-            return getDrawable(items[if (scoreFragment.setup) pos else pos + 1].drawableId)
+            return getDrawable(items[if (matchAdded) pos else pos + 1].drawableId)
         }
 
         override fun getCount(): Int {
-            return if (scoreFragment.setup) items.size else items.size - 1
+            return if (matchAdded) items.size else items.size - 1
         }
     }
 
     fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
+        switchFragment(MainFragment.SCORE)
         scoreFragment.newMatch(winMinimumMatch, startingServer, tiebreak)
+        matchAdded = true
         navigationAdapter.notifyDataSetChanged()
     }
+
+    private fun switchFragment(fragment: MainFragment) {
+        if (fragment != currentFragment) {
+            saveCurrentFragment()
+            currentFragment = fragment
+            when (fragment) {
+                MainFragment.SETUP -> fragmentManager.beginTransaction().replace(
+                    R.id.fragment_container,
+                    setupFragment
+                ).commit()
+                MainFragment.SCORE -> fragmentManager.beginTransaction().replace(
+                    R.id.fragment_container,
+                    scoreFragment
+                ).commit()
+            }
+        }
+    }
+
+    private fun saveCurrentFragment() {
+        when (currentFragment) {
+            MainFragment.SETUP -> setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
+            MainFragment.SCORE -> scoreState = fragmentManager.saveFragmentInstanceState(scoreFragment)
+        }
+    }
+
+    private enum class MainFragment { SETUP, SCORE }
 }

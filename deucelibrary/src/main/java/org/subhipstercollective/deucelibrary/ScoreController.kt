@@ -50,7 +50,7 @@ class ScoreController(val activityScore: ScoreView) {
     var matchAdded = false
         private set
 
-    fun loadState(savedInstanceState: Bundle) {
+    fun loadInstanceState(savedInstanceState: Bundle) {
         winMinimumMatch = savedInstanceState.getInt("winMinimumMatch")
         winMinimumSet = savedInstanceState.getInt("winMinimumSet")
         winMarginSet = savedInstanceState.getInt("winMarginSet")
@@ -64,9 +64,29 @@ class ScoreController(val activityScore: ScoreView) {
         doubles = savedInstanceState.getBoolean("doubles")
         startingServer = savedInstanceState.getSerializable("startingServer") as Team
         scoreLog = savedInstanceState.getParcelable("scores")!!
+        matchAdded = savedInstanceState.getBoolean("matchAdded")
 
         addMatch()
         loadScores()
+    }
+
+    fun saveInstanceState(): Bundle {
+        val outState = Bundle()
+        outState.putParcelable("scores", scoreLog)
+        outState.putInt("winMinimumMatch", winMinimumMatch)
+        outState.putInt("winMinimumSet", winMinimumSet)
+        outState.putInt("winMarginSet", winMarginSet)
+        outState.putInt("winMinimumGame", winMinimumGame)
+        outState.putInt("winMarginGame", winMarginGame)
+        outState.putInt("winMinimumGameTiebreak", winMinimumGameTiebreak)
+        outState.putInt("winMarginGameTiebreak", winMarginGameTiebreak)
+        outState.putLong("animationDuration", animationDuration)
+        outState.putLong("nextAnimationDuration", nextAnimationDuration)
+        outState.putBoolean("tiebreak", tiebreak)
+        outState.putBoolean("doubles", doubles)
+        outState.putSerializable("startingServer", startingServer)
+        outState.putBoolean("matchAdded", matchAdded)
+        return outState
     }
 
     private fun loadScores() {
@@ -294,21 +314,5 @@ class ScoreController(val activityScore: ScoreView) {
 
             updateDisplay()
         }
-    }
-
-    fun saveState(outState: Bundle) {
-        outState.putParcelable("scores", scoreLog)
-        outState.putInt("winMinimumMatch", winMinimumMatch)
-        outState.putInt("winMinimumSet", winMinimumSet)
-        outState.putInt("winMarginSet", winMarginSet)
-        outState.putInt("winMinimumGame", winMinimumGame)
-        outState.putInt("winMarginGame", winMarginGame)
-        outState.putInt("winMinimumGameTiebreak", winMinimumGameTiebreak)
-        outState.putInt("winMarginGameTiebreak", winMarginGameTiebreak)
-        outState.putLong("animationDuration", animationDuration)
-        outState.putLong("nextAnimationDuration", nextAnimationDuration)
-        outState.putBoolean("tiebreak", tiebreak)
-        outState.putBoolean("doubles", doubles)
-        outState.putSerializable("startingServer", startingServer)
     }
 }

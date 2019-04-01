@@ -50,9 +50,6 @@ class ScoreFragment() : Fragment(), ScoreView {
 
     private val controller = ScoreController(this)
 
-    var setup = false
-        private set
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
     }
@@ -89,9 +86,18 @@ class ScoreFragment() : Fragment(), ScoreView {
         button_score_p1.setOnClickListener { controller.score(Team.TEAM1) }
         button_score_p2.setOnClickListener { controller.score(Team.TEAM2) }
 
+        if (savedInstanceState != null) {
+            controller.loadInstanceState(savedInstanceState.getBundle("controllerState")!!)
+        }
         if (!controller.matchAdded) {
             controller.addMatch()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putBundle("controllerState", controller.saveInstanceState())
     }
 
     fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
@@ -101,6 +107,5 @@ class ScoreFragment() : Fragment(), ScoreView {
         if (controller.matchAdded) {
             controller.addMatch()
         }
-        setup = true
     }
 }
