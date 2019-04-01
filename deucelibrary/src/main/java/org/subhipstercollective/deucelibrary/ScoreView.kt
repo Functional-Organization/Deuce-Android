@@ -34,7 +34,6 @@ interface ScoreView {
     var imageBallNotservingT2: ImageView
     var textScoresMatchP1: TextView
     var textScoresMatchP2: TextView
-//    val context: Context
 
     var posXBallLeftT1: Float
     var posXBallRightT1: Float
