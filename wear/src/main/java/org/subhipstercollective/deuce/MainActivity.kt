@@ -76,7 +76,7 @@ class MainActivity : FragmentActivity() {
         super.onSaveInstanceState(outState)
 
         saveCurrentFragment()
-        setupState?.let { outState.putParcelable("setupState", setupState) }
+        //setupState?.let { outState.putParcelable("setupState", setupState) }
         scoreState?.let { outState.putParcelable("scoreState", scoreState) }
 
         outState.putSerializable("currentFragment", currentFragment)
@@ -106,7 +106,8 @@ class MainActivity : FragmentActivity() {
 
     private fun saveCurrentFragment() {
         when (currentFragment) {
-            FragmentEnum.SETUP -> setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
+            FragmentEnum.SETUP -> {
+            }//setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
             FragmentEnum.SCORE -> scoreState = fragmentManager.saveFragmentInstanceState(scoreFragment)
         }
     }

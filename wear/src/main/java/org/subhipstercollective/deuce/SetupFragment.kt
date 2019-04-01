@@ -19,8 +19,10 @@
 
 package org.subhipstercollective.deuce
 
+import android.content.SharedPreferences
 import android.graphics.Paint
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +34,7 @@ import kotlin.random.Random
 
 class SetupFragment : Fragment() {
     lateinit var mainActivity: MainActivity
+    lateinit var preferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_setup, container, false)
@@ -39,6 +42,8 @@ class SetupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         view.post {
             // Set text_num_sets width to largest necessary
@@ -55,11 +60,30 @@ class SetupFragment : Fragment() {
         seek_num_sets.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 text_num_sets.text = seek_num_sets.progressString
+                preferences.edit().putInt("num_sets", progress).apply()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+
+        radio_server_me.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                preferences.edit().putInt("server", 0).apply()
+            }
+        }
+
+        radio_server_opponent.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                preferences.edit().putInt("server", 1).apply()
+            }
+        }
+
+        radio_server_flip.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                preferences.edit().putInt("server", 2).apply()
+            }
+        }
 
         button_start.setOnClickListener {
             mainActivity.newMatch(
@@ -73,26 +97,15 @@ class SetupFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (savedInstanceState != null) {
-            seek_num_sets.progress = savedInstanceState.getInt("num_sets")
-            when (savedInstanceState.getString("server")) {
-                "me" -> radio_server_me.isChecked = true
-                "opponent" -> radio_server_opponent.isChecked = true
-                else -> radio_server_flip.isChecked = true
+        if (preferences.contains("num_sets")) {
+            seek_num_sets.progress = preferences.getInt("num_sets", 2)
+        }
+        if (preferences.contains("server")) {
+            when (preferences.getInt("server", 2)) {
+                0 -> radio_server_me.isChecked = true
+                1 -> radio_server_opponent.isChecked = true
+                2 -> radio_server_flip.isChecked = true
             }
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.putInt("num_sets", seek_num_sets.progress)
-        outState.putString(
-            "server", when {
-                radio_server_me.isChecked -> "me"
-                radio_server_opponent.isChecked -> "opponent"
-                else -> "flip"
-            }
-        )
     }
 }
