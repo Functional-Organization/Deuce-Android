@@ -17,23 +17,25 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<androidx.wear.widget.drawer.WearableDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_main"
+<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--<ScrollView-->
-    <!--android:id="@+id/content"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:nestedScrollingEnabled="true">-->
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <!--</ScrollView>-->
-    <androidx.wear.widget.drawer.WearableNavigationDrawerView
-        android:id="@+id/navigation_drawer"
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#002A4D" />
-</androidx.wear.widget.drawer.WearableDrawerLayout>
+        android:orientation="vertical"
+        app:boxedEdges="all"
+        tools:ignore="MissingPrefix">
+
+        <Switch
+            android:id="@+id/switch_tiebreak"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            tools:text="Tiebreak set" />
+    </LinearLayout>
+</androidx.wear.widget.BoxInsetLayout>
