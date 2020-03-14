@@ -26,15 +26,19 @@ import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.Game
+import org.subhipstercollective.deucelibrary.ScoreController
 import org.subhipstercollective.deucelibrary.Team
 
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
+    internal val controller = ScoreController()
+
     private val setupFragment = SetupFragment()
     private val advancedSetupFragment = AdvancedSetupFragment()
-    private val scoreFragment = ScoreFragment()
+    private val scoreFragment = ScoreFragment(this)
 
     //private var setupState: Fragment.SavedState? = null
     private var scoreState: Fragment.SavedState? = null
@@ -42,18 +46,21 @@ class MainActivity : FragmentActivity() {
     private val fragmentManager = supportFragmentManager
     private var currentFragment = FragmentEnum.SETUP
     private var matchAdded = false
+    private var ambientMode = false
+
+    private lateinit var mAmbientController: AmbientModeSupport.AmbientController
     private lateinit var mDetector: GestureDetectorCompat
+
+    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*// Enables Always-on
-        setAmbientEnabled()*/
-
         Game.init(this)
 
         savedInstanceState?.let {
+            controller.loadInstanceState(savedInstanceState.getBundle("controllerState")!!)
             if (savedInstanceState.containsKey("setupState")) {
                 setupFragment.setInitialSavedState(savedInstanceState.getParcelable("setupState"))
             }
@@ -70,6 +77,8 @@ class MainActivity : FragmentActivity() {
         navigation_drawer.addOnItemSelectedListener {
             switchFragment(navigationAdapter.getItemEnum(it))
         }
+
+        mAmbientController = AmbientModeSupport.attach(this)
 
         mDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onFling(
@@ -100,8 +109,9 @@ class MainActivity : FragmentActivity() {
 
         saveCurrentFragment()
         //setupState?.let { outState.putParcelable("setupState", setupState) }
-        scoreState?.let { outState.putParcelable("scoreState", scoreState) }
+        //scoreState?.let { outState.putParcelable("scoreState", scoreState) }
 
+        outState.putBundle("controllerState", controller.saveInstanceState())
         outState.putSerializable("currentFragment", currentFragment)
         outState.putBoolean("matchAdded", matchAdded)
     }
@@ -136,44 +146,80 @@ class MainActivity : FragmentActivity() {
         when (currentFragment) {
             FragmentEnum.SETUP -> {
             }//setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
-            FragmentEnum.SCORE -> scoreState = fragmentManager.saveFragmentInstanceState(scoreFragment)
+            FragmentEnum.SCORE -> scoreState =
+                fragmentManager.saveFragmentInstanceState(scoreFragment)
         }
     }
 
-    private class NavigationItem(val text: CharSequence, val drawableId: Int, val enum: FragmentEnum)
+    private class NavigationItem(
+        val text: CharSequence,
+        val drawableId: Int,
+        val enum: FragmentEnum
+    )
 
-    private val navigationAdapter = object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
-        private val items = arrayOf(
-            NavigationItem("Setup", R.drawable.ball_orange, FragmentEnum.SETUP),
-            NavigationItem("Advanced Setup", R.drawable.ball_darkorange, FragmentEnum.ADVANCED_SETUP),
-            NavigationItem("Match", R.drawable.ball_green, FragmentEnum.SCORE)
-        )
+    private val navigationAdapter =
+        object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
+            private val items = arrayOf(
+                NavigationItem("Setup", R.drawable.ball_orange, FragmentEnum.SETUP),
+                NavigationItem(
+                    "Advanced Setup",
+                    R.drawable.ball_darkorange,
+                    FragmentEnum.ADVANCED_SETUP
+                ),
+                NavigationItem("Match", R.drawable.ball_green, FragmentEnum.SCORE)
+            )
 
-        override fun getItemText(pos: Int): CharSequence {
-            return items[pos].text
-        }
-
-        override fun getItemDrawable(pos: Int): Drawable? {
-            return getDrawable(items[pos].drawableId)
-        }
-
-        override fun getCount(): Int {
-            return if (matchAdded) items.size else items.size - 1
-        }
-
-        fun getItemEnum(pos: Int): FragmentEnum {
-            return items[pos].enum
-        }
-
-        fun getEnumPos(enum: FragmentEnum): Int {
-            for (i in 0 until items.size) {
-                if (items[i].enum == enum) {
-                    return i
-                }
+            override fun getItemText(pos: Int): CharSequence {
+                return items[pos].text
             }
-            return -1
+
+            override fun getItemDrawable(pos: Int): Drawable? {
+                return getDrawable(items[pos].drawableId)
+            }
+
+            override fun getCount(): Int {
+                return if (matchAdded) items.size else items.size - 1
+            }
+
+            fun getItemEnum(pos: Int): FragmentEnum {
+                return items[pos].enum
+            }
+
+            fun getEnumPos(enum: FragmentEnum): Int {
+                for (i in items.indices) {
+                    if (items[i].enum == enum) {
+                        return i
+                    }
+                }
+                return -1
+            }
         }
-    }
+
+//    override fun getTheme(): Resources.Theme {
+//        //return super.getTheme()
+//        println("foo")
+//        val theme = super.getTheme()
+//        if (ambientMode) {
+//            theme.applyStyle(R.style.DeuceWear_ambient, true)
+//        }
+//        ambientMode = !ambientMode
+//        return theme
+//    }
 
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
+
+    private class MyAmbientCallback : AmbientModeSupport.AmbientCallback() {
+
+        override fun onEnterAmbient(ambientDetails: Bundle?) {
+            // Handle entering ambient mode
+        }
+
+        override fun onExitAmbient() {
+            // Handle exiting ambient mode
+        }
+
+        override fun onUpdateAmbient() {
+            // Update the content
+        }
+    }
 }

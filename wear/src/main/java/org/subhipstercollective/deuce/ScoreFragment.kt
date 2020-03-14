@@ -28,11 +28,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
-import org.subhipstercollective.deucelibrary.ScoreController
 import org.subhipstercollective.deucelibrary.ScoreView
 import org.subhipstercollective.deucelibrary.Team
 
-class ScoreFragment() : Fragment(), ScoreView {
+class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreView {
     override lateinit var buttonScoreP1: Button
     override lateinit var buttonScoreP2: Button
     override lateinit var textScoreP1: TextView
@@ -48,7 +47,9 @@ class ScoreFragment() : Fragment(), ScoreView {
     override var posXBallLeftT2 = 0f
     override var posXBallRightT2 = 0f
 
-    private val controller = ScoreController(this)
+    init {
+        mainActivity.controller.activityScore = this
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -76,40 +77,40 @@ class ScoreFragment() : Fragment(), ScoreView {
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
             posXBallLeftT2 = posXBallRightT1
-            controller.redrawDisplay()
+            mainActivity.controller.redrawDisplay()
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        button_score_p1.setOnClickListener { controller.score(Team.TEAM1) }
-        button_score_p2.setOnClickListener { controller.score(Team.TEAM2) }
-
-        if (savedInstanceState != null) {
-            controller.loadInstanceState(savedInstanceState.getBundle("controllerState")!!)
+        button_score_p1.setOnClickListener {
+            mainActivity.setTheme(R.style.DeuceWear_ambient)
+            mainActivity.controller.score(Team.TEAM1)
         }
-        if (!controller.matchAdded) {
-            controller.addMatch()
+        button_score_p2.setOnClickListener { mainActivity.controller.score(Team.TEAM2) }
+
+        if (!mainActivity.controller.matchAdded) {
+            mainActivity.controller.addMatch()
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.putBundle("controllerState", controller.saveInstanceState())
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//
+//        outState.putBundle("controllerState", controller.saveInstanceState())
+//    }
 
     fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
-        controller.winMinimumMatch = winMinimumMatch
-        controller.startingServer = startingServer
-        controller.tiebreak = tiebreak
-        if (controller.matchAdded) {
-            controller.addMatch()
+        mainActivity.controller.winMinimumMatch = winMinimumMatch
+        mainActivity.controller.startingServer = startingServer
+        mainActivity.controller.tiebreak = tiebreak
+        if (mainActivity.controller.matchAdded) {
+            mainActivity.controller.addMatch()
         }
     }
 
     fun undo() {
-        controller.undo()
+        mainActivity.controller.undo()
     }
 }

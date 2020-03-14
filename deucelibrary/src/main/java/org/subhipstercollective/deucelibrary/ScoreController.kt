@@ -24,7 +24,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 
-class ScoreController(val activityScore: ScoreView) {
+class ScoreController {
     var winMinimumMatch = 0
     var winMinimumSet = WIN_MINIMUM_SET
     var winMarginSet = WIN_MARGIN_SET
@@ -46,6 +46,8 @@ class ScoreController(val activityScore: ScoreView) {
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame
     private var scoreLog = ScoreStack()
+
+    var activityScore: ScoreView? = null
 
     var matchAdded = false
         private set
@@ -109,8 +111,8 @@ class ScoreController(val activityScore: ScoreView) {
         )
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
 
-        activityScore.buttonScoreP1.isEnabled = true
-        activityScore.buttonScoreP2.isEnabled = true
+        activityScore?.buttonScoreP1?.isEnabled = true
+        activityScore?.buttonScoreP2?.isEnabled = true
 
         redrawDisplay()
     }
@@ -128,106 +130,108 @@ class ScoreController(val activityScore: ScoreView) {
             }
         }
 
+        val mActivityScore = activityScore ?: return
+
         val scores = currentGame.getScoreStrs()
-        activityScore.textScoreP1.text = scores.player1
-        activityScore.textScoreP2.text = scores.player2
+        mActivityScore.textScoreP1.text = scores.player1
+        mActivityScore.textScoreP2.text = scores.player2
 
         when (serving) {
             Serving.PLAYER1_LEFT -> {
-                activityScore.imageBallServingT1.setImageResource(R.drawable.ball_green)
-                moveBall(activityScore.imageBallServingT1, activityScore.posXBallLeftT1)
-                activityScore.imageBallServingT1.visibility = View.VISIBLE
-                activityScore.imageBallServingT2.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT1.setImageResource(R.drawable.ball_green)
+                moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallLeftT1)
+                mActivityScore.imageBallServingT1.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
                 if (doubles) {
-                    activityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkorange)
-                    moveBall(activityScore.imageBallNotservingT1, activityScore.posXBallRightT1)
-                    activityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                    activityScore.imageBallNotservingT2.visibility = View.INVISIBLE
+                    mActivityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkorange)
+                    moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallRightT1)
+                    mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
+                    mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
                 }
             }
             Serving.PLAYER1_RIGHT -> {
-                activityScore.imageBallServingT1.setImageResource(R.drawable.ball_green)
-                moveBall(activityScore.imageBallServingT1, activityScore.posXBallRightT1)
-                activityScore.imageBallServingT1.visibility = View.VISIBLE
-                activityScore.imageBallServingT2.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT1.setImageResource(R.drawable.ball_green)
+                moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallRightT1)
+                mActivityScore.imageBallServingT1.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
                 if (doubles) {
-                    activityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkorange)
-                    moveBall(activityScore.imageBallNotservingT1, activityScore.posXBallLeftT1)
-                    activityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                    activityScore.imageBallNotservingT2.visibility = View.INVISIBLE
+                    mActivityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkorange)
+                    moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallLeftT1)
+                    mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
+                    mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
                 }
             }
             Serving.PLAYER2_LEFT -> {
-                activityScore.imageBallServingT2.setImageResource(R.drawable.ball_green)
-                moveBall(activityScore.imageBallServingT2, activityScore.posXBallLeftT2)
-                activityScore.imageBallServingT2.visibility = View.VISIBLE
-                activityScore.imageBallServingT1.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT2.setImageResource(R.drawable.ball_green)
+                moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallLeftT2)
+                mActivityScore.imageBallServingT2.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
                 if (doubles) {
-                    activityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkorange)
-                    moveBall(activityScore.imageBallNotservingT2, activityScore.posXBallRightT2)
-                    activityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                    activityScore.imageBallNotservingT1.visibility = View.INVISIBLE
+                    mActivityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkorange)
+                    moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallRightT2)
+                    mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
+                    mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
                 }
             }
             Serving.PLAYER2_RIGHT -> {
-                activityScore.imageBallServingT2.setImageResource(R.drawable.ball_green)
-                moveBall(activityScore.imageBallServingT2, activityScore.posXBallRightT2)
-                activityScore.imageBallServingT2.visibility = View.VISIBLE
-                activityScore.imageBallServingT1.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT2.setImageResource(R.drawable.ball_green)
+                moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallRightT2)
+                mActivityScore.imageBallServingT2.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
                 if (doubles) {
-                    activityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkorange)
-                    moveBall(activityScore.imageBallNotservingT2, activityScore.posXBallLeftT2)
-                    activityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                    activityScore.imageBallNotservingT1.visibility = View.INVISIBLE
+                    mActivityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkorange)
+                    moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallLeftT2)
+                    mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
+                    mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
                 }
             }
             Serving.PLAYER3_LEFT -> {
-                activityScore.imageBallServingT1.setImageResource(R.drawable.ball_orange)
-                moveBall(activityScore.imageBallServingT1, activityScore.posXBallLeftT1)
-                activityScore.imageBallServingT1.visibility = View.VISIBLE
-                activityScore.imageBallServingT2.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT1.setImageResource(R.drawable.ball_orange)
+                moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallLeftT1)
+                mActivityScore.imageBallServingT1.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
-                activityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkgreen)
-                moveBall(activityScore.imageBallNotservingT1, activityScore.posXBallRightT1)
-                activityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                activityScore.imageBallNotservingT2.visibility = View.INVISIBLE
+                mActivityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkgreen)
+                moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallRightT1)
+                mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
+                mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
             }
             Serving.PLAYER3_RIGHT -> {
-                activityScore.imageBallServingT1.setImageResource(R.drawable.ball_orange)
-                moveBall(activityScore.imageBallServingT1, activityScore.posXBallRightT1)
-                activityScore.imageBallServingT1.visibility = View.VISIBLE
-                activityScore.imageBallServingT2.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT1.setImageResource(R.drawable.ball_orange)
+                moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallRightT1)
+                mActivityScore.imageBallServingT1.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
-                activityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkgreen)
-                moveBall(activityScore.imageBallNotservingT1, activityScore.posXBallLeftT1)
-                activityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                activityScore.imageBallNotservingT2.visibility = View.INVISIBLE
+                mActivityScore.imageBallNotservingT1.setImageResource(R.drawable.ball_darkgreen)
+                moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallLeftT1)
+                mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
+                mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
             }
             Serving.PLAYER4_LEFT -> {
-                activityScore.imageBallServingT2.setImageResource(R.drawable.ball_orange)
-                moveBall(activityScore.imageBallServingT2, activityScore.posXBallLeftT2)
-                activityScore.imageBallServingT2.visibility = View.VISIBLE
-                activityScore.imageBallServingT1.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT2.setImageResource(R.drawable.ball_orange)
+                moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallLeftT2)
+                mActivityScore.imageBallServingT2.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
-                activityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkgreen)
-                moveBall(activityScore.imageBallNotservingT2, activityScore.posXBallRightT2)
-                activityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                activityScore.imageBallNotservingT1.visibility = View.INVISIBLE
+                mActivityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkgreen)
+                moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallRightT2)
+                mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
+                mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
             }
             Serving.PLAYER4_RIGHT -> {
-                activityScore.imageBallServingT2.setImageResource(R.drawable.ball_orange)
-                moveBall(activityScore.imageBallServingT2, activityScore.posXBallRightT2)
-                activityScore.imageBallServingT2.visibility = View.VISIBLE
-                activityScore.imageBallServingT1.visibility = View.INVISIBLE
+                mActivityScore.imageBallServingT2.setImageResource(R.drawable.ball_orange)
+                moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallRightT2)
+                mActivityScore.imageBallServingT2.visibility = View.VISIBLE
+                mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
-                activityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkgreen)
-                moveBall(activityScore.imageBallNotservingT2, activityScore.posXBallLeftT2)
-                activityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                activityScore.imageBallNotservingT1.visibility = View.INVISIBLE
+                mActivityScore.imageBallNotservingT2.setImageResource(R.drawable.ball_darkgreen)
+                moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallLeftT2)
+                mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
+                mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
             }
         }
 
@@ -239,8 +243,8 @@ class ScoreController(val activityScore: ScoreView) {
             textScoresMatchP1 += set.scoreP1.toString() + "  "
             textScoresMatchP2 += set.scoreP2.toString() + "  "
         }
-        activityScore.textScoresMatchP1.text = textScoresMatchP1.trim()
-        activityScore.textScoresMatchP2.text = textScoresMatchP2.trim()
+        mActivityScore.textScoresMatchP1.text = textScoresMatchP1.trim()
+        mActivityScore.textScoresMatchP2.text = textScoresMatchP2.trim()
     }
 
     fun score(team: Team, updateLog: Boolean = true) {
@@ -251,8 +255,8 @@ class ScoreController(val activityScore: ScoreView) {
                 val winnerMatch = match.score(team)
                 if (winnerMatch != Winner.NONE) {
                     // Match is over
-                    activityScore.buttonScoreP1.isEnabled = false
-                    activityScore.buttonScoreP2.isEnabled = false
+                    activityScore?.buttonScoreP1?.isEnabled = false
+                    activityScore?.buttonScoreP2?.isEnabled = false
                 } else {
                     // Set is over
                     match.addNewSet()
