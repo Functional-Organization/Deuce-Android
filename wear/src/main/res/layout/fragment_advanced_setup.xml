@@ -32,10 +32,22 @@
         tools:ignore="MissingPrefix">
 
         <Switch
-            android:id="@+id/switch_tiebreak"
+            android:id="@+id/switch_doubles"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
+            tools:text="Singles" />
+
+        <Switch
+            android:id="@+id/switch_advantage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
             tools:text="Tiebreak set" />
+
+        <Switch
+            android:id="@+id/switch_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Don't show time" />
     </LinearLayout>
 </androidx.wear.widget.BoxInsetLayout>

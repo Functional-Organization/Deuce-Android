@@ -39,4 +39,6 @@ interface ScoreView {
     var posXBallRightT1: Float
     var posXBallLeftT2: Float
     var posXBallRightT2: Float
+
+    val displayBalls: Boolean
 }

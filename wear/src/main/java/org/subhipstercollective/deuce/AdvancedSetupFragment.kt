@@ -40,21 +40,41 @@ class AdvancedSetupFragment : Fragment() {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-        updateSwitchTiebreakText()
+        updateSwitchDoublesText()
+        updateSwitchAdvantageText()
+        updateSwitchTime()
 
-        switch_tiebreak.setOnCheckedChangeListener { _, isChecked ->
-            updateSwitchTiebreakText()
-            preferences.edit().putBoolean("tiebreak", isChecked).apply()
+        switch_doubles.setOnCheckedChangeListener { _, isChecked ->
+            updateSwitchDoublesText()
+            preferences.edit().putBoolean("doubles", isChecked).apply()
+        }
+        switch_advantage.setOnCheckedChangeListener { _, isChecked ->
+            updateSwitchAdvantageText()
+            preferences.edit().putBoolean("advantage", isChecked).apply()
+        }
+        switch_time.setOnCheckedChangeListener { _, isChecked ->
+            updateSwitchTime()
+            preferences.edit().putBoolean("time", isChecked).apply()
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        switch_tiebreak.isChecked = preferences.getBoolean("tiebreak", true)
+        switch_doubles.isChecked = preferences.getBoolean("doubles", false)
+        switch_advantage.isChecked = preferences.getBoolean("advantage", false)
+        switch_time.isChecked = preferences.getBoolean("time", false)
     }
 
-    private fun updateSwitchTiebreakText() {
-        switch_tiebreak.text = if (switch_tiebreak.isChecked) "Tiebreak set" else "Advantage set"
+    private fun updateSwitchDoublesText() {
+        switch_doubles.text = if (switch_doubles.isChecked) "Doubles" else "Singles"
+    }
+
+    private fun updateSwitchAdvantageText() {
+        switch_advantage.text = if (switch_advantage.isChecked) "Advantage set" else "Tiebreak set"
+    }
+
+    private fun updateSwitchTime() {
+        switch_time.text = if (switch_time.isChecked) "Show time" else "Don't show time"
     }
 }

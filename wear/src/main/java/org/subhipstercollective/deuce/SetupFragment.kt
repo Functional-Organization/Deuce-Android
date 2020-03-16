@@ -89,7 +89,8 @@ class SetupFragment : Fragment() {
             mainActivity.newMatch(
                 seek_num_sets.numSets,
                 if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0)) Team.TEAM1 else Team.TEAM2,
-                preferences.getBoolean("tiebreak", true)
+                preferences.getBoolean("doubles", false),
+                preferences.getBoolean("advantage", false)
             )
         }
     }

@@ -20,6 +20,9 @@
 package org.subhipstercollective.deuce
 
 import android.os.Bundle
+import android.os.Handler
+import android.preference.PreferenceManager
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +33,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
 import org.subhipstercollective.deucelibrary.ScoreView
 import org.subhipstercollective.deucelibrary.Team
+import java.util.*
 
 class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreView {
     override lateinit var buttonScoreP1: Button
@@ -47,9 +51,17 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
     override var posXBallLeftT2 = 0f
     override var posXBallRightT2 = 0f
 
+    lateinit var textTime: TextView
+
+    val timeTextHandler = Handler()
+    var timeThread: Thread? = null
+    var runThread = false
+
     init {
         mainActivity.controller.activityScore = this
     }
+
+    override var displayBalls = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -57,6 +69,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         buttonScoreP1 = button_score_p1
         buttonScoreP2 = button_score_p2
@@ -73,6 +87,28 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
         posXBallLeftT1 = ball_notserving_t1.x
         posXBallRightT2 = posXBallLeftT1
+
+        if (mainActivity.ambientMode) {
+            displayBalls = false
+            textScoresMatchP1.setTextColor(context!!.getColor(R.color.white))
+            textScoresMatchP2.setTextColor(context!!.getColor(R.color.white))
+            text_time.setTextColor(context!!.getColor(R.color.white))
+            text_time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36F)
+            text_time.visibility = View.VISIBLE
+            text_time.text = mainActivity.timeFormat.format(Date())
+        } else if (preferences.getBoolean("time", false)) {
+            text_time.visibility = View.VISIBLE
+            timeThread = object : Thread() {
+                override fun run() {
+                    runThread = true
+                    while (runThread) {
+                        timeTextHandler.post { text_time.text = mainActivity.timeFormat.format(Date()) }
+                        sleep(1000)
+                    }
+                }
+            }
+            timeThread!!.start()
+        }
 
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
@@ -95,22 +131,17 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
         }
     }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//
-//        outState.putBundle("controllerState", controller.saveInstanceState())
-//    }
-
-    fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
-        mainActivity.controller.winMinimumMatch = winMinimumMatch
-        mainActivity.controller.startingServer = startingServer
-        mainActivity.controller.tiebreak = tiebreak
-        if (mainActivity.controller.matchAdded) {
-            mainActivity.controller.addMatch()
-        }
-    }
-
     fun undo() {
         mainActivity.controller.undo()
+    }
+
+    override fun onDestroyView() {
+        runThread = false
+
+        super.onDestroyView()
+    }
+
+    fun ambientUpdate() {
+        text_time.text = mainActivity.timeFormat.format(Date())
     }
 }

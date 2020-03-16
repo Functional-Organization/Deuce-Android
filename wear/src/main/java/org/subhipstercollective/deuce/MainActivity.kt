@@ -19,6 +19,7 @@
 
 package org.subhipstercollective.deuce
 
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.GestureDetector
@@ -32,13 +33,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.Game
 import org.subhipstercollective.deucelibrary.ScoreController
 import org.subhipstercollective.deucelibrary.Team
+import java.text.DateFormat
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     internal val controller = ScoreController()
 
-    private val setupFragment = SetupFragment()
-    private val advancedSetupFragment = AdvancedSetupFragment()
-    private val scoreFragment = ScoreFragment(this)
+    private var setupFragment = SetupFragment()
+    private var advancedSetupFragment = AdvancedSetupFragment()
+    private var scoreFragment = ScoreFragment(this)
 
     //private var setupState: Fragment.SavedState? = null
     private var scoreState: Fragment.SavedState? = null
@@ -46,16 +48,21 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     private val fragmentManager = supportFragmentManager
     private var currentFragment = FragmentEnum.SETUP
     private var matchAdded = false
-    private var ambientMode = false
+    internal var ambientMode = false
+        private set
 
     private lateinit var mAmbientController: AmbientModeSupport.AmbientController
     private lateinit var mDetector: GestureDetectorCompat
 
-    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback()
+    internal lateinit var timeFormat: DateFormat
+
+    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        timeFormat = android.text.format.DateFormat.getTimeFormat(this)
 
         Game.init(this)
 
@@ -120,11 +127,18 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         return mDetector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }
 
-    fun newMatch(winMinimumMatch: Int, startingServer: Team, tiebreak: Boolean) {
+    fun newMatch(winMinimumMatch: Int, startingServer: Team, doubles: Boolean, tiebreak: Boolean) {
         matchAdded = true
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
-        scoreFragment.newMatch(winMinimumMatch, startingServer, tiebreak)
+
+        controller.winMinimumMatch = winMinimumMatch
+        controller.startingServer = startingServer
+        controller.doubles = doubles
+        controller.tiebreak = tiebreak
+        if (controller.matchAdded) {
+            controller.addMatch()
+        }
     }
 
     private fun switchFragment(fragment: FragmentEnum) {
@@ -195,31 +209,51 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             }
         }
 
-//    override fun getTheme(): Resources.Theme {
-//        //return super.getTheme()
-//        println("foo")
-//        val theme = super.getTheme()
-//        if (ambientMode) {
-//            theme.applyStyle(R.style.DeuceWear_ambient, true)
-//        }
-//        ambientMode = !ambientMode
-//        return theme
-//    }
+    override fun getTheme(): Resources.Theme {
+        //return super.getTheme()
+        val theme = super.getTheme()
+        //Log.d("foo", ambientMode.toString())
+        if (ambientMode) {
+            theme.applyStyle(R.style.DeuceWear_ambient, true)
+        } else {
+            theme.applyStyle(R.style.DeuceWear, true)
+        }
+        return theme
+    }
+
+    fun recreateFragments() {
+        val newSetupFragment = SetupFragment()
+        val newAdvancedSetupFragment = AdvancedSetupFragment()
+        val newScoreFragment = ScoreFragment(this)
+
+        fragmentManager.beginTransaction().replace(
+            R.id.fragment_container, when (currentFragment) {
+                FragmentEnum.SETUP -> newSetupFragment
+                FragmentEnum.ADVANCED_SETUP -> newAdvancedSetupFragment
+                FragmentEnum.SCORE -> newScoreFragment
+            }
+        ).commit()
+
+        setupFragment = newSetupFragment
+        advancedSetupFragment = newAdvancedSetupFragment
+        scoreFragment = newScoreFragment
+    }
 
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
-    private class MyAmbientCallback : AmbientModeSupport.AmbientCallback() {
-
+    private class MyAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
         override fun onEnterAmbient(ambientDetails: Bundle?) {
-            // Handle entering ambient mode
+            mainActivity.ambientMode = true
+            mainActivity.recreateFragments()
         }
 
         override fun onExitAmbient() {
-            // Handle exiting ambient mode
+            mainActivity.ambientMode = false
+            mainActivity.recreateFragments()
         }
 
         override fun onUpdateAmbient() {
-            // Update the content
+            mainActivity.scoreFragment.ambientUpdate()
         }
     }
 }
