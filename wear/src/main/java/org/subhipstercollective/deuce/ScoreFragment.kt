@@ -61,7 +61,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
         mainActivity.controller.activityScore = this
     }
 
-    override var displayBalls = true
+    override var ambient = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -89,7 +89,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
         posXBallRightT2 = posXBallLeftT1
 
         if (mainActivity.ambientMode) {
-            displayBalls = false
+            ambient = true
             textScoresMatchP1.setTextColor(context!!.getColor(R.color.white))
             textScoresMatchP2.setTextColor(context!!.getColor(R.color.white))
             text_time.setTextColor(context!!.getColor(R.color.white))

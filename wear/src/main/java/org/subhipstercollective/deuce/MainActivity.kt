@@ -160,6 +160,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         when (currentFragment) {
             FragmentEnum.SETUP -> {
             }//setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
+            FragmentEnum.ADVANCED_SETUP -> {
+            }
             FragmentEnum.SCORE -> scoreState =
                 fragmentManager.saveFragmentInstanceState(scoreFragment)
         }
@@ -221,7 +223,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         return theme
     }
 
-    fun recreateFragments() {
+    /*fun recreateFragments() {
         val newSetupFragment = SetupFragment()
         val newAdvancedSetupFragment = AdvancedSetupFragment()
         val newScoreFragment = ScoreFragment(this)
@@ -237,23 +239,43 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         setupFragment = newSetupFragment
         advancedSetupFragment = newAdvancedSetupFragment
         scoreFragment = newScoreFragment
+    }*/
+
+    fun recreateScoreFragment() {
+        val newScoreFragment = ScoreFragment(this)
+        if (currentFragment == FragmentEnum.SCORE) {
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, newScoreFragment).commit()
+        }
+        scoreFragment = newScoreFragment
     }
 
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
     private class MyAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
         override fun onEnterAmbient(ambientDetails: Bundle?) {
-            mainActivity.ambientMode = true
-            mainActivity.recreateFragments()
+            if (mainActivity.currentFragment == FragmentEnum.SCORE) {
+                mainActivity.ambientMode = true
+                mainActivity.recreateScoreFragment()
+            } else {
+                super.onEnterAmbient(ambientDetails)
+            }
         }
 
         override fun onExitAmbient() {
-            mainActivity.ambientMode = false
-            mainActivity.recreateFragments()
+            if (mainActivity.currentFragment == FragmentEnum.SCORE) {
+                mainActivity.ambientMode = false
+                mainActivity.recreateScoreFragment()
+            } else {
+                super.onExitAmbient()
+            }
         }
 
         override fun onUpdateAmbient() {
-            mainActivity.scoreFragment.ambientUpdate()
+            if (mainActivity.currentFragment == FragmentEnum.SCORE) {
+                mainActivity.scoreFragment.ambientUpdate()
+            } else {
+                super.onUpdateAmbient()
+            }
         }
     }
 }
