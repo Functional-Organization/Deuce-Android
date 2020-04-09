@@ -23,8 +23,10 @@ package org.subhipstercollective.deucelibrary
  * Created by mqduck on 10/31/17.
  */
 class Set(
-    val winMinimum: Int, val winMargin: Int,
-    val winMinimumGame: Int, val winMarginGame: Int, private val controller: ScoreController, val tiebreak: Boolean
+    private val winMinimum: Int, winMargin: Int,
+    private val winMinimumGame: Int, private val winMarginGame: Int,
+    private val winMinimumGameTiebreak: Int, private val winMarginGameTiebreak: Int,
+    private val controller: ScoreController, private val tiebreak: Boolean
 ) {
     var games = ArrayList<Game>()
     private var mScore = Score(winMinimum, winMargin)
@@ -38,7 +40,7 @@ class Set(
     fun addNewGame() {
         if (tiebreak && mScore.scoreP1 == winMinimum && mScore.scoreP2 == winMinimum) {
             mScore.winMargin = 1
-            games.add(Game(winMinimumGame, winMarginGame, controller, true))
+            games.add(Game(winMinimumGameTiebreak, winMarginGameTiebreak, controller, true))
         } else {
             games.add(Game(winMinimumGame, winMarginGame, controller, false))
         }
@@ -50,12 +52,6 @@ class Set(
 
     val currentGame get() = games.last()
 
-    /*val winMinimum get() = mScore.winMinimum
-    val winMargin get() = mScore.winMargin
-    val winMinimumGame get() = games[0].winMinimum
-    val winMarginGame get() = games[0].winMargin*/
     val scoreP1 get() = mScore.scoreP1
     val scoreP2 get() = mScore.scoreP2
-    val winner get() = mScore.winner
-    val gameNumber get() = games.size
 }

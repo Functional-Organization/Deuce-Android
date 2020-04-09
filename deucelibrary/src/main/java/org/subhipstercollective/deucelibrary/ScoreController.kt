@@ -36,11 +36,11 @@ class ScoreController {
 
     private var nextAnimationDuration = 0L
 
-    var tiebreak = false
-    var doubles = true
+    var tiebreak = true
+    var doubles = false
     var startingServer = Team.TEAM1
 
-    private var match = Match(0, 0, 0, 0, 0, this, tiebreak)
+    private var match = Match(0, 0, 0, 0, 0, 0, 0, this, true)
     var serving = Serving.PLAYER1_LEFT
 
     private val currentSet get() = match.currentSet
@@ -106,6 +106,8 @@ class ScoreController {
             winMarginSet,
             winMinimumGame,
             winMarginGame,
+            winMinimumGameTiebreak,
+            winMarginGameTiebreak,
             this,
             tiebreak
         )
