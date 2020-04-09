@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
 import android.view.GestureDetector
+import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
@@ -103,6 +104,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 ): Boolean {
                     if (currentFragment == FragmentEnum.SCORE && event1.x - event2.x >= 100 && velocityX <= -100) {
                         scoreFragment.undo()
+                        activity_main.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                         return true
                     }
                     return false

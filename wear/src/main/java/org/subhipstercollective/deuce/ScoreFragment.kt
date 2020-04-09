@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.TypedValue
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -151,5 +152,9 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
     fun ambientUpdate() {
         text_time.text = mainActivity.timeFormat.format(Date())
+    }
+
+    override fun doHapticChangeover() {
+        fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
     }
 }

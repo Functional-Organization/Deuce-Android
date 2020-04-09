@@ -41,4 +41,6 @@ interface ScoreView {
     var posXBallRightT2: Float
 
     val ambientMode: Boolean
+
+    fun doHapticChangeover()
 }

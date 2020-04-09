@@ -20,6 +20,7 @@
 package org.subhipstercollective.deuce
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -53,6 +54,18 @@ class SetupFragment(val mainActivity: MainActivity) : Fragment() {
                 paint.measureText(getString(R.string.best_of_3)),
                 paint.measureText(getString(R.string.best_of_5))
             ).toInt()
+        }
+
+        if (mainActivity.ambientMode) {
+            text_num_sets.paint.isAntiAlias = false
+            text_server.paint.isAntiAlias = false
+            radio_server_flip.setTextColor(Color.WHITE)
+            radio_server_flip.paint.isAntiAlias = false
+            radio_server_me.setTextColor(Color.WHITE)
+            radio_server_me.paint.isAntiAlias = false
+            radio_server_opponent.setTextColor(Color.WHITE)
+            radio_server_opponent.paint.isAntiAlias = false
+            button_start.paint.isAntiAlias = false
         }
 
         text_num_sets.text = seek_num_sets.progressString

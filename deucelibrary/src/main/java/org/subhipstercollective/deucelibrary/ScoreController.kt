@@ -280,20 +280,32 @@ class ScoreController {
                 }
             }
 
+            if (currentSet.games.size % 2 == 0) {
+                activityScore?.doHapticChangeover()
+            }
+
             nextAnimationDuration = 0
 
             serving = when (serving) {
-                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
-                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
-                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
-                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
+                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
+                    if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
+                    if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
+                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
+                    if (startingServer == Team.TEAM1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
+                    if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
             }
         } else if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 2 == 1) {
             serving = when (serving) {
-                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT -> if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
-                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT -> if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_LEFT else Serving.PLAYER1_LEFT
-                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
-                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> if (startingServer == Team.TEAM1) Serving.PLAYER1_LEFT else Serving.PLAYER3_LEFT
+                Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
+                    if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
+                    if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_LEFT else Serving.PLAYER1_LEFT
+                Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
+                    if (startingServer == Team.TEAM1) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
+                    if (startingServer == Team.TEAM1) Serving.PLAYER1_LEFT else Serving.PLAYER3_LEFT
             }
         } else {
             serving = when (serving) {
@@ -311,6 +323,10 @@ class ScoreController {
         if (updateLog) {
             scoreLog.push(team)
             updateDisplay()
+        }
+
+        if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 6 == 0) {
+            activityScore?.doHapticChangeover()
         }
     }
 
