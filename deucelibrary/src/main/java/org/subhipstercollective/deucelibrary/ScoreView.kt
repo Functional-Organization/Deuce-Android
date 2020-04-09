@@ -40,5 +40,5 @@ interface ScoreView {
     var posXBallLeftT2: Float
     var posXBallRightT2: Float
 
-    val ambient: Boolean
+    val ambientMode: Boolean
 }

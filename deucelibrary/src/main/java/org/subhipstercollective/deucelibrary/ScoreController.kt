@@ -136,10 +136,10 @@ class ScoreController {
         mActivityScore.textScoreP1.text = scores.player1
         mActivityScore.textScoreP2.text = scores.player2
 
-        val ballServingGreen = if (mActivityScore.ambient) R.drawable.ball_ambient else R.drawable.ball_green
-        val ballServingOrange = if (mActivityScore.ambient) R.drawable.ball_ambient else R.drawable.ball_orange
-        val ballNotservingGreen = if (mActivityScore.ambient) R.drawable.ball_void else R.drawable.ball_darkgreen
-        val ballNotservingOrange = if (mActivityScore.ambient) R.drawable.ball_void else R.drawable.ball_darkorange
+        val ballServingGreen = if (mActivityScore.ambientMode) R.drawable.ball_ambient else R.drawable.ball_green
+        val ballServingOrange = if (mActivityScore.ambientMode) R.drawable.ball_ambient else R.drawable.ball_orange
+        val ballNotservingGreen = if (mActivityScore.ambientMode) R.drawable.ball_void else R.drawable.ball_darkgreen
+        val ballNotservingOrange = if (mActivityScore.ambientMode) R.drawable.ball_void else R.drawable.ball_darkorange
 
         when (serving) {
             Serving.PLAYER1_LEFT -> {

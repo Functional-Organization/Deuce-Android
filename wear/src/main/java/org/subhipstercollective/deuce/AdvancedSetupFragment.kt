@@ -28,8 +28,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_advanced_setup.*
 
-class AdvancedSetupFragment : Fragment() {
+class AdvancedSetupFragment(mainActivity: MainActivity) : Fragment() {
     lateinit var preferences: SharedPreferences
+    val ambientMode = mainActivity.ambientMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_advanced_setup, container, false)

@@ -32,9 +32,9 @@ import kotlinx.android.synthetic.main.fragment_setup.*
 import org.subhipstercollective.deucelibrary.Team
 import kotlin.random.Random
 
-class SetupFragment : Fragment() {
-    lateinit var mainActivity: MainActivity
+class SetupFragment(val mainActivity: MainActivity) : Fragment() {
     lateinit var preferences: SharedPreferences
+    val ambientMode = mainActivity.ambientMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_setup, container, false)

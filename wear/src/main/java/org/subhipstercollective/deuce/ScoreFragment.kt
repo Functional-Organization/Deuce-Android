@@ -19,6 +19,7 @@
 
 package org.subhipstercollective.deuce
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
@@ -54,14 +55,13 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
     lateinit var textTime: TextView
 
     val timeTextHandler = Handler()
-    var timeThread: Thread? = null
     var runThread = false
+
+    override val ambientMode = mainActivity.ambientMode
 
     init {
         mainActivity.controller.activityScore = this
     }
-
-    override var ambient = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -89,16 +89,24 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
         posXBallRightT2 = posXBallLeftT1
 
         if (mainActivity.ambientMode) {
-            ambient = true
-            textScoresMatchP1.setTextColor(context!!.getColor(R.color.white))
-            textScoresMatchP2.setTextColor(context!!.getColor(R.color.white))
-            text_time.setTextColor(context!!.getColor(R.color.white))
+            textScoresMatchP1.setTextColor(Color.WHITE)
+            textScoresMatchP2.setTextColor(Color.WHITE)
+            text_time.setTextColor(Color.WHITE)
             text_time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36F)
             text_time.visibility = View.VISIBLE
             text_time.text = mainActivity.timeFormat.format(Date())
+
+            text_time.paint.isAntiAlias = false
+            text_scores_match_p1.paint.isAntiAlias = false
+            text_scores_match_p2.paint.isAntiAlias = false
+            button_score_p1.paint.isAntiAlias = false
+            button_score_p2.paint.isAntiAlias = false
+
+            button_score_p1.isEnabled = false
+            button_score_p2.isEnabled = false
         } else if (preferences.getBoolean("time", false)) {
             text_time.visibility = View.VISIBLE
-            timeThread = object : Thread() {
+            val timeThread = object : Thread() {
                 override fun run() {
                     runThread = true
                     while (runThread) {
@@ -107,7 +115,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
                     }
                 }
             }
-            timeThread!!.start()
+            timeThread.start()
         }
 
         view.post {

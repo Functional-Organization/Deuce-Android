@@ -21,11 +21,13 @@ package org.subhipstercollective.deuce
 
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.support.wearable.input.WearableButtons
 import android.view.GestureDetector
+import android.view.KeyEvent
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
@@ -38,12 +40,12 @@ import java.text.DateFormat
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     internal val controller = ScoreController()
 
-    private var setupFragment = SetupFragment()
-    private var advancedSetupFragment = AdvancedSetupFragment()
+    private var setupFragment = SetupFragment(this)
+    private var advancedSetupFragment = AdvancedSetupFragment(this)
     private var scoreFragment = ScoreFragment(this)
 
     //private var setupState: Fragment.SavedState? = null
-    private var scoreState: Fragment.SavedState? = null
+    //private var scoreState: Fragment.SavedState? = null
 
     private val fragmentManager = supportFragmentManager
     private var currentFragment = FragmentEnum.SETUP
@@ -51,12 +53,13 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     internal var ambientMode = false
         private set
 
-    private lateinit var mAmbientController: AmbientModeSupport.AmbientController
-    private lateinit var mDetector: GestureDetectorCompat
+    private lateinit var ambientController: AmbientModeSupport.AmbientController
+    private var gestureDetector: GestureDetectorCompat? = null
+    private var undoButton: Int? = null
 
     internal lateinit var timeFormat: DateFormat
 
-    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback(this)
+    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +69,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         Game.init(this)
 
+        var fragment = FragmentEnum.SETUP
+
         savedInstanceState?.let {
             controller.loadInstanceState(savedInstanceState.getBundle("controllerState")!!)
             if (savedInstanceState.containsKey("setupState")) {
@@ -74,57 +79,63 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             if (savedInstanceState.containsKey("scoreState")) {
                 scoreFragment.setInitialSavedState(savedInstanceState.getParcelable("scoreState"))
             }
-            currentFragment = savedInstanceState.getSerializable("currentFragment") as FragmentEnum
+            fragment = savedInstanceState.getSerializable("currentFragment") as FragmentEnum
             matchAdded = savedInstanceState.getBoolean("matchAdded")
             navigationAdapter.notifyDataSetChanged()
         }
-        setupFragment.mainActivity = this
 
         navigation_drawer.setAdapter(navigationAdapter)
         navigation_drawer.addOnItemSelectedListener {
             switchFragment(navigationAdapter.getItemEnum(it))
         }
 
-        mAmbientController = AmbientModeSupport.attach(this)
+        ambientController = AmbientModeSupport.attach(this)
 
-        mDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(
-                event1: MotionEvent,
-                event2: MotionEvent,
-                velocityX: Float,
-                velocityY: Float
-            ): Boolean {
-                if (currentFragment == FragmentEnum.SCORE && event1.x - event2.x >= 100 && velocityX <= -100) {
-                    scoreFragment.undo()
-                    return true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && WearableButtons.getButtonCount(this) > 0) {
+            undoButton = KeyEvent.KEYCODE_STEM_1
+        } else {
+            gestureDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(
+                    event1: MotionEvent,
+                    event2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    if (currentFragment == FragmentEnum.SCORE && event1.x - event2.x >= 100 && velocityX <= -100) {
+                        scoreFragment.undo()
+                        return true
+                    }
+                    return false
                 }
-                return false
-            }
-        })
+            })
+        }
 
-        fragmentManager.beginTransaction().replace(
-            R.id.fragment_container, when (currentFragment) {
-                FragmentEnum.SETUP -> setupFragment
-                FragmentEnum.ADVANCED_SETUP -> advancedSetupFragment
-                FragmentEnum.SCORE -> scoreFragment
-            }
-        ).commit()
+        switchFragment(fragment)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        saveCurrentFragment()
-        //setupState?.let { outState.putParcelable("setupState", setupState) }
-        //scoreState?.let { outState.putParcelable("scoreState", scoreState) }
 
         outState.putBundle("controllerState", controller.saveInstanceState())
         outState.putSerializable("currentFragment", currentFragment)
         outState.putBoolean("matchAdded", matchAdded)
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return if (keyCode == undoButton && currentFragment == FragmentEnum.SCORE) {
+            scoreFragment.undo()
+            true
+        } else {
+            super.onKeyDown(keyCode, event)
+        }
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        return mDetector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
+        val detector = gestureDetector
+        return if (detector == null)
+            super.dispatchTouchEvent(ev)
+        else
+            detector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }
 
     fun newMatch(winMinimumMatch: Int, startingServer: Team, doubles: Boolean, tiebreak: Boolean) {
@@ -138,32 +149,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         controller.tiebreak = tiebreak
         if (controller.matchAdded) {
             controller.addMatch()
-        }
-    }
-
-    private fun switchFragment(fragment: FragmentEnum) {
-        if (fragment != currentFragment) {
-            saveCurrentFragment()
-            currentFragment = fragment
-            navigation_drawer.setCurrentItem(navigationAdapter.getEnumPos(fragment), false)
-            fragmentManager.beginTransaction().replace(
-                R.id.fragment_container, when (fragment) {
-                    FragmentEnum.SETUP -> setupFragment
-                    FragmentEnum.ADVANCED_SETUP -> advancedSetupFragment
-                    FragmentEnum.SCORE -> scoreFragment
-                }
-            ).commit()
-        }
-    }
-
-    private fun saveCurrentFragment() {
-        when (currentFragment) {
-            FragmentEnum.SETUP -> {
-            }//setupState = fragmentManager.saveFragmentInstanceState(setupFragment)
-            FragmentEnum.ADVANCED_SETUP -> {
-            }
-            FragmentEnum.SCORE -> scoreState =
-                fragmentManager.saveFragmentInstanceState(scoreFragment)
         }
     }
 
@@ -223,58 +208,50 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         return theme
     }
 
-    /*fun recreateFragments() {
-        val newSetupFragment = SetupFragment()
-        val newAdvancedSetupFragment = AdvancedSetupFragment()
-        val newScoreFragment = ScoreFragment(this)
-
-        fragmentManager.beginTransaction().replace(
-            R.id.fragment_container, when (currentFragment) {
-                FragmentEnum.SETUP -> newSetupFragment
-                FragmentEnum.ADVANCED_SETUP -> newAdvancedSetupFragment
-                FragmentEnum.SCORE -> newScoreFragment
-            }
-        ).commit()
-
-        setupFragment = newSetupFragment
-        advancedSetupFragment = newAdvancedSetupFragment
-        scoreFragment = newScoreFragment
-    }*/
-
-    fun recreateScoreFragment() {
-        val newScoreFragment = ScoreFragment(this)
-        if (currentFragment == FragmentEnum.SCORE) {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, newScoreFragment).commit()
+    private fun switchFragment(fragment: FragmentEnum) {
+        if (fragment != currentFragment) {
+            currentFragment = fragment
+            navigation_drawer.setCurrentItem(navigationAdapter.getEnumPos(fragment), false)
         }
-        scoreFragment = newScoreFragment
+
+        when (fragment) {
+            FragmentEnum.SETUP -> {
+                if (setupFragment.ambientMode != ambientMode) {
+                    setupFragment = SetupFragment(this)
+                }
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, setupFragment).commit()
+            }
+            FragmentEnum.ADVANCED_SETUP -> {
+                if (advancedSetupFragment.ambientMode != ambientMode) {
+                    advancedSetupFragment = AdvancedSetupFragment(this)
+                }
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, advancedSetupFragment).commit()
+            }
+            FragmentEnum.SCORE -> {
+                if (scoreFragment.ambientMode != ambientMode) {
+                    scoreFragment = ScoreFragment(this)
+                }
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
+            }
+        }
     }
 
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
-    private class MyAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
+    private class DeuceAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
         override fun onEnterAmbient(ambientDetails: Bundle?) {
-            if (mainActivity.currentFragment == FragmentEnum.SCORE) {
-                mainActivity.ambientMode = true
-                mainActivity.recreateScoreFragment()
-            } else {
-                super.onEnterAmbient(ambientDetails)
-            }
+            mainActivity.ambientMode = true
+            mainActivity.switchFragment(mainActivity.currentFragment)
         }
 
         override fun onExitAmbient() {
-            if (mainActivity.currentFragment == FragmentEnum.SCORE) {
-                mainActivity.ambientMode = false
-                mainActivity.recreateScoreFragment()
-            } else {
-                super.onExitAmbient()
-            }
+            mainActivity.ambientMode = false
+            mainActivity.switchFragment(mainActivity.currentFragment)
         }
 
         override fun onUpdateAmbient() {
             if (mainActivity.currentFragment == FragmentEnum.SCORE) {
                 mainActivity.scoreFragment.ambientUpdate()
-            } else {
-                super.onUpdateAmbient()
             }
         }
     }
