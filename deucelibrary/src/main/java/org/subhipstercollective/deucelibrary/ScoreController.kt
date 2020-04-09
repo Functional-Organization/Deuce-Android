@@ -132,7 +132,7 @@ class ScoreController {
 
         val mActivityScore = activityScore ?: return
 
-        val scores = currentGame.getScoreStrs()
+        val scores = currentGame.getScoreStrings()
         mActivityScore.textScoreP1.text = scores.player1
         mActivityScore.textScoreP2.text = scores.player2
 

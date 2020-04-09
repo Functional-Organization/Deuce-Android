@@ -140,12 +140,12 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             detector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }
 
-    fun newMatch(winMinimumMatch: Int, startingServer: Team, doubles: Boolean, tiebreak: Boolean) {
+    fun newMatch(numSets: Int, startingServer: Team, doubles: Boolean, tiebreak: Boolean) {
         matchAdded = true
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
 
-        controller.winMinimumMatch = winMinimumMatch
+        controller.winMinimumMatch = (numSets shr 1) + 1
         controller.startingServer = startingServer
         controller.doubles = doubles
         controller.tiebreak = tiebreak
