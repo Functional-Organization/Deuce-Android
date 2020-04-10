@@ -23,6 +23,7 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.wearable.input.WearableButtons
 import android.view.GestureDetector
 import android.view.HapticFeedbackConstants
@@ -33,10 +34,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
-import org.subhipstercollective.deucelibrary.Game
-import org.subhipstercollective.deucelibrary.ScoreController
-import org.subhipstercollective.deucelibrary.Team
+import org.subhipstercollective.deucelibrary.*
 import java.text.DateFormat
+import kotlin.random.Random
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     internal val controller = ScoreController()
@@ -137,18 +137,36 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             detector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }
 
-    fun newMatch(numSets: Int, startingServer: Team, doubles: Boolean, tiebreak: Boolean) {
+    fun newMatch() {
         matchAdded = true
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
 
-        controller.winMinimumMatch = (numSets shr 1) + 1
-        controller.startingServer = startingServer
-        controller.doubles = doubles
-        controller.tiebreak = tiebreak
-        if (controller.matchAdded) {
-            controller.addMatch()
+        @Suppress("DEPRECATION")
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val startingServer = when (preferences.getInt(PREFERENCE_SERVER, DEFAULT_STARTING_SERVER.value)) {
+            StartingServer.TEAM1.value -> StartingServer.TEAM1
+            StartingServer.TEAM2.value -> StartingServer.TEAM2
+            StartingServer.RANDOM.value -> StartingServer.RANDOM
+            else -> throw IllegalArgumentException("Invalid starting server preference value")
         }
+        controller.addMatch(
+            preferences.getInt(PREFERENCE_NUM_SETS, DEFAULT_WIN_MINIMUM_MATCH),
+            DEFAULT_WIN_MARGIN_MATCH,
+            DEFAULT_WIN_MINIMUM_SET,
+            DEFAULT_WIN_MARGIN_SET,
+            DEFAULT_WIN_MINIMUM_GAME,
+            DEFAULT_WIN_MARGIN_GAME,
+            DEFAULT_WIN_MINIMUM_GAME_TIEBREAK,
+            DEFAULT_WIN_MARGIN_GAME_TIEBREAK,
+            if (startingServer == StartingServer.TEAM1 || startingServer == StartingServer.RANDOM && Random.nextInt(2) == 0)
+                Team.TEAM1
+            else
+                Team.TEAM2,
+            !preferences.getBoolean(PREFERENCE_ADVANTAGE, DEFAULT_ADVANTAGE),
+            preferences.getBoolean(PREFERENCE_DOUBLES, DEFAULT_DOUBLES)
+        )
     }
 
     private class NavigationItem(

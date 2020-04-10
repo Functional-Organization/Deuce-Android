@@ -27,6 +27,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_advanced_setup.*
+import org.subhipstercollective.deucelibrary.PREFERENCE_ADVANTAGE
+import org.subhipstercollective.deucelibrary.PREFERENCE_CLOCK
+import org.subhipstercollective.deucelibrary.PREFERENCE_DOUBLES
 
 class AdvancedSetupFragment(mainActivity: MainActivity) : Fragment() {
     lateinit var preferences: SharedPreferences
@@ -47,24 +50,24 @@ class AdvancedSetupFragment(mainActivity: MainActivity) : Fragment() {
 
         switch_doubles.setOnCheckedChangeListener { _, isChecked ->
             updateSwitchDoublesText()
-            preferences.edit().putBoolean("doubles", isChecked).apply()
+            preferences.edit().putBoolean(PREFERENCE_DOUBLES, isChecked).apply()
         }
         switch_advantage.setOnCheckedChangeListener { _, isChecked ->
             updateSwitchAdvantageText()
-            preferences.edit().putBoolean("advantage", isChecked).apply()
+            preferences.edit().putBoolean(PREFERENCE_ADVANTAGE, isChecked).apply()
         }
         switch_time.setOnCheckedChangeListener { _, isChecked ->
             updateSwitchTime()
-            preferences.edit().putBoolean("time", isChecked).apply()
+            preferences.edit().putBoolean(PREFERENCE_CLOCK, isChecked).apply()
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        switch_doubles.isChecked = preferences.getBoolean("doubles", false)
-        switch_advantage.isChecked = preferences.getBoolean("advantage", false)
-        switch_time.isChecked = preferences.getBoolean("time", false)
+        switch_doubles.isChecked = preferences.getBoolean(PREFERENCE_DOUBLES, false)
+        switch_advantage.isChecked = preferences.getBoolean(PREFERENCE_ADVANTAGE, false)
+        switch_time.isChecked = preferences.getBoolean(PREFERENCE_CLOCK, false)
     }
 
     private fun updateSwitchDoublesText() {

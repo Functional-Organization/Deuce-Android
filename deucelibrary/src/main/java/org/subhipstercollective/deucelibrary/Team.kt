@@ -22,8 +22,12 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-enum class Team {
-    TEAM1, TEAM2
+enum class Team(val value: Int) {
+    TEAM1(0), TEAM2(1)
+}
+
+enum class StartingServer(val value: Int) {
+    TEAM1(Team.TEAM1.value), TEAM2(Team.TEAM2.value), RANDOM(2) // TODO: ensure uniqueness
 }
 
 enum class Winner {

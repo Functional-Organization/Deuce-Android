@@ -23,15 +23,17 @@ package org.subhipstercollective.deucelibrary
  * Created by mqduck on 10/31/17.
  */
 class Match(
-    winMinimum: Int,
-    private val winMinimumSet: Int, private val winMarginSet: Int,
-    private val winMinimumGame: Int, private val winMarginGame: Int,
-    private val winMinimumGameTiebreak: Int, private val winMarginGameTiebreak: Int,
-    private val controller: ScoreController,
-    private val tiebreak: Boolean
+    val winMinimum: Int, val winMargin: Int,
+    val winMinimumSet: Int, val winMarginSet: Int,
+    val winMinimumGame: Int, val winMarginGame: Int,
+    val winMinimumGameTiebreak: Int, val winMarginGameTiebreak: Int,
+    val startingServer: Team,
+    val tiebreak: Boolean,
+    val doubles: Boolean,
+    val controller: ScoreController
 ) {
     var sets = ArrayList<Set>()
-    private var mScore = Score(winMinimum, 1)
+    private var mScore = Score(winMinimum, winMargin)
 
     init {
         addNewSet()

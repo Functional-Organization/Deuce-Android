@@ -64,6 +64,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        @Suppress("DEPRECATION")
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         buttonScoreP1 = button_score_p1
@@ -117,7 +118,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
         button_score_p2.setOnClickListener { mainActivity.controller.score(Team.TEAM2) }
 
         if (!mainActivity.controller.matchAdded) {
-            mainActivity.controller.addMatch()
+            mainActivity.newMatch()
         }
     }
 

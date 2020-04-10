@@ -25,22 +25,11 @@ import android.view.View
 import android.widget.ImageView
 
 class ScoreController {
-    var winMinimumMatch = 0
-    var winMinimumSet = WIN_MINIMUM_SET
-    var winMarginSet = WIN_MARGIN_SET
-    var winMinimumGame = WIN_MINIMUM_GAME
-    var winMarginGame = WIN_MARGIN_GAME
-    var winMinimumGameTiebreak = WIN_MINIMUM_GAME_TIEBREAK
-    var winMarginGameTiebreak = WIN_MARGIN_GAME_TIEBREAK
     var animationDuration = ANIMATION_DURATION
 
     private var nextAnimationDuration = 0L
 
-    var tiebreak = true
-    var doubles = false
-    var startingServer = Team.TEAM1
-
-    private var match = Match(0, 0, 0, 0, 0, 0, 0, this, true)
+    private var match = Match(0, 0, 0, 0, 0, 0, 0, 0, Team.TEAM1, true, true, this)
     var serving = Serving.PLAYER1_LEFT
 
     private val currentSet get() = match.currentSet
@@ -53,40 +42,44 @@ class ScoreController {
         private set
 
     fun loadInstanceState(savedInstanceState: Bundle) {
-        winMinimumMatch = savedInstanceState.getInt("winMinimumMatch")
-        winMinimumSet = savedInstanceState.getInt("winMinimumSet")
-        winMarginSet = savedInstanceState.getInt("winMarginSet")
-        winMinimumGame = savedInstanceState.getInt("winMinimumGame")
-        winMarginGame = savedInstanceState.getInt("winMarginGame")
-        winMinimumGameTiebreak = savedInstanceState.getInt("winMinimumGameTiebreak")
-        winMarginGameTiebreak = savedInstanceState.getInt("winMarginGameTiebreak")
+        addMatch(
+            savedInstanceState.getInt("winMinimumMatch"),
+            savedInstanceState.getInt("winMarginMatch"),
+            savedInstanceState.getInt("winMinimumSet"),
+            savedInstanceState.getInt("winMarginSet"),
+            savedInstanceState.getInt("winMinimumGame"),
+            savedInstanceState.getInt("winMarginGame"),
+            savedInstanceState.getInt("winMinimumGameTiebreak"),
+            savedInstanceState.getInt("winMarginGameTiebreak"),
+            savedInstanceState.getSerializable("startingServer") as Team,
+            savedInstanceState.getBoolean("tiebreak"),
+            savedInstanceState.getBoolean("doubles")
+        )
+
         animationDuration = savedInstanceState.getLong("animationDuration")
         nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")
-        tiebreak = savedInstanceState.getBoolean("tiebreak")
-        doubles = savedInstanceState.getBoolean("doubles")
-        startingServer = savedInstanceState.getSerializable("startingServer") as Team
         scoreLog = savedInstanceState.getParcelable("scores")!!
         matchAdded = savedInstanceState.getBoolean("matchAdded")
-
-        addMatch()
-        loadScores()
     }
 
     fun saveInstanceState(): Bundle {
         val outState = Bundle()
         outState.putParcelable("scores", scoreLog)
-        outState.putInt("winMinimumMatch", winMinimumMatch)
-        outState.putInt("winMinimumSet", winMinimumSet)
-        outState.putInt("winMarginSet", winMarginSet)
-        outState.putInt("winMinimumGame", winMinimumGame)
-        outState.putInt("winMarginGame", winMarginGame)
-        outState.putInt("winMinimumGameTiebreak", winMinimumGameTiebreak)
-        outState.putInt("winMarginGameTiebreak", winMarginGameTiebreak)
+
+        outState.putInt("winMinimumMatch", match.winMinimum)
+        outState.putInt("winMarginMatch", match.winMargin)
+        outState.putInt("winMinimumSet", match.winMinimumSet)
+        outState.putInt("winMarginSet", match.winMarginSet)
+        outState.putInt("winMinimumGame", match.winMinimumGame)
+        outState.putInt("winMarginGame", match.winMarginGame)
+        outState.putInt("winMinimumGameTiebreak", match.winMinimumGameTiebreak)
+        outState.putInt("winMarginGameTiebreak", match.winMarginGameTiebreak)
+        outState.putBoolean("doubles", match.doubles)
+        outState.putBoolean("tiebreak", match.tiebreak)
+
         outState.putLong("animationDuration", animationDuration)
         outState.putLong("nextAnimationDuration", nextAnimationDuration)
-        outState.putBoolean("tiebreak", tiebreak)
-        outState.putBoolean("doubles", doubles)
-        outState.putSerializable("startingServer", startingServer)
+        outState.putSerializable("startingServer", match.startingServer)
         outState.putBoolean("matchAdded", matchAdded)
         return outState
     }
@@ -98,7 +91,7 @@ class ScoreController {
         }
     }
 
-    fun addMatch() {
+    /*fun addMatch() {
         matchAdded = true
         match = Match(
             winMinimumMatch,
@@ -117,6 +110,32 @@ class ScoreController {
         activityScore?.buttonScoreP2?.isEnabled = true
 
         redrawDisplay()
+    }*/
+
+    fun addMatch(
+        winMinimumMatch: Int, winMarginMatch: Int,
+        winMinimumSet: Int, winMarginSet: Int,
+        winMinimumGame: Int, winMarginGame: Int,
+        winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
+        startingServer: Team,
+        tiebreak: Boolean,
+        doubles: Boolean
+    ) {
+        matchAdded = true
+        match = Match(
+            winMinimumMatch,
+            winMarginMatch,
+            winMinimumSet,
+            winMarginSet,
+            winMinimumGame,
+            winMarginGame,
+            winMinimumGameTiebreak,
+            winMarginGameTiebreak,
+            startingServer,
+            tiebreak,
+            doubles,
+            this
+        )
     }
 
     fun redrawDisplay() {
@@ -150,7 +169,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT1.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
-                if (doubles) {
+                if (match.doubles) {
                     mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallRightT1)
                     mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
@@ -163,7 +182,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT1.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
-                if (doubles) {
+                if (match.doubles) {
                     mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallLeftT1)
                     mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
@@ -176,7 +195,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT2.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
-                if (doubles) {
+                if (match.doubles) {
                     mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallRightT2)
                     mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
@@ -189,7 +208,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT2.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
-                if (doubles) {
+                if (match.doubles) {
                     mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallLeftT2)
                     mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
@@ -290,24 +309,36 @@ class ScoreController {
 
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
-                    if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                    if (match.doubles && match.startingServer == Team.TEAM2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
-                    if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
+                    if (match.doubles && match.startingServer == Team.TEAM1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
                 Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
-                    if (startingServer == Team.TEAM1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                    if (match.startingServer == Team.TEAM1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
                 Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
-                    if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
+                    if (match.startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
             }
         } else if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 2 == 1) {
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
-                    if (doubles && startingServer == Team.TEAM2) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                    if (match.doubles && match.startingServer == Team.TEAM2)
+                        Serving.PLAYER4_LEFT
+                    else
+                        Serving.PLAYER2_LEFT
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
-                    if (doubles && startingServer == Team.TEAM1) Serving.PLAYER3_LEFT else Serving.PLAYER1_LEFT
+                    if (match.doubles && match.startingServer == Team.TEAM1)
+                        Serving.PLAYER3_LEFT
+                    else
+                        Serving.PLAYER1_LEFT
                 Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
-                    if (startingServer == Team.TEAM1) Serving.PLAYER4_LEFT else Serving.PLAYER2_LEFT
+                    if
+                            (match.startingServer == Team.TEAM1) Serving.PLAYER4_LEFT
+                    else
+                        Serving.PLAYER2_LEFT
                 Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
-                    if (startingServer == Team.TEAM1) Serving.PLAYER1_LEFT else Serving.PLAYER3_LEFT
+                    if (match.startingServer == Team.TEAM1)
+                        Serving.PLAYER1_LEFT
+                    else
+                        Serving.PLAYER3_LEFT
             }
         } else {
             serving = when (serving) {
@@ -335,7 +366,19 @@ class ScoreController {
     fun undo() {
         if (scoreLog.size != 0) {
             scoreLog.pop()
-            addMatch()
+            addMatch(
+                match.winMinimum,
+                match.winMargin,
+                match.winMinimumSet,
+                match.winMarginSet,
+                match.winMinimumGame,
+                match.winMarginGame,
+                match.winMinimumGameTiebreak,
+                match.winMarginGameTiebreak,
+                match.startingServer,
+                match.tiebreak,
+                match.doubles
+            )
 
             loadScores()
 
