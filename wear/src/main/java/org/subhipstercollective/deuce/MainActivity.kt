@@ -37,6 +37,16 @@ import org.subhipstercollective.deucelibrary.*
 import kotlin.random.Random
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
+    companion object {
+        private val NAVIGATION_ITEM_MATCH = NavigationItem("Match", R.drawable.match, FragmentEnum.SCORE)
+        private val NAVIGATION_ITEM_SETUP = NavigationItem("Setup", R.drawable.setup, FragmentEnum.SETUP)
+        private val NAVIGATION_ITEM_ADVANCED_SETUP = NavigationItem(
+            "Advanced Setup",
+            R.drawable.advanced_setup,
+            FragmentEnum.ADVANCED_SETUP
+        )
+    }
+
     internal val controller = ScoreController()
 
     private var setupFragment = SetupFragment(this)
@@ -175,14 +185,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     private val navigationAdapter =
         object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
-            private val items = arrayListOf(
-                NavigationItem("Setup", R.drawable.ball_orange, FragmentEnum.SETUP),
-                NavigationItem(
-                    "Advanced Setup",
-                    R.drawable.ball_darkorange,
-                    FragmentEnum.ADVANCED_SETUP
-                )
-            )
+            private val items = arrayListOf(NAVIGATION_ITEM_SETUP, NAVIGATION_ITEM_ADVANCED_SETUP)
 
             override fun getItemText(pos: Int) = items[pos].text
 
@@ -191,7 +194,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             override fun getCount() = items.size
 
             fun enableScore() {
-                items.add(0, NavigationItem("Match", R.drawable.ball_green, FragmentEnum.SCORE))
+                if (!items.contains(NAVIGATION_ITEM_MATCH)) {
+                    items.add(0, NAVIGATION_ITEM_MATCH)
+                }
             }
 
             fun getItemEnum(pos: Int) = items[pos].enum
@@ -202,7 +207,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                         return i
                     }
                 }
-                return -1
+                throw java.lang.IllegalArgumentException("Invalid navigation drawer index")
             }
         }
 
