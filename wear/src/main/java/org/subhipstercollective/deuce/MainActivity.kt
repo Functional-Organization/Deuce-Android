@@ -22,7 +22,6 @@ package org.subhipstercollective.deuce
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.wearable.input.WearableButtons
 import android.view.GestureDetector
 import android.view.HapticFeedbackConstants
@@ -30,6 +29,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.preference.PreferenceManager
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -150,7 +150,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
 
-        @Suppress("DEPRECATION")
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         val startingServer = when (preferences.getInt(PREFERENCE_SERVER, DEFAULT_STARTING_SERVER.value)) {

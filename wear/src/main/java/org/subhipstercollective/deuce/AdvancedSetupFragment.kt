@@ -21,11 +21,11 @@ package org.subhipstercollective.deuce
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.fragment_advanced_setup.*
 import org.subhipstercollective.deucelibrary.PREFERENCE_ADVANTAGE
 import org.subhipstercollective.deucelibrary.PREFERENCE_CLOCK
