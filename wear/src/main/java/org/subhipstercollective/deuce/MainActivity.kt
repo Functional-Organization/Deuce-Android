@@ -20,7 +20,6 @@
 package org.subhipstercollective.deuce
 
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -35,7 +34,6 @@ import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.*
-import java.text.DateFormat
 import kotlin.random.Random
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
@@ -55,15 +53,11 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     private var gestureDetector: GestureDetectorCompat? = null
     private var undoButton: Int? = null
 
-    internal lateinit var timeFormat: DateFormat
-
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        timeFormat = android.text.format.DateFormat.getTimeFormat(this)
 
         Game.init(this)
 
@@ -79,6 +73,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             }
             fragment = savedInstanceState.getSerializable("currentFragment") as FragmentEnum
             matchAdded = savedInstanceState.getBoolean("matchAdded")
+            if (matchAdded) {
+                navigationAdapter.notifyDataSetChanged()
+            }
             navigationAdapter.notifyDataSetChanged()
         }
 
@@ -139,6 +136,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     fun newMatch() {
         matchAdded = true
+        navigationAdapter.enableScore()
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
 
@@ -177,31 +175,26 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     private val navigationAdapter =
         object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
-            private val items = arrayOf(
+            private val items = arrayListOf(
                 NavigationItem("Setup", R.drawable.ball_orange, FragmentEnum.SETUP),
                 NavigationItem(
                     "Advanced Setup",
                     R.drawable.ball_darkorange,
                     FragmentEnum.ADVANCED_SETUP
-                ),
-                NavigationItem("Match", R.drawable.ball_green, FragmentEnum.SCORE)
+                )
             )
 
-            override fun getItemText(pos: Int): CharSequence {
-                return items[pos].text
+            override fun getItemText(pos: Int) = items[pos].text
+
+            override fun getItemDrawable(pos: Int) = getDrawable(items[pos].drawableId)
+
+            override fun getCount() = items.size
+
+            fun enableScore() {
+                items.add(0, NavigationItem("Match", R.drawable.ball_green, FragmentEnum.SCORE))
             }
 
-            override fun getItemDrawable(pos: Int): Drawable? {
-                return getDrawable(items[pos].drawableId)
-            }
-
-            override fun getCount(): Int {
-                return if (matchAdded) items.size else items.size - 1
-            }
-
-            fun getItemEnum(pos: Int): FragmentEnum {
-                return items[pos].enum
-            }
+            fun getItemEnum(pos: Int) = items[pos].enum
 
             fun getEnumPos(enum: FragmentEnum): Int {
                 for (i in items.indices) {
