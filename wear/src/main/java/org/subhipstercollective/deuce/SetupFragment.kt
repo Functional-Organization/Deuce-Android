@@ -113,7 +113,7 @@ class SetupFragment(val mainActivity: MainActivity) : Fragment() {
                 else
                     Team.TEAM2,
                 preferences.getBoolean("doubles", false),
-                preferences.getBoolean("advantage", false)
+                !preferences.getBoolean("advantage", false)
             )
         }
     }
