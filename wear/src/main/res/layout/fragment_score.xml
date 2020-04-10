@@ -141,15 +141,13 @@
         </FrameLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/text_time"
+    <TextClock
+        android:id="@+id/text_clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="#BFE2FF"
         android:textSize="24sp"
-        android:visibility="invisible"
-        tools:text="12:30"
-        tools:visibility="visible" />
+        tools:text="12:30 PM" />
 
 </FrameLayout>

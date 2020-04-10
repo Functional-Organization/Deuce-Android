@@ -21,7 +21,6 @@ package org.subhipstercollective.deuce
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
@@ -35,7 +34,6 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
 import org.subhipstercollective.deucelibrary.ScoreView
 import org.subhipstercollective.deucelibrary.Team
-import java.util.*
 
 class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreView {
     override lateinit var buttonScoreP1: Button
@@ -52,11 +50,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
     override var posXBallRightT1 = 0f
     override var posXBallLeftT2 = 0f
     override var posXBallRightT2 = 0f
-
-    lateinit var textTime: TextView
-
-    val timeTextHandler = Handler()
-    var runThread = false
 
     override val ambientMode = mainActivity.ambientMode
 
@@ -92,12 +85,10 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
         if (mainActivity.ambientMode) {
             textScoresMatchP1.setTextColor(Color.WHITE)
             textScoresMatchP2.setTextColor(Color.WHITE)
-            text_time.setTextColor(Color.WHITE)
-            text_time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36F)
-            text_time.visibility = View.VISIBLE
-            text_time.text = mainActivity.timeFormat.format(Date())
+            text_clock.setTextColor(Color.WHITE)
+            text_clock.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36F)
 
-            text_time.paint.isAntiAlias = false
+            text_clock.paint.isAntiAlias = false
             text_scores_match_p1.paint.isAntiAlias = false
             text_scores_match_p2.paint.isAntiAlias = false
             button_score_p1.paint.isAntiAlias = false
@@ -105,18 +96,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
-        } else if (preferences.getBoolean("time", false)) {
-            text_time.visibility = View.VISIBLE
-            val timeThread = object : Thread() {
-                override fun run() {
-                    runThread = true
-                    while (runThread) {
-                        timeTextHandler.post { text_time.text = mainActivity.timeFormat.format(Date()) }
-                        sleep(1000)
-                    }
-                }
-            }
-            timeThread.start()
+        } else if (!preferences.getBoolean("time", false)) {
+            text_clock.visibility = View.INVISIBLE
         }
 
         view.post {
@@ -142,16 +123,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
     fun undo() {
         mainActivity.controller.undo()
-    }
-
-    override fun onDestroyView() {
-        runThread = false
-
-        super.onDestroyView()
-    }
-
-    fun ambientUpdate() {
-        text_time.text = mainActivity.timeFormat.format(Date())
     }
 
     override fun doHapticChangeover() {

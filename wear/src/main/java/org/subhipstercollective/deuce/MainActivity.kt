@@ -45,9 +45,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     private var advancedSetupFragment = AdvancedSetupFragment(this)
     private var scoreFragment = ScoreFragment(this)
 
-    //private var setupState: Fragment.SavedState? = null
-    //private var scoreState: Fragment.SavedState? = null
-
     private val fragmentManager = supportFragmentManager
     private var currentFragment = FragmentEnum.SETUP
     private var matchAdded = false
@@ -201,7 +198,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun getTheme(): Resources.Theme {
         //return super.getTheme()
         val theme = super.getTheme()
-        //Log.d("foo", ambientMode.toString())
         if (ambientMode) {
             theme.applyStyle(R.style.DeuceWear_ambient, true)
         } else {
@@ -251,10 +247,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             mainActivity.switchFragment(mainActivity.currentFragment)
         }
 
-        override fun onUpdateAmbient() {
-            if (mainActivity.currentFragment == FragmentEnum.SCORE) {
-                mainActivity.scoreFragment.ambientUpdate()
-            }
-        }
+        override fun onUpdateAmbient() {}
     }
 }
