@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="SeekBarRotator" pattern="src[wear]:com.android.musicfx.SeekBarRotator" />
+</component>

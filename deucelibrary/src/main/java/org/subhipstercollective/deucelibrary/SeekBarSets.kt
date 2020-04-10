@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Jeffrey Thomas Piercy
+ * Copyright (C) 2020 Jeffrey Thomas Piercy
  *
  * This file is part of Deuce-Android.
  *
@@ -47,7 +47,7 @@ class SeekBarSets : SeekBar {
             BEST_OF_1 -> context.getString(R.string.best_of_1)
             BEST_OF_3 -> context.getString(R.string.best_of_3)
             BEST_OF_5 -> context.getString(R.string.best_of_5)
-            else -> "ERROR"
+            else -> throw IllegalArgumentException("Invalid number-of-sets progress bar value")
         }
 
     val numSets
@@ -55,6 +55,6 @@ class SeekBarSets : SeekBar {
             BEST_OF_1 -> 1
             BEST_OF_3 -> 3
             BEST_OF_5 -> 5
-            else -> throw IllegalArgumentException("Invalid number of sets progress bar value")
+            else -> throw IllegalArgumentException("Invalid number-of-sets progress bar value")
         }
 }
