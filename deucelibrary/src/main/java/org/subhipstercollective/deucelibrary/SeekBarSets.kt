@@ -25,6 +25,12 @@ import android.widget.SeekBar
 import androidx.annotation.RequiresApi
 
 class SeekBarSets : SeekBar {
+    companion object {
+        const val BEST_OF_1 = 0
+        const val BEST_OF_3 = 1
+        const val BEST_OF_5 = 2
+    }
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -38,17 +44,17 @@ class SeekBarSets : SeekBar {
 
     val progressString: String
         get() = when (progress) {
-            0 -> context.getString(R.string.best_of_1)
-            1 -> context.getString(R.string.best_of_3)
-            2 -> context.getString(R.string.best_of_5)
+            BEST_OF_1 -> context.getString(R.string.best_of_1)
+            BEST_OF_3 -> context.getString(R.string.best_of_3)
+            BEST_OF_5 -> context.getString(R.string.best_of_5)
             else -> "ERROR"
         }
 
     val numSets
         get() = when (progress) {
-            1 -> 3
-            2 -> 5
-            3 -> 7
-            else -> 1
+            BEST_OF_1 -> 1
+            BEST_OF_3 -> 3
+            BEST_OF_5 -> 5
+            else -> throw IllegalArgumentException("Invalid number of sets progress bar value")
         }
 }

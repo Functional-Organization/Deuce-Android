@@ -30,10 +30,17 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_setup.*
+import org.subhipstercollective.deucelibrary.SeekBarSets
 import org.subhipstercollective.deucelibrary.Team
 import kotlin.random.Random
 
 class SetupFragment(val mainActivity: MainActivity) : Fragment() {
+    companion object {
+        const val SERVER_ME = 0
+        const val SERVER_OPPONENT = 1
+        const val SERVER_FLIP = 2
+    }
+
     lateinit var preferences: SharedPreferences
     val ambientMode = mainActivity.ambientMode
 
@@ -80,19 +87,19 @@ class SetupFragment(val mainActivity: MainActivity) : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        radio_server_me.setOnCheckedChangeListener { buttonView, isChecked ->
+        radio_server_me.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 preferences.edit().putInt("server", 0).apply()
             }
         }
 
-        radio_server_opponent.setOnCheckedChangeListener { buttonView, isChecked ->
+        radio_server_opponent.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 preferences.edit().putInt("server", 1).apply()
             }
         }
 
-        radio_server_flip.setOnCheckedChangeListener { buttonView, isChecked ->
+        radio_server_flip.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 preferences.edit().putInt("server", 2).apply()
             }
@@ -101,7 +108,10 @@ class SetupFragment(val mainActivity: MainActivity) : Fragment() {
         button_start.setOnClickListener {
             mainActivity.newMatch(
                 seek_num_sets.numSets,
-                if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0)) Team.TEAM1 else Team.TEAM2,
+                if (radio_server_me.isChecked || (radio_server_flip.isChecked && Random.nextInt(2) == 0))
+                    Team.TEAM1
+                else
+                    Team.TEAM2,
                 preferences.getBoolean("doubles", false),
                 preferences.getBoolean("advantage", false)
             )
@@ -111,15 +121,11 @@ class SetupFragment(val mainActivity: MainActivity) : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (preferences.contains("num_sets")) {
-            seek_num_sets.progress = preferences.getInt("num_sets", 2)
-        }
-        if (preferences.contains("server")) {
-            when (preferences.getInt("server", 2)) {
-                0 -> radio_server_me.isChecked = true
-                1 -> radio_server_opponent.isChecked = true
-                2 -> radio_server_flip.isChecked = true
-            }
+        seek_num_sets.progress = preferences.getInt("num_sets", SeekBarSets.BEST_OF_3)
+        when (preferences.getInt("server", 2)) {
+            SERVER_ME -> radio_server_me.isChecked = true
+            SERVER_OPPONENT -> radio_server_opponent.isChecked = true
+            SERVER_FLIP -> radio_server_flip.isChecked = true
         }
     }
 }
