@@ -19,20 +19,14 @@
 
 package org.subhipstercollective.deuce
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.fragment_advanced_setup.*
-import org.subhipstercollective.deucelibrary.PREFERENCE_ADVANTAGE
-import org.subhipstercollective.deucelibrary.PREFERENCE_CLOCK
-import org.subhipstercollective.deucelibrary.PREFERENCE_DOUBLES
 
-class AdvancedSetupFragment(mainActivity: MainActivity) : Fragment() {
-    lateinit var preferences: SharedPreferences
+class AdvancedSetupFragment(val mainActivity: MainActivity) : Fragment() {
     val ambientMode = mainActivity.ambientMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -42,43 +36,25 @@ class AdvancedSetupFragment(mainActivity: MainActivity) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        updateSwitchDoublesText()
-        updateSwitchAdvantageText()
-        updateSwitchTime()
-
-        switch_doubles.setOnCheckedChangeListener { _, isChecked ->
-            updateSwitchDoublesText()
-            preferences.edit().putBoolean(PREFERENCE_DOUBLES, isChecked).apply()
+        radio_clock_hide.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.clock = false
+            }
         }
-        switch_advantage.setOnCheckedChangeListener { _, isChecked ->
-            updateSwitchAdvantageText()
-            preferences.edit().putBoolean(PREFERENCE_ADVANTAGE, isChecked).apply()
-        }
-        switch_time.setOnCheckedChangeListener { _, isChecked ->
-            updateSwitchTime()
-            preferences.edit().putBoolean(PREFERENCE_CLOCK, isChecked).apply()
+        radio_clock_show.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.clock = true
+            }
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        switch_doubles.isChecked = preferences.getBoolean(PREFERENCE_DOUBLES, false)
-        switch_advantage.isChecked = preferences.getBoolean(PREFERENCE_ADVANTAGE, false)
-        switch_time.isChecked = preferences.getBoolean(PREFERENCE_CLOCK, false)
-    }
-
-    private fun updateSwitchDoublesText() {
-        switch_doubles.text = if (switch_doubles.isChecked) "Doubles" else "Singles"
-    }
-
-    private fun updateSwitchAdvantageText() {
-        switch_advantage.text = if (switch_advantage.isChecked) "Advantage set" else "Tiebreak set"
-    }
-
-    private fun updateSwitchTime() {
-        switch_time.text = if (switch_time.isChecked) "Show time" else "Don't show time"
+        if (mainActivity.preferences.clock) {
+            radio_clock_show.isChecked = true
+        } else {
+            radio_clock_hide.isChecked = true
+        }
     }
 }

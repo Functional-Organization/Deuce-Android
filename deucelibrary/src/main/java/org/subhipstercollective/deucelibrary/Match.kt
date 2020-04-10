@@ -28,9 +28,9 @@ class Match(
     val winMinimumGame: Int, val winMarginGame: Int,
     val winMinimumGameTiebreak: Int, val winMarginGameTiebreak: Int,
     val startingServer: Team,
-    val tiebreak: Boolean,
-    val doubles: Boolean,
-    val controller: ScoreController
+    val overtime: Overtime,
+    val players: Players,
+    private val controller: ScoreController
 ) {
     var sets = ArrayList<Set>()
     private var mScore = Score(winMinimum, winMargin)
@@ -52,8 +52,8 @@ class Match(
             winMarginGame,
             winMinimumGameTiebreak,
             winMarginGameTiebreak,
-            controller,
-            tiebreak
+            overtime,
+            controller
         )
     )
 }

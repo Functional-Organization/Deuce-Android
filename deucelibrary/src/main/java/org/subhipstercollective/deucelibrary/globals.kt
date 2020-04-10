@@ -25,16 +25,8 @@ const val DEFAULT_WIN_MINIMUM_SET = 6
 const val DEFAULT_WIN_MARGIN_SET = 2
 const val DEFAULT_WIN_MINIMUM_GAME = 4
 const val DEFAULT_WIN_MARGIN_GAME = 2
-val DEFAULT_STARTING_SERVER = StartingServer.TEAM1
+
 const val DEFAULT_WIN_MINIMUM_GAME_TIEBREAK = 7
 const val DEFAULT_WIN_MARGIN_GAME_TIEBREAK = 2
-const val DEFAULT_ADVANTAGE = false
-const val DEFAULT_DOUBLES = false
-
-const val PREFERENCE_NUM_SETS = "num_sets"
-const val PREFERENCE_SERVER = "server"
-const val PREFERENCE_DOUBLES = "doubles"
-const val PREFERENCE_ADVANTAGE = "advantage"
-const val PREFERENCE_CLOCK = "clock"
 
 const val ANIMATION_DURATION = 250L

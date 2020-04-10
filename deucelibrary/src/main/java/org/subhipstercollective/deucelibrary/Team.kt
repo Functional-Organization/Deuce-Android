@@ -27,11 +27,22 @@ enum class Team(val value: Int) {
 }
 
 enum class StartingServer(val value: Int) {
-    TEAM1(Team.TEAM1.value), TEAM2(Team.TEAM2.value), RANDOM(2) // TODO: ensure uniqueness
+    TEAM1(Team.TEAM1.value), TEAM2(Team.TEAM2.value), RANDOM(2); // TODO: ensure uniqueness
+
+    companion object {
+        fun fromValue(value: Int) = when (value) {
+            TEAM1.value -> TEAM1
+            TEAM2.value -> TEAM2
+            RANDOM.value -> RANDOM
+            else -> throw IllegalArgumentException("Invalid StartingServer value")
+        }
+    }
 }
 
 enum class Winner {
-    NONE, TEAM1, TEAM2
+    NONE, TEAM1, TEAM2;
+
+    val value get() = ordinal
 }
 
 // If playing doubles, player 3 is teamed with player 1 and player 4 is teamed with player 2.
@@ -43,5 +54,48 @@ enum class Serving {
     PLAYER3_LEFT,
     PLAYER3_RIGHT,
     PLAYER4_LEFT,
-    PLAYER4_RIGHT
+    PLAYER4_RIGHT;
+
+    val value get() = ordinal
+}
+
+enum class Players {
+    SINGLES, DOUBLES;
+
+    val value get() = ordinal
+
+    companion object {
+        fun fromValue(value: Int) = when (value) {
+            SINGLES.value -> SINGLES
+            DOUBLES.value -> DOUBLES
+            else -> throw IllegalArgumentException("Invalid Players value")
+        }
+    }
+}
+
+enum class NumSets(val value: Int) {
+    ONE(1), THREE(3), FIVE(5);
+
+    companion object {
+        fun fromValue(value: Int) = when (value) {
+            ONE.value -> ONE
+            THREE.value -> THREE
+            FIVE.value -> FIVE
+            else -> throw IllegalArgumentException("Invalid NumSets value")
+        }
+    }
+}
+
+enum class Overtime {
+    TIEBREAK, ADVANTAGE;
+
+    val value get() = ordinal
+
+    companion object {
+        fun fromValue(value: Int) = when (value) {
+            TIEBREAK.value -> TIEBREAK
+            ADVANTAGE.value -> ADVANTAGE
+            else -> throw IllegalArgumentException("Invalid overtime preference value")
+        }
+    }
 }

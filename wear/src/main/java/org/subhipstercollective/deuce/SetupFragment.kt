@@ -19,30 +19,17 @@
 
 package org.subhipstercollective.deuce
 
-import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.fragment_setup.*
-import org.subhipstercollective.deucelibrary.PREFERENCE_NUM_SETS
-import org.subhipstercollective.deucelibrary.PREFERENCE_SERVER
-import org.subhipstercollective.deucelibrary.SeekBarSets
+import org.subhipstercollective.deucelibrary.NumSets
+import org.subhipstercollective.deucelibrary.Players
 import org.subhipstercollective.deucelibrary.StartingServer
 
-class SetupFragment(val mainActivity: MainActivity) : Fragment() {
-    companion object {
-        const val SERVER_ME = 0
-        const val SERVER_OPPONENT = 1
-        const val SERVER_FLIP = 2
-    }
-
-    lateinit var preferences: SharedPreferences
+class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
     val ambientMode = mainActivity.ambientMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -52,57 +39,61 @@ class SetupFragment(val mainActivity: MainActivity) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        view.post {
-            // Set text_num_sets width to largest necessary
-            val paint = Paint()
-            text_num_sets.width = maxOf(
-                paint.measureText(getString(R.string.best_of_1)),
-                paint.measureText(getString(R.string.best_of_3)),
-                paint.measureText(getString(R.string.best_of_5))
-            ).toInt()
-        }
-
         if (mainActivity.ambientMode) {
-            text_num_sets.paint.isAntiAlias = false
-            text_server.paint.isAntiAlias = false
-            radio_server_flip.setTextColor(Color.WHITE)
-            radio_server_flip.paint.isAntiAlias = false
-            radio_server_me.setTextColor(Color.WHITE)
-            radio_server_me.paint.isAntiAlias = false
-            radio_server_opponent.setTextColor(Color.WHITE)
-            radio_server_opponent.paint.isAntiAlias = false
             button_start.paint.isAntiAlias = false
+            text_players.paint.isAntiAlias = false
+            radio_singles.paint.isAntiAlias = false
+            radio_doubles.paint.isAntiAlias = false
+            text_starting_server.paint.isAntiAlias = false
+            radio_server_me.paint.isAntiAlias = false
+            radio_server_flip.paint.isAntiAlias = false
+            radio_server_opponent.paint.isAntiAlias = false
+            text_num_sets.paint.isAntiAlias = false
+            radio_best_of_1.paint.isAntiAlias = false
+            radio_best_of_3.paint.isAntiAlias = false
+            radio_best_of_5.paint.isAntiAlias = false
         }
 
-        text_num_sets.text = seek_num_sets.progressString
-
-        seek_num_sets.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                text_num_sets.text = seek_num_sets.progressString
-                preferences.edit().putInt(PREFERENCE_NUM_SETS, progress).apply()
+        radio_singles.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.players = Players.SINGLES
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
+        radio_doubles.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.players = Players.DOUBLES
+            }
+        }
 
         radio_server_me.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                preferences.edit().putInt(PREFERENCE_SERVER, StartingServer.TEAM1.value).apply()
+                mainActivity.preferences.startingServer = StartingServer.TEAM1
             }
         }
-
         radio_server_opponent.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                preferences.edit().putInt(PREFERENCE_SERVER, StartingServer.TEAM2.value).apply()
+                mainActivity.preferences.startingServer = StartingServer.TEAM2
+            }
+        }
+        radio_server_flip.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.startingServer = StartingServer.RANDOM
             }
         }
 
-        radio_server_flip.setOnCheckedChangeListener { _, isChecked ->
+        radio_best_of_1.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                preferences.edit().putInt(PREFERENCE_SERVER, StartingServer.RANDOM.value).apply()
+                mainActivity.preferences.numSets = NumSets.ONE
+            }
+        }
+        radio_best_of_3.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.numSets = NumSets.THREE
+            }
+        }
+        radio_best_of_5.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.numSets = NumSets.FIVE
             }
         }
 
@@ -114,11 +105,22 @@ class SetupFragment(val mainActivity: MainActivity) : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        seek_num_sets.progress = preferences.getInt(PREFERENCE_NUM_SETS, SeekBarSets.BEST_OF_3)
-        when (preferences.getInt(PREFERENCE_SERVER, 2)) {
-            SERVER_ME -> radio_server_me.isChecked = true
-            SERVER_OPPONENT -> radio_server_opponent.isChecked = true
-            SERVER_FLIP -> radio_server_flip.isChecked = true
+        if (mainActivity.preferences.players == Players.SINGLES) {
+            radio_singles.isChecked = true
+        } else {
+            radio_doubles.isChecked = true
+        }
+
+        when (mainActivity.preferences.startingServer) {
+            StartingServer.TEAM1 -> radio_server_me.isChecked = true
+            StartingServer.TEAM2 -> radio_server_opponent.isChecked = true
+            StartingServer.RANDOM -> radio_server_flip.isChecked = true
+        }
+
+        when (mainActivity.preferences.numSets) {
+            NumSets.ONE -> radio_best_of_1.isChecked = true
+            NumSets.THREE -> radio_best_of_5.isChecked = true
+            NumSets.FIVE -> radio_best_of_5.isChecked = true
         }
     }
 }

@@ -34,23 +34,38 @@
         app:boxedEdges="all"
         tools:ignore="MissingPrefix">
 
-        <Switch
-            android:id="@+id/switch_doubles"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/text_clock"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Singles" />
+            android:layout_gravity="center_horizontal"
+            android:text="Clock"
+            android:textSize="18sp" />
 
-        <Switch
-            android:id="@+id/switch_advantage"
+        <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="false"
-            tools:text="Tiebreak set" />
+            android:orientation="horizontal">
 
-        <Switch
-            android:id="@+id/switch_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Don't show time" />
+            <RadioButton
+                android:id="@+id/radio_clock_hide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                android:gravity="center_horizontal"
+                android:text="Hide" />
+
+            <RadioButton
+                android:id="@+id/radio_clock_show"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                android:gravity="center_horizontal"
+                android:text="Show" />
+        </RadioGroup>
     </LinearLayout>
 </androidx.wear.widget.BoxInsetLayout>

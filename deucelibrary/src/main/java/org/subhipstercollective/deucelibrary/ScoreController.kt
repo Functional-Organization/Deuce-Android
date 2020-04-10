@@ -29,14 +29,14 @@ class ScoreController {
 
     private var nextAnimationDuration = 0L
 
-    private var match = Match(0, 0, 0, 0, 0, 0, 0, 0, Team.TEAM1, true, true, this)
+    private var match = Match(0, 0, 0, 0, 0, 0, 0, 0, Team.TEAM1, Overtime.TIEBREAK, Players.SINGLES, this)
     var serving = Serving.PLAYER1_LEFT
 
     private val currentSet get() = match.currentSet
     private val currentGame get() = match.currentGame
     private var scoreLog = ScoreStack()
 
-    var activityScore: ScoreView? = null
+    var scoreView: ScoreView? = null
 
     var matchAdded = false
         private set
@@ -52,8 +52,8 @@ class ScoreController {
             savedInstanceState.getInt("winMinimumGameTiebreak"),
             savedInstanceState.getInt("winMarginGameTiebreak"),
             savedInstanceState.getSerializable("startingServer") as Team,
-            savedInstanceState.getBoolean("tiebreak"),
-            savedInstanceState.getBoolean("doubles")
+            savedInstanceState.getSerializable("overtime") as Overtime,
+            savedInstanceState.getSerializable("players") as Players
         )
 
         animationDuration = savedInstanceState.getLong("animationDuration")
@@ -74,8 +74,10 @@ class ScoreController {
         outState.putInt("winMarginGame", match.winMarginGame)
         outState.putInt("winMinimumGameTiebreak", match.winMinimumGameTiebreak)
         outState.putInt("winMarginGameTiebreak", match.winMarginGameTiebreak)
-        outState.putBoolean("doubles", match.doubles)
-        outState.putBoolean("tiebreak", match.tiebreak)
+//        outState.putInt("players", match.players.value)
+//        outState.putInt("overtime", match.overtime.value)
+        outState.putSerializable("overtime", match.overtime)
+        outState.putSerializable("players", match.players)
 
         outState.putLong("animationDuration", animationDuration)
         outState.putLong("nextAnimationDuration", nextAnimationDuration)
@@ -91,39 +93,18 @@ class ScoreController {
         }
     }
 
-    /*fun addMatch() {
-        matchAdded = true
-        match = Match(
-            winMinimumMatch,
-            winMinimumSet,
-            winMarginSet,
-            winMinimumGame,
-            winMarginGame,
-            winMinimumGameTiebreak,
-            winMarginGameTiebreak,
-            this,
-            tiebreak
-        )
-        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
-
-        activityScore?.buttonScoreP1?.isEnabled = true
-        activityScore?.buttonScoreP2?.isEnabled = true
-
-        redrawDisplay()
-    }*/
-
-    fun addMatch(
-        winMinimumMatch: Int, winMarginMatch: Int,
+    private fun addMatch(
+        numSets: Int, winMarginMatch: Int,
         winMinimumSet: Int, winMarginSet: Int,
         winMinimumGame: Int, winMarginGame: Int,
         winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
         startingServer: Team,
-        tiebreak: Boolean,
-        doubles: Boolean
+        overtime: Overtime,
+        players: Players
     ) {
         matchAdded = true
         match = Match(
-            winMinimumMatch,
+            numSets,
             winMarginMatch,
             winMinimumSet,
             winMarginSet,
@@ -132,15 +113,46 @@ class ScoreController {
             winMinimumGameTiebreak,
             winMarginGameTiebreak,
             startingServer,
-            tiebreak,
-            doubles,
+            overtime,
+            players,
             this
+        )
+
+        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+
+        redrawDisplay()
+    }
+
+    fun addMatch(
+        numSets: NumSets, winMarginMatch: Int,
+        winMinimumSet: Int, winMarginSet: Int,
+        winMinimumGame: Int, winMarginGame: Int,
+        winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
+        startingServer: Team,
+        overtime: Overtime,
+        players: Players
+    ) {
+        addMatch(
+            numSets.value,
+            winMarginMatch,
+            winMinimumSet,
+            winMarginSet,
+            winMinimumGame,
+            winMarginGame,
+            winMinimumGameTiebreak,
+            winMarginGameTiebreak,
+            startingServer,
+            overtime,
+            players
         )
     }
 
     fun redrawDisplay() {
-        nextAnimationDuration = 0
-        updateDisplay()
+        val mScoreView = scoreView
+        if (mScoreView != null && mScoreView.viewCreated) {
+            nextAnimationDuration = 0
+            updateDisplay()
+        }
     }
 
     private fun updateDisplay() {
@@ -151,7 +163,7 @@ class ScoreController {
             }
         }
 
-        val mActivityScore = activityScore ?: return
+        val mActivityScore = scoreView ?: return
 
         val scores = currentGame.getScoreStrings()
         mActivityScore.textScoreP1.text = scores.player1
@@ -169,7 +181,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT1.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
-                if (match.doubles) {
+                if (match.players == Players.DOUBLES) {
                     mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallRightT1)
                     mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
@@ -182,7 +194,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT1.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
 
-                if (match.doubles) {
+                if (match.players == Players.DOUBLES) {
                     mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallLeftT1)
                     mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
@@ -195,7 +207,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT2.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
-                if (match.doubles) {
+                if (match.players == Players.DOUBLES) {
                     mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallRightT2)
                     mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
@@ -208,7 +220,7 @@ class ScoreController {
                 mActivityScore.imageBallServingT2.visibility = View.VISIBLE
                 mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
 
-                if (match.doubles) {
+                if (match.players == Players.DOUBLES) {
                     mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingOrange)
                     moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallLeftT2)
                     mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
@@ -281,8 +293,8 @@ class ScoreController {
                 val winnerMatch = match.score(team)
                 if (winnerMatch != Winner.NONE) {
                     // Match is over
-                    activityScore?.buttonScoreP1?.isEnabled = false
-                    activityScore?.buttonScoreP2?.isEnabled = false
+                    scoreView?.buttonScoreP1?.isEnabled = false
+                    scoreView?.buttonScoreP2?.isEnabled = false
                 } else {
                     // Set is over
                     match.addNewSet()
@@ -302,16 +314,16 @@ class ScoreController {
             }
 
             if (currentSet.games.size % 2 == 0) {
-                activityScore?.doHapticChangeover()
+                scoreView?.doHapticChangeover()
             }
 
             nextAnimationDuration = 0
 
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
-                    if (match.doubles && match.startingServer == Team.TEAM2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
+                    if (match.players == Players.DOUBLES && match.startingServer == Team.TEAM2) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
-                    if (match.doubles && match.startingServer == Team.TEAM1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
+                    if (match.players == Players.DOUBLES && match.startingServer == Team.TEAM1) Serving.PLAYER3_RIGHT else Serving.PLAYER1_RIGHT
                 Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
                     if (match.startingServer == Team.TEAM1) Serving.PLAYER4_RIGHT else Serving.PLAYER2_RIGHT
                 Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
@@ -320,12 +332,12 @@ class ScoreController {
         } else if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 2 == 1) {
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
-                    if (match.doubles && match.startingServer == Team.TEAM2)
+                    if (match.players == Players.DOUBLES && match.startingServer == Team.TEAM2)
                         Serving.PLAYER4_LEFT
                     else
                         Serving.PLAYER2_LEFT
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
-                    if (match.doubles && match.startingServer == Team.TEAM1)
+                    if (match.players == Players.DOUBLES && match.startingServer == Team.TEAM1)
                         Serving.PLAYER3_LEFT
                     else
                         Serving.PLAYER1_LEFT
@@ -359,7 +371,7 @@ class ScoreController {
         }
 
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 6 == 0) {
-            activityScore?.doHapticChangeover()
+            scoreView?.doHapticChangeover()
         }
     }
 
@@ -376,8 +388,8 @@ class ScoreController {
                 match.winMinimumGameTiebreak,
                 match.winMarginGameTiebreak,
                 match.startingServer,
-                match.tiebreak,
-                match.doubles
+                match.overtime,
+                match.players
             )
 
             loadScores()

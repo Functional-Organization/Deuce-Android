@@ -21,7 +21,6 @@ package org.subhipstercollective.deuce
 
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -50,11 +49,12 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
     override var posXBallRightT1 = 0f
     override var posXBallLeftT2 = 0f
     override var posXBallRightT2 = 0f
+    override var viewCreated = false
 
     override val ambientMode = mainActivity.ambientMode
 
     init {
-        mainActivity.controller.activityScore = this
+        mainActivity.controller.scoreView = this
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -63,9 +63,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        @Suppress("DEPRECATION")
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         buttonScoreP1 = button_score_p1
         buttonScoreP2 = button_score_p2
@@ -97,7 +94,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
-        } else if (!preferences.getBoolean("time", false)) {
+        } else if (!mainActivity.preferences.clock) {
             text_clock.visibility = View.INVISIBLE
         }
 
@@ -106,13 +103,16 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
             posXBallLeftT2 = posXBallRightT1
             mainActivity.controller.redrawDisplay()
         }
+
+        viewCreated = true
+        mainActivity.controller.redrawDisplay()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         button_score_p1.setOnClickListener {
-            mainActivity.setTheme(R.style.DeuceWear_ambient)
+            mainActivity.setTheme(R.style.DeuceWear_Ambient)
             mainActivity.controller.score(Team.TEAM1)
         }
         button_score_p2.setOnClickListener { mainActivity.controller.score(Team.TEAM2) }

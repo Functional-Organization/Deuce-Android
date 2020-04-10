@@ -48,6 +48,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     internal val controller = ScoreController()
+    internal lateinit var preferences: DeuceWearPreferences
 
     private var setupFragment = SetupFragment(this)
     private var advancedSetupFragment = AdvancedSetupFragment(this)
@@ -70,6 +71,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         setContentView(R.layout.activity_main)
 
         Game.init(this)
+
+        preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
 
         var fragment = FragmentEnum.SETUP
 
@@ -150,16 +153,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-
-        val startingServer = when (preferences.getInt(PREFERENCE_SERVER, DEFAULT_STARTING_SERVER.value)) {
-            StartingServer.TEAM1.value -> StartingServer.TEAM1
-            StartingServer.TEAM2.value -> StartingServer.TEAM2
-            StartingServer.RANDOM.value -> StartingServer.RANDOM
-            else -> throw IllegalArgumentException("Invalid starting server preference value")
-        }
+        val startingServer = preferences.startingServer
         controller.addMatch(
-            preferences.getInt(PREFERENCE_NUM_SETS, DEFAULT_WIN_MINIMUM_MATCH),
+            preferences.numSets,
             DEFAULT_WIN_MARGIN_MATCH,
             DEFAULT_WIN_MINIMUM_SET,
             DEFAULT_WIN_MARGIN_SET,
@@ -171,8 +167,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 Team.TEAM1
             else
                 Team.TEAM2,
-            !preferences.getBoolean(PREFERENCE_ADVANTAGE, DEFAULT_ADVANTAGE),
-            preferences.getBoolean(PREFERENCE_DOUBLES, DEFAULT_DOUBLES)
+            preferences.overtime,
+            preferences.players
         )
     }
 
@@ -214,7 +210,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         //return super.getTheme()
         val theme = super.getTheme()
         if (ambientMode) {
-            theme.applyStyle(R.style.DeuceWear_ambient, true)
+            theme.applyStyle(R.style.DeuceWear_Ambient, true)
         } else {
             theme.applyStyle(R.style.DeuceWear, true)
         }

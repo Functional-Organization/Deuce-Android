@@ -42,5 +42,7 @@ interface ScoreView {
 
     val ambientMode: Boolean
 
+    var viewCreated: Boolean
+
     fun doHapticChangeover()
 }

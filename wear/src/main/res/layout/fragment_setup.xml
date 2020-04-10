@@ -17,116 +17,160 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.subhipstercollective.deuce.SetupFragment">
+    android:background="@color/black"
+    android:backgroundTint="@color/black"
+    tools:ignore="HardcodedText">
 
-    <LinearLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="32dp">
 
-            <Space
+            <Button
+                android:id="@+id/button_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/play"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/text_players"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_gravity="center_horizontal"
+                android:text="Players"
+                android:textSize="18sp" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_singles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="Singles"
+                    tools:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/radio_doubles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="Doubles" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/text_starting_server"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Starting Server"
+                android:textSize="18sp" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_server_me"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="@string/myself" />
+
+                <RadioButton
+                    android:id="@+id/radio_server_flip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="@string/flip_coin"
+                    tools:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/radio_server_opponent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="@string/opponent" />
+
+            </RadioGroup>
 
             <TextView
                 android:id="@+id/text_num_sets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="18dp"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                android:translationY="5dp"
-                android:visibility="visible"
-                tools:text="Best of\nthree sets" />
-
-            <com.android.musicfx.SeekBarRotator
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                android:translationY="10dp">
-
-
-                <org.subhipstercollective.deucelibrary.SeekBarSets
-                    android:id="@+id/seek_num_sets"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="2"
-                    android:progress="1" />
-
-            </com.android.musicfx.SeekBarRotator>
+                android:text="Number of Sets"
+                android:textSize="18sp" />
 
             <RadioGroup
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:checkedButton="@+id/radio_server_flip"
-                android:layoutDirection="rtl"
-                android:translationY="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radio_server_opponent"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/radio_best_of_1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/opponent"
-                    android:textColor="#2196F3"
-                    android:textSize="12sp" />
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="1 Set" />
 
                 <RadioButton
-                    android:id="@+id/radio_server_flip"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/radio_best_of_3"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/flip_coin"
-                    android:textColor="#2196F3"
-                    android:textSize="12sp" />
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="3 Sets"
+                    tools:checked="true" />
 
                 <RadioButton
-                    android:id="@+id/radio_server_me"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/radio_best_of_5"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/myself"
-                    android:textColor="#2196F3"
-                    android:textSize="12sp" />
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="5 Sets" />
+
             </RadioGroup>
-
-            <TextView
-                android:id="@+id/text_server"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/server"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                android:translationY="10dp"
-                android:visibility="visible" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
         </LinearLayout>
-
-        <Button
-            android:id="@+id/button_start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/play"
-            android:layout_marginBottom="-6dp" />
-
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</ScrollView>
