@@ -27,13 +27,6 @@ import org.subhipstercollective.deucelibrary.StartingServer
 
 class DeuceWearPreferences(private val preferences: SharedPreferences) {
     companion object {
-        val DEFAULT_STARTING_SERVER = StartingServer.TEAM1
-
-        val DEFAULT_PLAYERS = Players.SINGLES
-        val DEFAULT_NUM_SETS = NumSets.THREE
-        val DEFAULT_OVERTIME = Overtime.TIEBREAK
-        const val DEFAULT_CLOCK = false
-
         const val PREFERENCE_NUM_SETS = "num_sets"
         const val PREFERENCE_SERVER = "server"
         const val PREFERENCE_PLAYERS = "players"
@@ -42,22 +35,22 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
     }
 
     var players
-        get() = Players.fromValue(preferences.getInt(PREFERENCE_PLAYERS, DEFAULT_PLAYERS.value))
+        get() = Players.fromValue(preferences.getInt(PREFERENCE_PLAYERS, Players.SINGLES.value))
         set(players) = preferences.edit().putInt(PREFERENCE_PLAYERS, players.value).apply()
 
     var startingServer
-        get() = StartingServer.fromValue(preferences.getInt(PREFERENCE_SERVER, DEFAULT_STARTING_SERVER.value))
+        get() = StartingServer.fromValue(preferences.getInt(PREFERENCE_SERVER, StartingServer.RANDOM.value))
         set(startingServer) = preferences.edit().putInt(PREFERENCE_SERVER, startingServer.value).apply()
 
     var numSets
-        get() = NumSets.fromValue(preferences.getInt(PREFERENCE_NUM_SETS, DEFAULT_NUM_SETS.value))
+        get() = NumSets.fromValue(preferences.getInt(PREFERENCE_NUM_SETS, NumSets.THREE.value))
         set(numSets) = preferences.edit().putInt(PREFERENCE_NUM_SETS, numSets.value).apply()
 
     var overtime
-        get() = Overtime.fromValue(preferences.getInt(PREFERENCE_OVERTIME, DEFAULT_OVERTIME.value))
+        get() = Overtime.fromValue(preferences.getInt(PREFERENCE_OVERTIME, Overtime.TIEBREAK.value))
         set(overtime) = preferences.edit().putInt(PREFERENCE_OVERTIME, overtime.value).apply()
 
     var clock
-        get() = preferences.getBoolean(PREFERENCE_CLOCK, DEFAULT_CLOCK)
+        get() = preferences.getBoolean(PREFERENCE_CLOCK, false)
         set(clock) = preferences.edit().putBoolean(PREFERENCE_CLOCK, clock).apply()
 }

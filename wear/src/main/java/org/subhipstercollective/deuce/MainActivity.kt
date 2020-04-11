@@ -37,6 +37,8 @@ import org.subhipstercollective.deucelibrary.*
 import kotlin.random.Random
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
+    private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
+
     companion object {
         private val NAVIGATION_ITEM_MATCH = NavigationItem("Match", R.drawable.match, FragmentEnum.SCORE)
         private val NAVIGATION_ITEM_SETUP = NavigationItem("Setup", R.drawable.setup, FragmentEnum.SETUP)
@@ -244,8 +246,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             }
         }
     }
-
-    private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
     private class DeuceAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
         override fun onEnterAmbient(ambientDetails: Bundle?) {
