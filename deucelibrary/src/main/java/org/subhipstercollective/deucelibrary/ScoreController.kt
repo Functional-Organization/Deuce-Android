@@ -366,6 +366,7 @@ class ScoreController {
                     else
                         Serving.PLAYER3_LEFT
             }
+            nextAnimationDuration = 0
         } else {
             serving = when (serving) {
                 Serving.PLAYER1_LEFT -> Serving.PLAYER1_RIGHT
