@@ -46,16 +46,16 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
     override lateinit var imageBallNotservingT2: ImageView
     override lateinit var textScoresMatchP1: TextView
     override lateinit var textScoresMatchP2: TextView
-    override var posXBallLeftT1 = 0f
-    override var posXBallRightT1 = 0f
-    override var posXBallLeftT2 = 0f
-    override var posXBallRightT2 = 0f
+    override var posXBallLeftT1 = 0F
+    override var posXBallRightT1 = 0F
+    override var posXBallLeftT2 = 0F
+    override var posXBallRightT2 = 0F
     override var viewCreated = false
 
     override val ambientMode = mainActivity.ambientMode
 
     companion object {
-        const val undoAnimationDuration = 700L
+        const val UNDO_ANIMATION_DURATION = 700L
     }
 
     init {
@@ -130,15 +130,16 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
     }
 
     fun undo() {
-        mainActivity.controller.undo()
+        if (mainActivity.controller.undo()) {
+            image_undo.visibility = View.VISIBLE
+            val fadeout = AlphaAnimation(1F, 0F);
+            fadeout.duration = UNDO_ANIMATION_DURATION
+            image_undo.startAnimation(fadeout)
+            image_undo.postDelayed(Runnable {
+                image_undo.visibility = View.GONE
+            }, UNDO_ANIMATION_DURATION)
 
-        image_undo.visibility = View.VISIBLE
-        val fadeout = AlphaAnimation(1F, 0F);
-        fadeout.duration = undoAnimationDuration
-        image_undo.startAnimation(fadeout)
-        image_undo.postDelayed(Runnable {
-            image_undo.visibility = View.GONE
-        }, undoAnimationDuration)
+        }
     }
 
     override fun doHapticChangeover() {

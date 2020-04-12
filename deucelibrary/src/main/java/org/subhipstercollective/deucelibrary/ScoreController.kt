@@ -390,7 +390,7 @@ class ScoreController {
         }
     }
 
-    fun undo() {
+    fun undo(): Boolean {
         if (scoreLog.size != 0) {
             scoreLog.pop()
             addMatch(
@@ -410,6 +410,9 @@ class ScoreController {
             loadScores()
 
             redrawDisplay()
+
+            return true
         }
+        return false
     }
 }
