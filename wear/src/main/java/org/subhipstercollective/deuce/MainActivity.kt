@@ -41,7 +41,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     companion object {
         private val NAVIGATION_ITEM_MATCH = NavigationItem("Match", R.drawable.match, FragmentEnum.SCORE)
-        private val NAVIGATION_ITEM_SETUP = NavigationItem("Setup", R.drawable.setup, FragmentEnum.SETUP)
+        private val NAVIGATION_ITEM_SETUP = NavigationItem("Match Setup", R.drawable.setup, FragmentEnum.SETUP)
         private val NAVIGATION_ITEM_ADVANCED_SETUP = NavigationItem(
             "Advanced Setup",
             R.drawable.advanced_setup,
