@@ -34,16 +34,15 @@ class Match(
 ) {
     var sets = ArrayList<Set>()
     private var mScore = Score(winMinimum, winMargin)
-    var winner = Winner.NONE
+
+    val winner
+        get() = mScore.winner
 
     init {
         addNewSet()
     }
 
-    fun score(team: Team): Winner {
-        winner = mScore.score(team)
-        return winner
-    }
+    fun score(team: Team) = mScore.score(team)
 
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame

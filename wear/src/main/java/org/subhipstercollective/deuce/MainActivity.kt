@@ -154,7 +154,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
 
-        val startingServer = preferences.startingServer
         controller.addMatch(
             preferences.numSets,
             DEFAULT_WIN_MARGIN_MATCH,

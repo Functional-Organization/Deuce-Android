@@ -19,16 +19,14 @@
 
 package org.subhipstercollective.deucelibrary
 
-/**
- * Created by mqduck on 10/31/17.
- */
 enum class Team {
     TEAM1, TEAM2;
 
     companion object {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            TEAM1.ordinal -> TEAM1
             TEAM2.ordinal -> TEAM2
-            else -> TEAM1
+            else -> DEFAULT_STARTING_SERVER
         }
     }
 }
@@ -54,8 +52,9 @@ enum class Players {
 
     companion object {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            SINGLES.ordinal -> SINGLES
             DOUBLES.ordinal -> DOUBLES
-            else -> SINGLES
+            else -> DEFAULT_PLAYERS
         }
     }
 }
@@ -66,8 +65,9 @@ enum class NumSets(val value: Int) {
     companion object {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {
             ONE.ordinal -> ONE
+            THREE.ordinal -> THREE
             FIVE.ordinal -> FIVE
-            else -> THREE
+            else -> DEFAULT_NUM_SETS
         }
     }
 }
@@ -77,8 +77,9 @@ enum class Overtime {
 
     companion object {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            TIEBREAK.ordinal -> TIEBREAK
             ADVANTAGE.ordinal -> ADVANTAGE
-            else -> TIEBREAK
+            else -> DEFAULT_OVERTIME
         }
     }
 }

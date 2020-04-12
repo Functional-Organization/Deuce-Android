@@ -19,9 +19,6 @@
 
 package org.subhipstercollective.deucelibrary
 
-/**
- * Created by mqduck on 10/31/17.
- */
 class Score(winMinimum: Int, winMargin: Int) {
     var winMinimum: Int = winMinimum
         set(value) {

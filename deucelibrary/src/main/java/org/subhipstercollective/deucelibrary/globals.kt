@@ -19,7 +19,6 @@
 
 package org.subhipstercollective.deucelibrary
 
-const val DEFAULT_WIN_MINIMUM_MATCH = 3
 const val DEFAULT_WIN_MARGIN_MATCH = 1
 const val DEFAULT_WIN_MINIMUM_SET = 6
 const val DEFAULT_WIN_MARGIN_SET = 2
@@ -28,5 +27,11 @@ const val DEFAULT_WIN_MARGIN_GAME = 2
 
 const val DEFAULT_WIN_MINIMUM_GAME_TIEBREAK = 7
 const val DEFAULT_WIN_MARGIN_GAME_TIEBREAK = 2
+
+val DEFAULT_PLAYERS = Players.SINGLES
+val DEFAULT_STARTING_SERVER = Team.TEAM1
+val DEFAULT_NUM_SETS = NumSets.THREE
+val DEFAULT_OVERTIME = Overtime.TIEBREAK
+const val DEFAULT_CLOCK = false
 
 const val ANIMATION_DURATION = 250L

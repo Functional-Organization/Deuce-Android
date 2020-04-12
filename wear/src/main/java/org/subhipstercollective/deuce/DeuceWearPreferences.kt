@@ -20,10 +20,7 @@
 package org.subhipstercollective.deuce
 
 import android.content.SharedPreferences
-import org.subhipstercollective.deucelibrary.NumSets
-import org.subhipstercollective.deucelibrary.Overtime
-import org.subhipstercollective.deucelibrary.Players
-import org.subhipstercollective.deucelibrary.Team
+import org.subhipstercollective.deucelibrary.*
 
 class DeuceWearPreferences(private val preferences: SharedPreferences) {
     companion object {
@@ -35,22 +32,22 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
     }
 
     var players
-        get() = Players.fromOrdinal(preferences.getInt(PREFERENCE_PLAYERS, Players.SINGLES.ordinal))
+        get() = Players.fromOrdinal(preferences.getInt(PREFERENCE_PLAYERS, DEFAULT_PLAYERS.ordinal))
         set(players) = preferences.edit().putInt(PREFERENCE_PLAYERS, players.ordinal).apply()
 
     var startingServer
-        get() = Team.fromOrdinal(preferences.getInt(PREFERENCE_SERVER, Team.TEAM1.ordinal))
+        get() = Team.fromOrdinal(preferences.getInt(PREFERENCE_SERVER, DEFAULT_STARTING_SERVER.ordinal))
         set(startingServer) = preferences.edit().putInt(PREFERENCE_SERVER, startingServer.ordinal).apply()
 
     var numSets
-        get() = NumSets.fromOrdinal(preferences.getInt(PREFERENCE_NUM_SETS, NumSets.THREE.ordinal))
+        get() = NumSets.fromOrdinal(preferences.getInt(PREFERENCE_NUM_SETS, DEFAULT_NUM_SETS.ordinal))
         set(numSets) = preferences.edit().putInt(PREFERENCE_NUM_SETS, numSets.ordinal).apply()
 
     var overtime
-        get() = Overtime.fromOrdinal(preferences.getInt(PREFERENCE_OVERTIME, Overtime.TIEBREAK.ordinal))
+        get() = Overtime.fromOrdinal(preferences.getInt(PREFERENCE_OVERTIME, DEFAULT_OVERTIME.ordinal))
         set(overtime) = preferences.edit().putInt(PREFERENCE_OVERTIME, overtime.ordinal).apply()
 
     var clock
-        get() = preferences.getBoolean(PREFERENCE_CLOCK, false)
+        get() = preferences.getBoolean(PREFERENCE_CLOCK, DEFAULT_CLOCK)
         set(clock) = preferences.edit().putBoolean(PREFERENCE_CLOCK, clock).apply()
 }
