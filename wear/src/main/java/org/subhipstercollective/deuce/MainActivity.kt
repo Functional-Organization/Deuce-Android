@@ -34,7 +34,6 @@ import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.subhipstercollective.deucelibrary.*
-import kotlin.random.Random
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
@@ -165,10 +164,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             DEFAULT_WIN_MARGIN_GAME,
             DEFAULT_WIN_MINIMUM_GAME_TIEBREAK,
             DEFAULT_WIN_MARGIN_GAME_TIEBREAK,
-            if (startingServer == StartingServer.TEAM1 || startingServer == StartingServer.RANDOM && Random.nextInt(2) == 0)
-                Team.TEAM1
-            else
-                Team.TEAM2,
+            preferences.startingServer,
             preferences.overtime,
             preferences.players
         )

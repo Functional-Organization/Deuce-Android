@@ -23,7 +23,7 @@ import android.content.SharedPreferences
 import org.subhipstercollective.deucelibrary.NumSets
 import org.subhipstercollective.deucelibrary.Overtime
 import org.subhipstercollective.deucelibrary.Players
-import org.subhipstercollective.deucelibrary.StartingServer
+import org.subhipstercollective.deucelibrary.Team
 
 class DeuceWearPreferences(private val preferences: SharedPreferences) {
     companion object {
@@ -35,20 +35,20 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
     }
 
     var players
-        get() = Players.fromValue(preferences.getInt(PREFERENCE_PLAYERS, Players.SINGLES.value))
-        set(players) = preferences.edit().putInt(PREFERENCE_PLAYERS, players.value).apply()
+        get() = Players.fromOrdinal(preferences.getInt(PREFERENCE_PLAYERS, Players.SINGLES.ordinal))
+        set(players) = preferences.edit().putInt(PREFERENCE_PLAYERS, players.ordinal).apply()
 
     var startingServer
-        get() = StartingServer.fromValue(preferences.getInt(PREFERENCE_SERVER, StartingServer.RANDOM.value))
-        set(startingServer) = preferences.edit().putInt(PREFERENCE_SERVER, startingServer.value).apply()
+        get() = Team.fromOrdinal(preferences.getInt(PREFERENCE_SERVER, Team.TEAM1.ordinal))
+        set(startingServer) = preferences.edit().putInt(PREFERENCE_SERVER, startingServer.ordinal).apply()
 
     var numSets
-        get() = NumSets.fromValue(preferences.getInt(PREFERENCE_NUM_SETS, NumSets.THREE.value))
-        set(numSets) = preferences.edit().putInt(PREFERENCE_NUM_SETS, numSets.value).apply()
+        get() = NumSets.fromOrdinal(preferences.getInt(PREFERENCE_NUM_SETS, NumSets.THREE.ordinal))
+        set(numSets) = preferences.edit().putInt(PREFERENCE_NUM_SETS, numSets.ordinal).apply()
 
     var overtime
-        get() = Overtime.fromValue(preferences.getInt(PREFERENCE_OVERTIME, Overtime.TIEBREAK.value))
-        set(overtime) = preferences.edit().putInt(PREFERENCE_OVERTIME, overtime.value).apply()
+        get() = Overtime.fromOrdinal(preferences.getInt(PREFERENCE_OVERTIME, Overtime.TIEBREAK.ordinal))
+        set(overtime) = preferences.edit().putInt(PREFERENCE_OVERTIME, overtime.ordinal).apply()
 
     var clock
         get() = preferences.getBoolean(PREFERENCE_CLOCK, false)

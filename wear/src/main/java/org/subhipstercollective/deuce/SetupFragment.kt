@@ -27,7 +27,8 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_setup.*
 import org.subhipstercollective.deucelibrary.NumSets
 import org.subhipstercollective.deucelibrary.Players
-import org.subhipstercollective.deucelibrary.StartingServer
+import org.subhipstercollective.deucelibrary.Team
+import kotlin.random.Random
 
 class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
     val ambientMode = mainActivity.ambientMode
@@ -46,8 +47,8 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
             radio_doubles.paint.isAntiAlias = false
             text_starting_server.paint.isAntiAlias = false
             radio_server_me.paint.isAntiAlias = false
-            radio_server_flip.paint.isAntiAlias = false
             radio_server_opponent.paint.isAntiAlias = false
+            button_flip_coin.paint.isAntiAlias = false
             text_num_sets.paint.isAntiAlias = false
             radio_best_of_1.paint.isAntiAlias = false
             radio_best_of_3.paint.isAntiAlias = false
@@ -67,17 +68,21 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
 
         radio_server_me.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.startingServer = StartingServer.TEAM1
+                mainActivity.preferences.startingServer = Team.TEAM1
             }
         }
         radio_server_opponent.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.startingServer = StartingServer.TEAM2
+                mainActivity.preferences.startingServer = Team.TEAM2
             }
         }
-        radio_server_flip.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                mainActivity.preferences.startingServer = StartingServer.RANDOM
+        button_flip_coin.setOnClickListener {
+            if (Random.nextBoolean()) {
+                radio_server_opponent.isChecked = true
+                radio_server_me.isChecked = true
+            } else {
+                radio_server_me.isChecked = true
+                radio_server_opponent.isChecked = true
             }
         }
 
@@ -112,14 +117,13 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
         }
 
         when (mainActivity.preferences.startingServer) {
-            StartingServer.TEAM1 -> radio_server_me.isChecked = true
-            StartingServer.TEAM2 -> radio_server_opponent.isChecked = true
-            StartingServer.RANDOM -> radio_server_flip.isChecked = true
+            Team.TEAM1 -> radio_server_me.isChecked = true
+            Team.TEAM2 -> radio_server_opponent.isChecked = true
         }
 
         when (mainActivity.preferences.numSets) {
             NumSets.ONE -> radio_best_of_1.isChecked = true
-            NumSets.THREE -> radio_best_of_5.isChecked = true
+            NumSets.THREE -> radio_best_of_3.isChecked = true
             NumSets.FIVE -> radio_best_of_5.isChecked = true
         }
     }

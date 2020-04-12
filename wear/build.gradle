@@ -33,4 +33,5 @@ dependencies {
     compileOnly 'com.google.android.wearable:wearable:2.5.0'
     implementation project(':deucelibrary')
     implementation "androidx.preference:preference-ktx:1.1.0"
+    implementation("com.google.guava:guava:28.2-android")
 }

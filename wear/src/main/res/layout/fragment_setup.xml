@@ -102,18 +102,16 @@
                     android:button="@null"
                     android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
                     android:gravity="center_horizontal"
-                    android:text="@string/myself" />
+                    android:text="@string/myself"
+                    tools:checked="true" />
 
-                <RadioButton
-                    android:id="@+id/radio_server_flip"
+                <Button
+                    android:id="@+id/button_flip_coin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:layout_weight="1"
-                    android:button="@null"
-                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
-                    android:gravity="center_horizontal"
-                    android:text="@string/flip_coin"
-                    tools:checked="true" />
+                    android:text="Flip\nCoin" />
 
                 <RadioButton
                     android:id="@+id/radio_server_opponent"

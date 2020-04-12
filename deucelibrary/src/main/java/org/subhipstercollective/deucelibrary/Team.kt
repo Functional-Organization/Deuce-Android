@@ -22,27 +22,19 @@ package org.subhipstercollective.deucelibrary
 /**
  * Created by mqduck on 10/31/17.
  */
-enum class Team(val value: Int) {
-    TEAM1(0), TEAM2(1)
-}
-
-enum class StartingServer(val value: Int) {
-    TEAM1(Team.TEAM1.value), TEAM2(Team.TEAM2.value), RANDOM(2); // TODO: ensure uniqueness
+enum class Team {
+    TEAM1, TEAM2;
 
     companion object {
-        fun fromValue(value: Int) = when (value) {
-            TEAM1.value -> TEAM1
-            TEAM2.value -> TEAM2
-            RANDOM.value -> RANDOM
-            else -> throw IllegalArgumentException("Invalid StartingServer value")
+        fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            TEAM2.ordinal -> TEAM2
+            else -> TEAM1
         }
     }
 }
 
 enum class Winner {
     NONE, TEAM1, TEAM2;
-
-    val value get() = ordinal
 }
 
 // If playing doubles, player 3 is teamed with player 1 and player 4 is teamed with player 2.
@@ -55,20 +47,15 @@ enum class Serving {
     PLAYER3_RIGHT,
     PLAYER4_LEFT,
     PLAYER4_RIGHT;
-
-    val value get() = ordinal
 }
 
 enum class Players {
     SINGLES, DOUBLES;
 
-    val value get() = ordinal
-
     companion object {
-        fun fromValue(value: Int) = when (value) {
-            SINGLES.value -> SINGLES
-            DOUBLES.value -> DOUBLES
-            else -> throw IllegalArgumentException("Invalid Players value")
+        fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            DOUBLES.ordinal -> DOUBLES
+            else -> SINGLES
         }
     }
 }
@@ -77,11 +64,10 @@ enum class NumSets(val value: Int) {
     ONE(1), THREE(3), FIVE(5);
 
     companion object {
-        fun fromValue(value: Int) = when (value) {
-            ONE.value -> ONE
-            THREE.value -> THREE
-            FIVE.value -> FIVE
-            else -> throw IllegalArgumentException("Invalid NumSets value")
+        fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            ONE.ordinal -> ONE
+            FIVE.ordinal -> FIVE
+            else -> THREE
         }
     }
 }
@@ -89,13 +75,10 @@ enum class NumSets(val value: Int) {
 enum class Overtime {
     TIEBREAK, ADVANTAGE;
 
-    val value get() = ordinal
-
     companion object {
-        fun fromValue(value: Int) = when (value) {
-            TIEBREAK.value -> TIEBREAK
-            ADVANTAGE.value -> ADVANTAGE
-            else -> throw IllegalArgumentException("Invalid overtime preference value")
+        fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            ADVANTAGE.ordinal -> ADVANTAGE
+            else -> TIEBREAK
         }
     }
 }
