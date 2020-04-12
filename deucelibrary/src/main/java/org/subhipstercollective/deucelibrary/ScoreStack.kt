@@ -77,7 +77,7 @@ class ScoreStack : List<Team>, Parcelable {
 
     }
 
-    private fun boolToTeam(playerInt: Boolean) = if (playerInt) Team.TEAM2 else Team.TEAM1
+    private fun boolToTeam(teamBool: Boolean) = if (teamBool) Team.TEAM2 else Team.TEAM1
     private fun teamToBool(team: Team) = team != Team.TEAM1
 
     override fun contains(element: Team): Boolean {

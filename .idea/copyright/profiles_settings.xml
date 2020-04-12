@@ -1,7 +1,6 @@
 <component name="CopyrightManager">
   <settings>
     <module2copyright>
-      <element module="SeekBarRotator" copyright="SeekBarRotator" />
       <element module="Project Source Files" copyright="GPLv3" />
     </module2copyright>
   </settings>

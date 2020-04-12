@@ -20,9 +20,10 @@
 <resources>
     <color name="app">#2196F3</color>
     <color name="accent">#80C6FF</color>
+    <color name="lighter_accent">#BFE2FF</color>
     <color name="active_ui">#1766A6</color>
     <color name="lighter_ui">#14568C</color>
     <color name="darker_ui">#0E3F66</color>
-    <color name="lighter_gb_2">#002A4D</color>
+    <color name="lighter_bg_2">#002A4D</color>
     <color name="lighter_bg_1">#071F33</color>
 </resources>

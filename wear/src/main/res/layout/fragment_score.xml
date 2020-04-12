@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
-                android:textColor="#80C6FF"
+                android:textColor="@color/accent"
                 android:textSize="24dp"
                 android:translationY="-10dp"
                 android:translationZ="10dp"
@@ -132,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
-                android:textColor="#80C6FF"
+                android:textColor="@color/accent"
                 android:textSize="24dp"
                 android:translationY="10dp"
                 android:translationZ="10dp"
@@ -146,8 +146,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColor="#BFE2FF"
-        android:textSize="24sp"
-        tools:text="12:30 PM" />
+        android:textColor="@color/lighter_accent"
+        android:textSize="24sp" />
 
 </FrameLayout>

@@ -32,5 +32,5 @@
         android:id="@+id/navigation_drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#002A4D" />
+        android:background="@color/lighter_bg_2" />
 </androidx.wear.widget.drawer.WearableDrawerLayout>
