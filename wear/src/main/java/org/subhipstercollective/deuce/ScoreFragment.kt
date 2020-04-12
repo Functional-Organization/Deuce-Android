@@ -26,6 +26,7 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -53,6 +54,10 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
     override val ambientMode = mainActivity.ambientMode
 
+    companion object {
+        const val undoAnimationDuration = 700L
+    }
+
     init {
         mainActivity.controller.scoreView = this
     }
@@ -79,6 +84,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
         posXBallLeftT1 = ball_notserving_t1.x
         posXBallRightT2 = posXBallLeftT1
+
+        image_undo.visibility = View.GONE
 
         if (mainActivity.ambientMode) {
             textScoresMatchP1.setTextColor(Color.WHITE)
@@ -124,6 +131,14 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
 
     fun undo() {
         mainActivity.controller.undo()
+
+        image_undo.visibility = View.VISIBLE
+        val fadeout = AlphaAnimation(1F, 0F);
+        fadeout.duration = undoAnimationDuration
+        image_undo.startAnimation(fadeout)
+        image_undo.postDelayed(Runnable {
+            image_undo.visibility = View.GONE
+        }, undoAnimationDuration)
     }
 
     override fun doHapticChangeover() {
