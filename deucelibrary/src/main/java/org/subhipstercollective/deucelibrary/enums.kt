@@ -60,13 +60,14 @@ enum class Players {
 }
 
 enum class NumSets(val value: Int) {
-    ONE(1), THREE(3), FIVE(5);
+    ONE(1), THREE(3), FIVE(5), INFINITE(Int.MAX_VALUE);
 
     companion object {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {
             ONE.ordinal -> ONE
             THREE.ordinal -> THREE
             FIVE.ordinal -> FIVE
+            INFINITE.ordinal -> INFINITE
             else -> DEFAULT_NUM_SETS
         }
     }

@@ -101,6 +101,11 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
                 mainActivity.preferences.numSets = NumSets.FIVE
             }
         }
+        radio_best_of_infinite.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.numSets = NumSets.INFINITE
+            }
+        }
 
         button_start.setOnClickListener {
             mainActivity.newMatch()
@@ -125,6 +130,7 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
             NumSets.ONE -> radio_best_of_1.isChecked = true
             NumSets.THREE -> radio_best_of_3.isChecked = true
             NumSets.FIVE -> radio_best_of_5.isChecked = true
+            NumSets.INFINITE -> radio_best_of_infinite.isChecked = true
         }
     }
 }

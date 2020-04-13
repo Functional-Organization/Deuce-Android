@@ -169,6 +169,16 @@
                     android:gravity="center_horizontal"
                     android:text="5 Sets" />
 
+                <RadioButton
+                    android:id="@+id/radio_best_of_infinite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                    android:gravity="center_horizontal"
+                    android:text="∞ Sets" />
+
             </RadioGroup>
         </LinearLayout>
     </FrameLayout>
