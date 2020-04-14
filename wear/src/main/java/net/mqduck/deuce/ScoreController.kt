@@ -27,7 +27,7 @@ import net.mqduck.deuce.common.*
 import net.mqduck.deuce.common.R
 import net.mqduck.deuce.common.ScoreController
 
-class ScoreController : ScoreController {
+class ScoreController(val mainActivity: MainActivity) : ScoreController {
     var animationDuration = ANIMATION_DURATION
 
     private var nextAnimationDuration = 0L
@@ -58,6 +58,11 @@ class ScoreController : ScoreController {
         private set
 
     fun loadInstanceState(savedInstanceState: Bundle) {
+        animationDuration = savedInstanceState.getLong("animationDuration")
+        nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")
+        scoreLog = savedInstanceState.getParcelable("scores")!!
+        matchAdded = savedInstanceState.getBoolean("matchAdded")
+
         addMatch(
             savedInstanceState.getInt("winMinimumMatch"),
             savedInstanceState.getInt("winMarginMatch"),
@@ -69,13 +74,9 @@ class ScoreController : ScoreController {
             savedInstanceState.getInt("winMarginGameTiebreak"),
             savedInstanceState.getSerializable("startingServer") as Team,
             savedInstanceState.getSerializable("overtime") as Overtime,
-            savedInstanceState.getSerializable("players") as Players
+            savedInstanceState.getSerializable("players") as Players,
+            false
         )
-
-        animationDuration = savedInstanceState.getLong("animationDuration")
-        nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")
-        scoreLog = savedInstanceState.getParcelable("scores")!!
-        matchAdded = savedInstanceState.getBoolean("matchAdded")
     }
 
     fun saveInstanceState(): Bundle {
@@ -114,9 +115,13 @@ class ScoreController : ScoreController {
         winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
         startingServer: Team,
         overtime: Overtime,
-        players: Players
+        players: Players,
+        wipeScoreLog: Boolean
     ) {
         matchAdded = true
+        if (wipeScoreLog) {
+            scoreLog = ScoreStack()
+        }
         match = Match(
             numSets,
             winMarginMatch,
@@ -157,7 +162,8 @@ class ScoreController : ScoreController {
             winMarginGameTiebreak,
             startingServer,
             overtime,
-            players
+            players,
+            true
         )
     }
 
@@ -375,8 +381,8 @@ class ScoreController : ScoreController {
                     else
                         Serving.PLAYER1_LEFT
                 Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
-                    if
-                            (match.startingServer == Team.TEAM1) Serving.PLAYER4_LEFT
+                    if (match.startingServer == Team.TEAM1)
+                        Serving.PLAYER4_LEFT
                     else
                         Serving.PLAYER2_LEFT
                 Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
@@ -426,7 +432,8 @@ class ScoreController : ScoreController {
                 match.winMarginGameTiebreak,
                 match.startingServer,
                 match.overtime,
-                match.players
+                match.players,
+                false
             )
 
             loadScores()

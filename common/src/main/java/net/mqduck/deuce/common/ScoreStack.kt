@@ -181,4 +181,6 @@ class ScoreStack : List<Team>, Parcelable {
             return Array(size) { ScoreStack() }
         }
     }
+
+    fun bitSetToLongArray() = bitSet.toLongArray()
 }

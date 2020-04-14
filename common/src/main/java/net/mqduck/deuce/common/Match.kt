@@ -34,6 +34,8 @@ class Match(
 ) {
     var sets = ArrayList<Set>()
     private var mScore = Score(winMinimum, winMargin)
+    var startTime = System.currentTimeMillis()
+        private set
 
     val winner
         get() = mScore.winner

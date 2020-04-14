@@ -50,7 +50,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         )
     }
 
-    internal val controller = ScoreController()
+    internal val controller = ScoreController(this)
     internal lateinit var preferences: DeuceWearPreferences
 
     private var setupFragment = SetupFragment(this)
