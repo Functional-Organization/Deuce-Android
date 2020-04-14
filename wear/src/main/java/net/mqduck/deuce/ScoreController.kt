@@ -23,9 +23,11 @@ import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import com.google.firebase.Timestamp
 import net.mqduck.deuce.common.*
 import net.mqduck.deuce.common.R
 import net.mqduck.deuce.common.ScoreController
+import java.util.*
 
 class ScoreController(val mainActivity: MainActivity) : ScoreController {
     var animationDuration = ANIMATION_DURATION
@@ -322,6 +324,22 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
                     // Match is over
                     scoreView?.buttonScoreP1?.isEnabled = false
                     scoreView?.buttonScoreP2?.isEnabled = false
+                    mainActivity.database
+                        .collection("match")
+                        .document("user1")
+                        .collection("matches")
+                        .document("match1")
+                        .set(
+                            hashMapOf(
+                                "slSize" to scoreLog.size,
+                                "slArray" to scoreLog.bitSetToLongArray().toList(),
+                                "wminMatch" to match.winMinimum,
+                                "overtime" to match.overtime.ordinal,
+                                "players" to match.players.ordinal,
+                                "begin" to Timestamp(Date(match.startTime)),
+                                "end" to Timestamp(Date())
+                            )
+                        )
                 } else {
                     // Set is over
                     match.addNewSet()
