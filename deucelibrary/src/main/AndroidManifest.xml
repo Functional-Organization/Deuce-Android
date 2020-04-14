@@ -17,4 +17,4 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<manifest package="org.subhipstercollective.deucelibrary" />
+<manifest package="net.mqduck.deuce.common" />
