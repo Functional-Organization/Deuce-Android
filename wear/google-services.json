@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "551008794614",
+    "firebase_url": "https://deuce-7d7e4.firebaseio.com",
+    "project_id": "deuce-7d7e4",
+    "storage_bucket": "deuce-7d7e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551008794614:android:0e1f0717a8395779c0f9d7",
+        "android_client_info": {
+          "package_name": "net.mqduck.deuce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551008794614-l7e0luumfjp10akdfb2unl57q3utuh58.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWC3ui-kYm6DDpD2lRhGTffGLRs3GMbDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551008794614-l7e0luumfjp10akdfb2unl57q3utuh58.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

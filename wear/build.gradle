@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -34,4 +36,6 @@ dependencies {
     implementation project(':deucelibrary')
     implementation "androidx.preference:preference-ktx:1.1.0"
     implementation("com.google.guava:guava:28.2-android")
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.2'
 }
