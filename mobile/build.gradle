@@ -33,5 +33,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha05'
     wearApp project(':wear')
     implementation 'com.google.android.gms:play-services-wearable:17.0.0'
-    implementation project(':deucelibrary')
+    implementation project(':common')
 }
