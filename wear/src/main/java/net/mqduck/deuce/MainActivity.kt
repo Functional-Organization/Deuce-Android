@@ -41,10 +41,14 @@ import net.mqduck.deuce.common.*
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
-    private enum class NavigationItem(val text: CharSequence, val drawableId: Int, val enum: FragmentEnum) {
-        MATCH("Match", R.drawable.match, FragmentEnum.SCORE),
-        SETUP("Match Setup", R.drawable.setup, FragmentEnum.SETUP),
-        ADVANCED_SETUP("Advanced Setup", R.drawable.advanced_setup, FragmentEnum.ADVANCED_SETUP)
+    companion object {
+        private val NAVIGATION_ITEM_MATCH = NavigationItem("Match", R.drawable.match, FragmentEnum.SCORE)
+        private val NAVIGATION_ITEM_SETUP = NavigationItem("Match Setup", R.drawable.setup, FragmentEnum.SETUP)
+        private val NAVIGATION_ITEM_ADVANCED_SETUP = NavigationItem(
+            "Advanced Setup",
+            R.drawable.advanced_setup,
+            FragmentEnum.ADVANCED_SETUP
+        )
     }
 
     internal val controller = ScoreController(this)
@@ -173,9 +177,15 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         )
     }
 
+    private class NavigationItem(
+        val text: CharSequence,
+        val drawableId: Int,
+        val enum: FragmentEnum
+    )
+
     private val navigationAdapter =
         object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
-            private val items = arrayListOf(NavigationItem.SETUP, NavigationItem.ADVANCED_SETUP)
+            private val items = arrayListOf(NAVIGATION_ITEM_SETUP, NAVIGATION_ITEM_ADVANCED_SETUP)
 
             override fun getItemText(pos: Int) = items[pos].text
 
@@ -184,8 +194,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             override fun getCount() = items.size
 
             fun enableScore() {
-                if (!items.contains(NavigationItem.MATCH)) {
-                    items.add(0, NavigationItem.MATCH)
+                if (!items.contains(NAVIGATION_ITEM_MATCH)) {
+                    items.add(0, NAVIGATION_ITEM_MATCH)
                 }
             }
 
