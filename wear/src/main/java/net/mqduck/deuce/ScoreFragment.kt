@@ -32,27 +32,26 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
-import net.mqduck.deuce.common.ScoreView
 import net.mqduck.deuce.common.Team
 
-class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreView {
-    override lateinit var buttonScoreP1: Button
-    override lateinit var buttonScoreP2: Button
-    override lateinit var textScoreP1: TextView
-    override lateinit var textScoreP2: TextView
-    override lateinit var imageBallServingT1: ImageView
-    override lateinit var imageBallNotservingT1: ImageView
-    override lateinit var imageBallServingT2: ImageView
-    override lateinit var imageBallNotservingT2: ImageView
-    override lateinit var textScoresMatchP1: TextView
-    override lateinit var textScoresMatchP2: TextView
-    override var posXBallLeftT1 = 0F
-    override var posXBallRightT1 = 0F
-    override var posXBallLeftT2 = 0F
-    override var posXBallRightT2 = 0F
-    override var viewCreated = false
+class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
+    lateinit var buttonScoreP1: Button
+    lateinit var buttonScoreP2: Button
+    lateinit var textScoreP1: TextView
+    lateinit var textScoreP2: TextView
+    lateinit var imageBallServingT1: ImageView
+    lateinit var imageBallNotservingT1: ImageView
+    lateinit var imageBallServingT2: ImageView
+    lateinit var imageBallNotservingT2: ImageView
+    lateinit var textScoresMatchP1: TextView
+    lateinit var textScoresMatchP2: TextView
+    var posXBallLeftT1 = 0F
+    var posXBallRightT1 = 0F
+    var posXBallLeftT2 = 0F
+    var posXBallRightT2 = 0F
+    var viewCreated = false
 
-    override val ambientMode = mainActivity.ambientMode
+    val ambientMode = mainActivity.ambientMode
 
     companion object {
         const val UNDO_ANIMATION_DURATION = 700L
@@ -142,7 +141,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment(), ScoreV
         }
     }
 
-    override fun doHapticChangeover() {
+    fun doHapticChangeover() {
         fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
     }
 }

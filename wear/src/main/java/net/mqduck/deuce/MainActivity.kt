@@ -32,6 +32,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 
@@ -64,6 +66,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     private lateinit var ambientController: AmbientModeSupport.AmbientController
     private var gestureDetector: GestureDetectorCompat? = null
     private var undoButton: Int? = null
+
+    val database = Firebase.firestore
 
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
 
