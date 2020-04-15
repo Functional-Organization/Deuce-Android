@@ -115,28 +115,27 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        button_score_p1.setOnClickListener {
-            mainActivity.controller.score(Team.TEAM1)
-            if (mainActivity.controller.serviceChanged) {
-                updateDisplay(false)
-            } else {
-                updateDisplay(true)
-            }
-        }
-        button_score_p2.setOnClickListener {
-            mainActivity.controller.score(Team.TEAM2)
-            if (mainActivity.controller.serviceChanged) {
-                updateDisplay(false)
-            } else {
-                updateDisplay(true)
-            }
-        }
+        button_score_p1.setOnClickListener { score(Team.TEAM1) }
+        button_score_p2.setOnClickListener { score(Team.TEAM2) }
 
         if (!mainActivity.controller.matchAdded) {
             mainActivity.newMatch()
         }
 
         updateDisplay(false)
+    }
+
+    private fun score(team: Team) {
+        mainActivity.controller.score(team)
+        if (mainActivity.controller.serviceChanged) {
+            updateDisplay(false)
+        } else {
+            updateDisplay(true)
+        }
+        if (mainActivity.controller.match.winner != Winner.NONE) {
+            button_score_p1.isEnabled = false
+            button_score_p2.isEnabled = false
+        }
     }
 
     private fun updateDisplay(animate: Boolean) {
