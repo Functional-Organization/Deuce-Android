@@ -19,22 +19,18 @@
 
 package net.mqduck.deuce
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
 import com.google.firebase.Timestamp
 import net.mqduck.deuce.common.*
-import net.mqduck.deuce.common.R
 import net.mqduck.deuce.common.ScoreController
 import java.util.*
 
 class ScoreController(val mainActivity: MainActivity) : ScoreController {
-    var animationDuration = ANIMATION_DURATION
+//    var animationDuration = BALL_ANIMATION_DURATION
 
-    private var nextAnimationDuration = 0L
+//    private var nextAnimationDuration = 0L
 
-    private var match = Match(
+    internal var match = Match(
         0,
         0,
         0,
@@ -51,18 +47,20 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
     override var serving = Serving.PLAYER1_LEFT
 
     private val currentSet get() = match.currentSet
-    private val currentGame get() = match.currentGame
+    internal val currentGame get() = match.currentGame
     private var scoreLog = ScoreStack()
+    var changeover = false
+        private set
 
-    var scoreView: ScoreFragment? = null
+    //var scoreView: ScoreFragment? = null
 
     var matchAdded = false
         private set
-    private var showChangeoverArrows = false
+    //private var showChangeoverArrows = false
 
     fun loadInstanceState(savedInstanceState: Bundle) {
-        animationDuration = savedInstanceState.getLong("animationDuration")
-        nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")
+        /*animationDuration = savedInstanceState.getLong("animationDuration")
+        nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")*/
         scoreLog = savedInstanceState.getParcelable("scores")!!
         matchAdded = savedInstanceState.getBoolean("matchAdded")
 
@@ -97,8 +95,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
         outState.putSerializable("overtime", match.overtime)
         outState.putSerializable("players", match.players)
 
-        outState.putLong("animationDuration", animationDuration)
-        outState.putLong("nextAnimationDuration", nextAnimationDuration)
+        /*outState.putLong("animationDuration", animationDuration)
+        outState.putLong("nextAnimationDuration", nextAnimationDuration)*/
         outState.putSerializable("startingServer", match.startingServer)
         outState.putBoolean("matchAdded", matchAdded)
         return outState
@@ -142,7 +140,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
 
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
 
-        redrawDisplay()
+        //TODO: call this at the right place
+//        redrawDisplay()
     }
 
     fun addMatch(
@@ -170,7 +169,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
         )
     }
 
-    fun redrawDisplay() {
+    /*fun redrawDisplay() {
         val mScoreView = scoreView
         if (mScoreView != null && mScoreView.viewCreated) {
             nextAnimationDuration = 0
@@ -321,10 +320,11 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
             scoreView?.changeoverArrowDown?.visibility = View.INVISIBLE
             scoreView?.changeoverArrowUp?.visibility = View.INVISIBLE
         }
-    }
+    }*/
 
     fun score(team: Team, updateLog: Boolean = true) {
-        showChangeoverArrows = false
+//        showChangeoverArrows = false
+        changeover = false
         val winnerGame = currentGame.score(team)
         if (winnerGame != Winner.NONE) {
             val winnerSet = currentSet.score(team)
@@ -332,8 +332,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
                 val winnerMatch = match.score(team)
                 if (winnerMatch != Winner.NONE) {
                     // Match is over
-                    scoreView?.buttonScoreP1?.isEnabled = false
-                    scoreView?.buttonScoreP2?.isEnabled = false
+                    /*scoreView?.buttonScoreP1?.isEnabled = false
+                    scoreView?.buttonScoreP2?.isEnabled = false*/
                     mainActivity.database
                         .collection("match")
                         .document("user1")
@@ -369,11 +369,13 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
             }
 
             if (currentSet.games.size % 2 == 0) {
-                scoreView?.doHapticChangeover()
-                showChangeoverArrows = true
+                /*scoreView?.doHapticChangeover()
+                showChangeoverArrows = true*/
+                changeover = true
             }
 
-            nextAnimationDuration = 0
+            //TODO: do this the right place
+//            nextAnimationDuration = 0
 
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
@@ -420,7 +422,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
                     else
                         Serving.PLAYER3_LEFT
             }
-            nextAnimationDuration = 0
+            //TODO: Do this the right place
+//            nextAnimationDuration = 0
         } else {
             serving = when (serving) {
                 Serving.PLAYER1_LEFT -> Serving.PLAYER1_RIGHT
@@ -434,17 +437,18 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
             }
         }
 
-        if (updateLog) {
+        /*if (updateLog) {
             scoreLog.push(team)
             updateDisplay()
-        }
+        }*/
 
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(
                 Team.TEAM2
             )) % 6 == 0
         ) {
-            scoreView?.doHapticChangeover()
-            showChangeoverArrows = true
+            /*scoreView?.doHapticChangeover()
+            showChangeoverArrows = true*/
+            changeover = true
         }
     }
 
@@ -468,7 +472,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
 
             loadScores()
 
-            redrawDisplay()
+            //TODO: Do this the right place
+//            redrawDisplay()
 
             return true
         }

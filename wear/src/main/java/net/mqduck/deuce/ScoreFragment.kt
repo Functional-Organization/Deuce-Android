@@ -19,6 +19,7 @@
 
 package net.mqduck.deuce
 
+import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
@@ -32,7 +33,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
-import net.mqduck.deuce.common.Team
+import net.mqduck.deuce.common.*
 
 class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     lateinit var buttonScoreP1: Button
@@ -52,15 +53,15 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     var posXBallLeftT2 = 0F
     var posXBallRightT2 = 0F
     var viewCreated = false
+    private var nextBallAnimationDuration = 0L
 
     val ambientMode = mainActivity.ambientMode
 
     companion object {
-        const val UNDO_ANIMATION_DURATION = 700L
     }
 
     init {
-        mainActivity.controller.scoreView = this
+        //mainActivity.controller.scoreView = this
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -109,40 +110,203 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             text_clock.visibility = View.INVISIBLE
         }
 
+        //TODO: post needed?
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
             posXBallLeftT2 = posXBallRightT1
-            mainActivity.controller.redrawDisplay()
+            redrawDisplay()
         }
 
         viewCreated = true
-        mainActivity.controller.redrawDisplay()
+        redrawDisplay()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         button_score_p1.setOnClickListener {
-            mainActivity.setTheme(R.style.DeuceWear_Ambient)
             mainActivity.controller.score(Team.TEAM1)
+            updateDisplay()
         }
-        button_score_p2.setOnClickListener { mainActivity.controller.score(Team.TEAM2) }
+        button_score_p2.setOnClickListener {
+            mainActivity.controller.score(Team.TEAM2)
+            updateDisplay()
+        }
 
         if (!mainActivity.controller.matchAdded) {
             mainActivity.newMatch()
         }
     }
 
+    fun redrawDisplay() {
+        if (viewCreated) {
+            nextBallAnimationDuration = 0
+            updateDisplay()
+        }
+    }
+
+    private fun updateDisplay() {
+        fun moveBall(ball: ImageView, xPos: Float) {
+            ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
+                duration = nextBallAnimationDuration
+                start()
+            }
+        }
+
+        val scores = mainActivity.controller.currentGame.getScoreStrings()
+        textScoreP1.text = scores.player1
+        textScoreP2.text = scores.player2
+
+        val ballServingGreen = if (ambientMode)
+            net.mqduck.deuce.common.R.drawable.ball_ambient
+        else
+            net.mqduck.deuce.common.R.drawable.ball_green
+        val ballServingOrange = if (ambientMode)
+            net.mqduck.deuce.common.R.drawable.ball_ambient
+        else
+            net.mqduck.deuce.common.R.drawable.ball_orange
+        val ballNotservingGreen = if (ambientMode)
+            net.mqduck.deuce.common.R.drawable.ball_void
+        else
+            net.mqduck.deuce.common.R.drawable.ball_darkgreen
+        val ballNotservingOrange = if (ambientMode)
+            net.mqduck.deuce.common.R.drawable.ball_void
+        else
+            net.mqduck.deuce.common.R.drawable.ball_darkorange
+
+        if (mainActivity.controller.match.winner == Winner.NONE) {
+            when (mainActivity.controller.serving) {
+                Serving.PLAYER1_LEFT -> {
+                    imageBallServingT1.setImageResource(ballServingGreen)
+                    moveBall(imageBallServingT1, posXBallLeftT1)
+                    imageBallServingT1.visibility = View.VISIBLE
+                    imageBallServingT2.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                        imageBallNotservingT1.setImageResource(ballNotservingOrange)
+                        moveBall(imageBallNotservingT1, posXBallRightT1)
+                        imageBallNotservingT1.visibility = View.VISIBLE
+                        imageBallNotservingT2.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER1_RIGHT -> {
+                    imageBallServingT1.setImageResource(ballServingGreen)
+                    moveBall(imageBallServingT1, posXBallRightT1)
+                    imageBallServingT1.visibility = View.VISIBLE
+                    imageBallServingT2.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                        imageBallNotservingT1.setImageResource(ballNotservingOrange)
+                        moveBall(imageBallNotservingT1, posXBallLeftT1)
+                        imageBallNotservingT1.visibility = View.VISIBLE
+                        imageBallNotservingT2.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER2_LEFT -> {
+                    imageBallServingT2.setImageResource(ballServingGreen)
+                    moveBall(imageBallServingT2, posXBallLeftT2)
+                    imageBallServingT2.visibility = View.VISIBLE
+                    imageBallServingT1.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                        imageBallNotservingT2.setImageResource(ballNotservingOrange)
+                        moveBall(imageBallNotservingT2, posXBallRightT2)
+                        imageBallNotservingT2.visibility = View.VISIBLE
+                        imageBallNotservingT1.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER2_RIGHT -> {
+                    imageBallServingT2.setImageResource(ballServingGreen)
+                    moveBall(imageBallServingT2, posXBallRightT2)
+                    imageBallServingT2.visibility = View.VISIBLE
+                    imageBallServingT1.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                        imageBallNotservingT2.setImageResource(ballNotservingOrange)
+                        moveBall(imageBallNotservingT2, posXBallLeftT2)
+                        imageBallNotservingT2.visibility = View.VISIBLE
+                        imageBallNotservingT1.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER3_LEFT -> {
+                    imageBallServingT1.setImageResource(ballServingOrange)
+                    moveBall(imageBallServingT1, posXBallLeftT1)
+                    imageBallServingT1.visibility = View.VISIBLE
+                    imageBallServingT2.visibility = View.INVISIBLE
+
+                    imageBallNotservingT1.setImageResource(ballNotservingGreen)
+                    moveBall(imageBallNotservingT1, posXBallRightT1)
+                    imageBallNotservingT1.visibility = View.VISIBLE
+                    imageBallNotservingT2.visibility = View.INVISIBLE
+                }
+                Serving.PLAYER3_RIGHT -> {
+                    imageBallServingT1.setImageResource(ballServingOrange)
+                    moveBall(imageBallServingT1, posXBallRightT1)
+                    imageBallServingT1.visibility = View.VISIBLE
+                    imageBallServingT2.visibility = View.INVISIBLE
+
+                    imageBallNotservingT1.setImageResource(ballNotservingGreen)
+                    moveBall(imageBallNotservingT1, posXBallLeftT1)
+                    imageBallNotservingT1.visibility = View.VISIBLE
+                    imageBallNotservingT2.visibility = View.INVISIBLE
+                }
+                Serving.PLAYER4_LEFT -> {
+                    imageBallServingT2.setImageResource(ballServingOrange)
+                    moveBall(imageBallServingT2, posXBallLeftT2)
+                    imageBallServingT2.visibility = View.VISIBLE
+                    imageBallServingT1.visibility = View.INVISIBLE
+
+                    imageBallNotservingT2.setImageResource(ballNotservingGreen)
+                    moveBall(imageBallNotservingT2, posXBallRightT2)
+                    imageBallNotservingT2.visibility = View.VISIBLE
+                    imageBallNotservingT1.visibility = View.INVISIBLE
+                }
+                Serving.PLAYER4_RIGHT -> {
+                    imageBallServingT2.setImageResource(ballServingOrange)
+                    moveBall(imageBallServingT2, posXBallRightT2)
+                    imageBallServingT2.visibility = View.VISIBLE
+                    imageBallServingT1.visibility = View.INVISIBLE
+
+                    imageBallNotservingT2.setImageResource(ballNotservingGreen)
+                    moveBall(imageBallNotservingT2, posXBallLeftT2)
+                    imageBallNotservingT2.visibility = View.VISIBLE
+                    imageBallNotservingT1.visibility = View.INVISIBLE
+                }
+            }
+        } else {
+            imageBallServingT1.visibility = View.INVISIBLE
+            imageBallNotservingT1.visibility = View.INVISIBLE
+            imageBallServingT2.visibility = View.INVISIBLE
+            imageBallNotservingT2.visibility = View.INVISIBLE
+        }
+
+        nextBallAnimationDuration = BALL_ANIMATION_DURATION
+
+        var newTextScoresMatchP1 = ""
+        var newTextScoresMatchP2 = ""
+        for (set in mainActivity.controller.match.sets) {
+            newTextScoresMatchP1 += set.scoreP1.toString() + "  "
+            newTextScoresMatchP2 += set.scoreP2.toString() + "  "
+        }
+        textScoresMatchP1.text = newTextScoresMatchP1.trim()
+        textScoresMatchP2.text = newTextScoresMatchP2.trim()
+
+        if (mainActivity.controller.changeover) {
+            changeoverArrowDown.visibility = View.VISIBLE
+            changeoverArrowUp.visibility = View.VISIBLE
+        } else {
+            changeoverArrowDown.visibility = View.INVISIBLE
+            changeoverArrowUp.visibility = View.INVISIBLE
+        }
+    }
+
     fun undo() {
         if (mainActivity.controller.undo()) {
             image_undo.visibility = View.VISIBLE
-            val fadeout = AlphaAnimation(1F, 0F);
+            val fadeout = AlphaAnimation(1F, 0F)
             fadeout.duration = UNDO_ANIMATION_DURATION
             image_undo.startAnimation(fadeout)
-            image_undo.postDelayed(Runnable {
-                image_undo.visibility = View.GONE
-            }, UNDO_ANIMATION_DURATION)
-
+            image_undo.postDelayed({ image_undo.visibility = View.GONE }, UNDO_ANIMATION_DURATION)
         }
     }
 
