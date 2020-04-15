@@ -23,7 +23,7 @@ import android.os.Bundle
 import net.mqduck.deuce.common.*
 import net.mqduck.deuce.common.ScoreController
 
-class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
+class ScoreController : ScoreController {
     internal var match = Match(
         0,
         0,
@@ -86,8 +86,6 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
         outState.putSerializable("overtime", match.overtime)
         outState.putSerializable("players", match.players)
 
-        /*outState.putLong("animationDuration", animationDuration)
-        outState.putLong("nextAnimationDuration", nextAnimationDuration)*/
         outState.putSerializable("startingServer", match.startingServer)
         outState.putBoolean("matchAdded", matchAdded)
         return outState
