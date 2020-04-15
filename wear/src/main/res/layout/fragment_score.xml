@@ -149,12 +149,33 @@
         android:src="@drawable/undo"
         tools:ignore="ContentDescription" />
 
+    <ImageView
+        android:id="@+id/changeover_arrow_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:src="@drawable/arrow_down"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/changeover_arrow_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:src="@drawable/arrow_up"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        tools:ignore="ContentDescription" />
+
     <TextClock
         android:id="@+id/text_clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@color/lighter_accent"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        tools:visibility="gone" />
 
 </FrameLayout>

@@ -58,6 +58,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
 
     var matchAdded = false
         private set
+    private var showChangeoverArrows = false
 
     fun loadInstanceState(savedInstanceState: Bundle) {
         animationDuration = savedInstanceState.getLong("animationDuration")
@@ -312,9 +313,18 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
         }
         mActivityScore.textScoresMatchP1.text = textScoresMatchP1.trim()
         mActivityScore.textScoresMatchP2.text = textScoresMatchP2.trim()
+
+        if (showChangeoverArrows) {
+            scoreView?.changeoverArrowDown?.visibility = View.VISIBLE
+            scoreView?.changeoverArrowUp?.visibility = View.VISIBLE
+        } else {
+            scoreView?.changeoverArrowDown?.visibility = View.INVISIBLE
+            scoreView?.changeoverArrowUp?.visibility = View.INVISIBLE
+        }
     }
 
     fun score(team: Team, updateLog: Boolean = true) {
+        showChangeoverArrows = false
         val winnerGame = currentGame.score(team)
         if (winnerGame != Winner.NONE) {
             val winnerSet = currentSet.score(team)
@@ -360,6 +370,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
 
             if (currentSet.games.size % 2 == 0) {
                 scoreView?.doHapticChangeover()
+                showChangeoverArrows = true
             }
 
             nextAnimationDuration = 0
@@ -433,6 +444,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
             )) % 6 == 0
         ) {
             scoreView?.doHapticChangeover()
+            showChangeoverArrows = true
         }
     }
 

@@ -45,6 +45,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     lateinit var imageBallNotservingT2: ImageView
     lateinit var textScoresMatchP1: TextView
     lateinit var textScoresMatchP2: TextView
+    lateinit var changeoverArrowDown: ImageView
+    lateinit var changeoverArrowUp: ImageView
     var posXBallLeftT1 = 0F
     var posXBallRightT1 = 0F
     var posXBallLeftT2 = 0F
@@ -83,6 +85,9 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
 
         posXBallLeftT1 = ball_notserving_t1.x
         posXBallRightT2 = posXBallLeftT1
+
+        changeoverArrowDown = changeover_arrow_down
+        changeoverArrowUp = changeover_arrow_up
 
         image_undo.visibility = View.GONE
 

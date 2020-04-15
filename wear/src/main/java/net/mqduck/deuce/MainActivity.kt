@@ -32,7 +32,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
@@ -69,7 +68,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     private var undoButton: Int? = null
 
     val database = Firebase.firestore
-    private lateinit var authenticator: FirebaseAuth
 
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
 
@@ -80,8 +78,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         Game.init(this)
 
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
-
-        authenticator = FirebaseAuth.getInstance()
 
         var fragment = FragmentEnum.SETUP
 
