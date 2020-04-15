@@ -110,15 +110,14 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             text_clock.visibility = View.INVISIBLE
         }
 
-        //TODO: post needed?
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
             posXBallLeftT2 = posXBallRightT1
-            redrawDisplay()
+            updateDisplayNoBallAnimation()
         }
 
         viewCreated = true
-        redrawDisplay()
+        updateDisplayNoBallAnimation()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -126,19 +125,29 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
 
         button_score_p1.setOnClickListener {
             mainActivity.controller.score(Team.TEAM1)
-            updateDisplay()
+            if (mainActivity.controller.serviceChanged) {
+                updateDisplayNoBallAnimation()
+            } else {
+                updateDisplay()
+            }
         }
         button_score_p2.setOnClickListener {
             mainActivity.controller.score(Team.TEAM2)
-            updateDisplay()
+            if (mainActivity.controller.serviceChanged) {
+                updateDisplayNoBallAnimation()
+            } else {
+                updateDisplay()
+            }
         }
 
         if (!mainActivity.controller.matchAdded) {
             mainActivity.newMatch()
         }
+
+        updateDisplayNoBallAnimation()
     }
 
-    fun redrawDisplay() {
+    fun updateDisplayNoBallAnimation() {
         if (viewCreated) {
             nextBallAnimationDuration = 0
             updateDisplay()
@@ -294,6 +303,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         if (mainActivity.controller.changeover) {
             changeoverArrowDown.visibility = View.VISIBLE
             changeoverArrowUp.visibility = View.VISIBLE
+            fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         } else {
             changeoverArrowDown.visibility = View.INVISIBLE
             changeoverArrowUp.visibility = View.INVISIBLE
@@ -307,10 +317,11 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             fadeout.duration = UNDO_ANIMATION_DURATION
             image_undo.startAnimation(fadeout)
             image_undo.postDelayed({ image_undo.visibility = View.GONE }, UNDO_ANIMATION_DURATION)
+            updateDisplayNoBallAnimation()
         }
     }
 
-    fun doHapticChangeover() {
+    /*fun doHapticChangeover() {
         fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-    }
+    }*/
 }

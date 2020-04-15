@@ -20,12 +20,10 @@
 package net.mqduck.deuce
 
 import android.os.Bundle
-import com.google.firebase.Timestamp
 import net.mqduck.deuce.common.*
 import net.mqduck.deuce.common.ScoreController
-import java.util.*
 
-class ScoreController(val mainActivity: MainActivity) : ScoreController {
+class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
 //    var animationDuration = BALL_ANIMATION_DURATION
 
 //    private var nextAnimationDuration = 0L
@@ -50,6 +48,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
     internal val currentGame get() = match.currentGame
     private var scoreLog = ScoreStack()
     var changeover = false
+        private set
+    var serviceChanged = true
         private set
 
     //var scoreView: ScoreFragment? = null
@@ -139,6 +139,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
         )
 
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+        serviceChanged = true
 
         //TODO: call this at the right place
 //        redrawDisplay()
@@ -325,6 +326,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
     fun score(team: Team, updateLog: Boolean = true) {
 //        showChangeoverArrows = false
         changeover = false
+        serviceChanged = false
         val winnerGame = currentGame.score(team)
         if (winnerGame != Winner.NONE) {
             val winnerSet = currentSet.score(team)
@@ -334,7 +336,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
                     // Match is over
                     /*scoreView?.buttonScoreP1?.isEnabled = false
                     scoreView?.buttonScoreP2?.isEnabled = false*/
-                    mainActivity.database
+                    /*mainActivity.database
                         .collection("match")
                         .document("user1")
                         .collection("matches")
@@ -349,7 +351,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
                                 "begin" to Timestamp(Date(match.startTime)),
                                 "end" to Timestamp(Date())
                             )
-                        )
+                        )*/
                 } else {
                     // Set is over
                     match.addNewSet()
@@ -376,6 +378,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
 
             //TODO: do this the right place
 //            nextAnimationDuration = 0
+
+            serviceChanged = true
 
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
@@ -424,6 +428,8 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
             }
             //TODO: Do this the right place
 //            nextAnimationDuration = 0
+
+            serviceChanged = true
         } else {
             serving = when (serving) {
                 Serving.PLAYER1_LEFT -> Serving.PLAYER1_RIGHT
@@ -441,6 +447,7 @@ class ScoreController(val mainActivity: MainActivity) : ScoreController {
             scoreLog.push(team)
             updateDisplay()
         }*/
+        scoreLog.push(team)
 
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(
                 Team.TEAM2
