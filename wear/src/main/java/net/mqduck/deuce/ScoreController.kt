@@ -24,10 +24,6 @@ import net.mqduck.deuce.common.*
 import net.mqduck.deuce.common.ScoreController
 
 class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
-//    var animationDuration = BALL_ANIMATION_DURATION
-
-//    private var nextAnimationDuration = 0L
-
     internal var match = Match(
         0,
         0,
@@ -52,15 +48,10 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
     var serviceChanged = true
         private set
 
-    //var scoreView: ScoreFragment? = null
-
     var matchAdded = false
         private set
-    //private var showChangeoverArrows = false
 
     fun loadInstanceState(savedInstanceState: Bundle) {
-        /*animationDuration = savedInstanceState.getLong("animationDuration")
-        nextAnimationDuration = savedInstanceState.getLong("nextAnimationDuration")*/
         scoreLog = savedInstanceState.getParcelable("scores")!!
         matchAdded = savedInstanceState.getBoolean("matchAdded")
 
@@ -140,9 +131,6 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
 
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
         serviceChanged = true
-
-        //TODO: call this at the right place
-//        redrawDisplay()
     }
 
     fun addMatch(
@@ -324,7 +312,6 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
     }*/
 
     fun score(team: Team, updateLog: Boolean = true) {
-//        showChangeoverArrows = false
         changeover = false
         serviceChanged = false
         val winnerGame = currentGame.score(team)
@@ -371,13 +358,8 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
             }
 
             if (currentSet.games.size % 2 == 0) {
-                /*scoreView?.doHapticChangeover()
-                showChangeoverArrows = true*/
                 changeover = true
             }
-
-            //TODO: do this the right place
-//            nextAnimationDuration = 0
 
             serviceChanged = true
 
@@ -426,8 +408,6 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
                     else
                         Serving.PLAYER3_LEFT
             }
-            //TODO: Do this the right place
-//            nextAnimationDuration = 0
 
             serviceChanged = true
         } else {
@@ -443,18 +423,14 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
             }
         }
 
-        /*if (updateLog) {
+        if (updateLog) {
             scoreLog.push(team)
-            updateDisplay()
-        }*/
-        scoreLog.push(team)
+        }
 
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(
                 Team.TEAM2
             )) % 6 == 0
         ) {
-            /*scoreView?.doHapticChangeover()
-            showChangeoverArrows = true*/
             changeover = true
         }
     }
@@ -478,9 +454,6 @@ class ScoreController(/*val mainActivity: MainActivity*/) : ScoreController {
             )
 
             loadScores()
-
-            //TODO: Do this the right place
-//            redrawDisplay()
 
             return true
         }

@@ -53,16 +53,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     var posXBallLeftT2 = 0F
     var posXBallRightT2 = 0F
     var viewCreated = false
-    private var nextBallAnimationDuration = 0L
 
     val ambientMode = mainActivity.ambientMode
-
-    companion object {
-    }
-
-    init {
-        //mainActivity.controller.scoreView = this
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -113,11 +105,11 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
             posXBallLeftT2 = posXBallRightT1
-            updateDisplayNoBallAnimation()
+            updateDisplay(false)
         }
 
         viewCreated = true
-        updateDisplayNoBallAnimation()
+//        updateDisplay(false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -126,17 +118,17 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         button_score_p1.setOnClickListener {
             mainActivity.controller.score(Team.TEAM1)
             if (mainActivity.controller.serviceChanged) {
-                updateDisplayNoBallAnimation()
+                updateDisplay(false)
             } else {
-                updateDisplay()
+                updateDisplay(true)
             }
         }
         button_score_p2.setOnClickListener {
             mainActivity.controller.score(Team.TEAM2)
             if (mainActivity.controller.serviceChanged) {
-                updateDisplayNoBallAnimation()
+                updateDisplay(false)
             } else {
-                updateDisplay()
+                updateDisplay(true)
             }
         }
 
@@ -144,21 +136,18 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             mainActivity.newMatch()
         }
 
-        updateDisplayNoBallAnimation()
+        updateDisplay(false)
     }
 
-    fun updateDisplayNoBallAnimation() {
-        if (viewCreated) {
-            nextBallAnimationDuration = 0
-            updateDisplay()
-        }
-    }
-
-    private fun updateDisplay() {
+    private fun updateDisplay(animate: Boolean) {
         fun moveBall(ball: ImageView, xPos: Float) {
-            ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
-                duration = nextBallAnimationDuration
-                start()
+            if (animate) {
+                ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
+                    duration = BALL_ANIMATION_DURATION
+                    start()
+                }
+            } else {
+                ball.x = xPos
             }
         }
 
@@ -289,8 +278,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             imageBallNotservingT2.visibility = View.INVISIBLE
         }
 
-        nextBallAnimationDuration = BALL_ANIMATION_DURATION
-
         var newTextScoresMatchP1 = ""
         var newTextScoresMatchP2 = ""
         for (set in mainActivity.controller.match.sets) {
@@ -317,11 +304,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             fadeout.duration = UNDO_ANIMATION_DURATION
             image_undo.startAnimation(fadeout)
             image_undo.postDelayed({ image_undo.visibility = View.GONE }, UNDO_ANIMATION_DURATION)
-            updateDisplayNoBallAnimation()
+            updateDisplay(false)
         }
     }
-
-    /*fun doHapticChangeover() {
-        fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-    }*/
 }
