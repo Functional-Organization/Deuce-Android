@@ -27,13 +27,13 @@ class Set(
     private val winMinimumGame: Int, private val winMarginGame: Int,
     private val winMinimumGameTiebreak: Int, private val winMarginGameTiebreak: Int,
     private val overtime: Overtime,
-    private val controller: ScoreController
+    private val match: Match
 ) {
     var games = ArrayList<Game>()
     private var mScore = Score(winMinimum, winMargin)
 
     init {
-        games.add(Game(winMinimumGame, winMarginGame, controller))
+        games.add(Game(winMinimumGame, winMarginGame, match))
     }
 
     fun score(team: Team) = mScore.score(team)
@@ -41,9 +41,9 @@ class Set(
     fun addNewGame() {
         if (overtime == Overtime.TIEBREAK && mScore.scoreP1 == winMinimum && mScore.scoreP2 == winMinimum) {
             mScore.winMargin = 1
-            games.add(Game(winMinimumGameTiebreak, winMarginGameTiebreak, controller, true))
+            games.add(Game(winMinimumGameTiebreak, winMarginGameTiebreak, match, true))
         } else {
-            games.add(Game(winMinimumGame, winMarginGame, controller, false))
+            games.add(Game(winMinimumGame, winMarginGame, match, false))
         }
     }
 

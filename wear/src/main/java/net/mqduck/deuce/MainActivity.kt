@@ -50,7 +50,19 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         )
     }
 
-    internal val controller = ScoreController(/*this*/)
+    internal var controller = Match(
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        Team.TEAM1,
+        Overtime.TIEBREAK,
+        Players.SINGLES
+    )
     internal lateinit var preferences: DeuceWearPreferences
 
     private var setupFragment = SetupFragment(this)
@@ -82,7 +94,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         var fragment = FragmentEnum.SETUP
 
         savedInstanceState?.let {
-            controller.loadInstanceState(savedInstanceState.getBundle("controllerState")!!)
+            //TODO: bundle
+            //controller.loadInstanceState(savedInstanceState.getBundle("controllerState")!!)
             if (savedInstanceState.containsKey("setupState")) {
                 setupFragment.setInitialSavedState(savedInstanceState.getParcelable("setupState"))
             }
@@ -130,7 +143,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putBundle("controllerState", controller.saveInstanceState())
+        //TODO: bundle
+//        outState.putBundle("controllerState", controller.saveInstanceState())
         outState.putSerializable("currentFragment", currentFragment)
         outState.putBoolean("matchAdded", matchAdded)
     }
@@ -158,8 +172,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationAdapter.notifyDataSetChanged()
         switchFragment(FragmentEnum.SCORE)
 
-        controller.addMatch(
-            preferences.numSets,
+        controller = Match(
+            preferences.numSets.value,
             DEFAULT_WIN_MARGIN_MATCH,
             DEFAULT_WIN_MINIMUM_SET,
             DEFAULT_WIN_MARGIN_SET,

@@ -19,11 +19,12 @@
 
 package net.mqduck.deuce
 
-import android.os.Bundle
-import net.mqduck.deuce.common.*
-import net.mqduck.deuce.common.ScoreController
+import net.mqduck.deuce.common.Match
+import net.mqduck.deuce.common.Overtime
+import net.mqduck.deuce.common.Players
+import net.mqduck.deuce.common.Team
 
-class ScoreController : ScoreController {
+class ScoreController /*: ScoreController*/ {
     internal var match = Match(
         0,
         0,
@@ -35,11 +36,10 @@ class ScoreController : ScoreController {
         0,
         Team.TEAM1,
         Overtime.TIEBREAK,
-        Players.SINGLES,
-        this
+        Players.SINGLES
     )
-    override var serving = Serving.PLAYER1_LEFT
 
+    /*override var serving = Serving.PLAYER1_LEFT
     private val currentSet get() = match.currentSet
     internal val currentGame get() = match.currentGame
     private var scoreLog = ScoreStack()
@@ -47,11 +47,10 @@ class ScoreController : ScoreController {
         private set
     var serviceChanged = true
         private set
-
     var matchAdded = false
-        private set
+        private set*/
 
-    fun loadInstanceState(savedInstanceState: Bundle) {
+    /*fun loadInstanceState(savedInstanceState: Bundle) {
         scoreLog = savedInstanceState.getParcelable("scores")!!
         matchAdded = savedInstanceState.getBoolean("matchAdded")
 
@@ -89,16 +88,16 @@ class ScoreController : ScoreController {
         outState.putSerializable("startingServer", match.startingServer)
         outState.putBoolean("matchAdded", matchAdded)
         return outState
-    }
+    }*/
 
-    private fun loadScores() {
+    /*private fun loadScores() {
         val numScores = scoreLog.size
         for (i in 0 until numScores) {
             score(scoreLog[i], false)
         }
-    }
+    }*/
 
-    private fun addMatch(
+    /*private fun addMatch(
         numSets: Int, winMarginMatch: Int,
         winMinimumSet: Int, winMarginSet: Int,
         winMinimumGame: Int, winMarginGame: Int,
@@ -123,8 +122,7 @@ class ScoreController : ScoreController {
             winMarginGameTiebreak,
             startingServer,
             overtime,
-            players,
-            this
+            players
         )
 
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
@@ -154,162 +152,9 @@ class ScoreController : ScoreController {
             players,
             true
         )
-    }
-
-    /*fun redrawDisplay() {
-        val mScoreView = scoreView
-        if (mScoreView != null && mScoreView.viewCreated) {
-            nextAnimationDuration = 0
-            updateDisplay()
-        }
-    }
-
-    private fun updateDisplay() {
-        fun moveBall(ball: ImageView, xPos: Float) {
-            ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
-                duration = nextAnimationDuration
-                start()
-            }
-        }
-
-        val mActivityScore = scoreView ?: return
-
-        val scores = currentGame.getScoreStrings()
-        mActivityScore.textScoreP1.text = scores.player1
-        mActivityScore.textScoreP2.text = scores.player2
-
-        val ballServingGreen = if (mActivityScore.ambientMode) R.drawable.ball_ambient else R.drawable.ball_green
-        val ballServingOrange = if (mActivityScore.ambientMode) R.drawable.ball_ambient else R.drawable.ball_orange
-        val ballNotservingGreen = if (mActivityScore.ambientMode) R.drawable.ball_void else R.drawable.ball_darkgreen
-        val ballNotservingOrange = if (mActivityScore.ambientMode) R.drawable.ball_void else R.drawable.ball_darkorange
-
-        if (match.winner == Winner.NONE) {
-            when (serving) {
-                Serving.PLAYER1_LEFT -> {
-                    mActivityScore.imageBallServingT1.setImageResource(ballServingGreen)
-                    moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallLeftT1)
-                    mActivityScore.imageBallServingT1.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
-
-                    if (match.players == Players.DOUBLES) {
-                        mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingOrange)
-                        moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallRightT1)
-                        mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                        mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
-                    }
-                }
-                Serving.PLAYER1_RIGHT -> {
-                    mActivityScore.imageBallServingT1.setImageResource(ballServingGreen)
-                    moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallRightT1)
-                    mActivityScore.imageBallServingT1.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
-
-                    if (match.players == Players.DOUBLES) {
-                        mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingOrange)
-                        moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallLeftT1)
-                        mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                        mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
-                    }
-                }
-                Serving.PLAYER2_LEFT -> {
-                    mActivityScore.imageBallServingT2.setImageResource(ballServingGreen)
-                    moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallLeftT2)
-                    mActivityScore.imageBallServingT2.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
-
-                    if (match.players == Players.DOUBLES) {
-                        mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingOrange)
-                        moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallRightT2)
-                        mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                        mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
-                    }
-                }
-                Serving.PLAYER2_RIGHT -> {
-                    mActivityScore.imageBallServingT2.setImageResource(ballServingGreen)
-                    moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallRightT2)
-                    mActivityScore.imageBallServingT2.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
-
-                    if (match.players == Players.DOUBLES) {
-                        mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingOrange)
-                        moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallLeftT2)
-                        mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                        mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
-                    }
-                }
-                Serving.PLAYER3_LEFT -> {
-                    mActivityScore.imageBallServingT1.setImageResource(ballServingOrange)
-                    moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallLeftT1)
-                    mActivityScore.imageBallServingT1.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
-
-                    mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingGreen)
-                    moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallRightT1)
-                    mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                    mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
-                }
-                Serving.PLAYER3_RIGHT -> {
-                    mActivityScore.imageBallServingT1.setImageResource(ballServingOrange)
-                    moveBall(mActivityScore.imageBallServingT1, mActivityScore.posXBallRightT1)
-                    mActivityScore.imageBallServingT1.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT2.visibility = View.INVISIBLE
-
-                    mActivityScore.imageBallNotservingT1.setImageResource(ballNotservingGreen)
-                    moveBall(mActivityScore.imageBallNotservingT1, mActivityScore.posXBallLeftT1)
-                    mActivityScore.imageBallNotservingT1.visibility = View.VISIBLE
-                    mActivityScore.imageBallNotservingT2.visibility = View.INVISIBLE
-                }
-                Serving.PLAYER4_LEFT -> {
-                    mActivityScore.imageBallServingT2.setImageResource(ballServingOrange)
-                    moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallLeftT2)
-                    mActivityScore.imageBallServingT2.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
-
-                    mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingGreen)
-                    moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallRightT2)
-                    mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                    mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
-                }
-                Serving.PLAYER4_RIGHT -> {
-                    mActivityScore.imageBallServingT2.setImageResource(ballServingOrange)
-                    moveBall(mActivityScore.imageBallServingT2, mActivityScore.posXBallRightT2)
-                    mActivityScore.imageBallServingT2.visibility = View.VISIBLE
-                    mActivityScore.imageBallServingT1.visibility = View.INVISIBLE
-
-                    mActivityScore.imageBallNotservingT2.setImageResource(ballNotservingGreen)
-                    moveBall(mActivityScore.imageBallNotservingT2, mActivityScore.posXBallLeftT2)
-                    mActivityScore.imageBallNotservingT2.visibility = View.VISIBLE
-                    mActivityScore.imageBallNotservingT1.visibility = View.INVISIBLE
-                }
-            }
-        } else {
-            scoreView?.imageBallServingT1?.visibility = View.INVISIBLE
-            scoreView?.imageBallNotservingT1?.visibility = View.INVISIBLE
-            scoreView?.imageBallServingT2?.visibility = View.INVISIBLE
-            scoreView?.imageBallNotservingT2?.visibility = View.INVISIBLE
-        }
-
-        nextAnimationDuration = animationDuration
-
-        var textScoresMatchP1 = ""
-        var textScoresMatchP2 = ""
-        for (set in match.sets) {
-            textScoresMatchP1 += set.scoreP1.toString() + "  "
-            textScoresMatchP2 += set.scoreP2.toString() + "  "
-        }
-        mActivityScore.textScoresMatchP1.text = textScoresMatchP1.trim()
-        mActivityScore.textScoresMatchP2.text = textScoresMatchP2.trim()
-
-        if (showChangeoverArrows) {
-            scoreView?.changeoverArrowDown?.visibility = View.VISIBLE
-            scoreView?.changeoverArrowUp?.visibility = View.VISIBLE
-        } else {
-            scoreView?.changeoverArrowDown?.visibility = View.INVISIBLE
-            scoreView?.changeoverArrowUp?.visibility = View.INVISIBLE
-        }
     }*/
 
-    fun score(team: Team, updateLog: Boolean = true) {
+    /*fun score(team: Team, updateLog: Boolean = true) {
         changeover = false
         serviceChanged = false
         val winnerGame = currentGame.score(team)
@@ -319,9 +164,9 @@ class ScoreController : ScoreController {
                 val winnerMatch = match.score(team)
                 if (winnerMatch != Winner.NONE) {
                     // Match is over
-                    /*scoreView?.buttonScoreP1?.isEnabled = false
-                    scoreView?.buttonScoreP2?.isEnabled = false*/
-                    /*mainActivity.database
+                    *//*scoreView?.buttonScoreP1?.isEnabled = false
+                    scoreView?.buttonScoreP2?.isEnabled = false*//*
+                    *//*mainActivity.database
                         .collection("match")
                         .document("user1")
                         .collection("matches")
@@ -336,7 +181,7 @@ class ScoreController : ScoreController {
                                 "begin" to Timestamp(Date(match.startTime)),
                                 "end" to Timestamp(Date())
                             )
-                        )*/
+                        )*//*
                 } else {
                     // Set is over
                     match.addNewSet()
@@ -431,9 +276,9 @@ class ScoreController : ScoreController {
         ) {
             changeover = true
         }
-    }
+    }*/
 
-    fun undo(): Boolean {
+    /*fun undo(): Boolean {
         if (scoreLog.size != 0) {
             scoreLog.pop()
             addMatch(
@@ -456,5 +301,5 @@ class ScoreController : ScoreController {
             return true
         }
         return false
-    }
+    }*/
 }

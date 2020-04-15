@@ -113,7 +113,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         } else {
             updateDisplay(true)
         }
-        if (mainActivity.controller.match.winner != Winner.NONE) {
+        if (mainActivity.controller.winner != Winner.NONE) {
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
         }
@@ -135,7 +135,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         button_score_p1.text = scores.player1
         button_score_p2.text = scores.player2
 
-        if (mainActivity.controller.match.winner == Winner.NONE) {
+        if (mainActivity.controller.winner == Winner.NONE) {
             when (mainActivity.controller.serving) {
                 Serving.PLAYER1_LEFT -> {
                     ball_serving_t1.setImageResource(ballServingGreen)
@@ -143,7 +143,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                    if (mainActivity.controller.players == Players.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallRightT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -156,7 +156,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                    if (mainActivity.controller.players == Players.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallLeftT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -169,7 +169,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                    if (mainActivity.controller.players == Players.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallRightT2)
                         ball_notserving_t2.visibility = View.VISIBLE
@@ -182,7 +182,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.match.players == Players.DOUBLES) {
+                    if (mainActivity.controller.players == Players.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallLeftT2)
                         ball_notserving_t2.visibility = View.VISIBLE
@@ -243,7 +243,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
 
         var textScoresMatchP1 = ""
         var textScoresMatchP2 = ""
-        for (set in mainActivity.controller.match.sets) {
+        for (set in mainActivity.controller.sets) {
             textScoresMatchP1 += set.scoreP1.toString() + "  "
             textScoresMatchP2 += set.scoreP2.toString() + "  "
         }
