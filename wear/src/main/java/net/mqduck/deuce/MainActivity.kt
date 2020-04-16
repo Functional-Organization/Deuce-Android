@@ -60,7 +60,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         0,
         0,
         Team.TEAM1,
-        Overtime.TIEBREAK,
+        OvertimeRule.TIEBREAK,
         Players.SINGLES
     )
     internal lateinit var preferences: DeuceWearPreferences

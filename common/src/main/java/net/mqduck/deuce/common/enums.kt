@@ -73,14 +73,14 @@ enum class NumSets(val value: Int) {
     }
 }
 
-enum class Overtime {
+enum class OvertimeRule {
     TIEBREAK, ADVANTAGE;
 
     companion object {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {
             TIEBREAK.ordinal -> TIEBREAK
             ADVANTAGE.ordinal -> ADVANTAGE
-            else -> DEFAULT_OVERTIME
+            else -> DEFAULT_OVERTIME_RULE
         }
     }
 }

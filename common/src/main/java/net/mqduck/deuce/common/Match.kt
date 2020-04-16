@@ -19,23 +19,29 @@
 
 package net.mqduck.deuce.common
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /**
  * Created by mqduck on 10/31/17.
  */
-class Match(
-    val winMinimum: Int, val winMargin: Int,
-    val winMinimumSet: Int, val winMarginSet: Int,
-    val winMinimumGame: Int, val winMarginGame: Int,
-    val winMinimumGameTiebreak: Int, val winMarginGameTiebreak: Int,
-    val startingServer: Team,
-    val overtime: Overtime,
+class Match : Parcelable {
+    val winMinimumMatch: Int
+    val winMarginMatch: Int
+    val winMinimumSet: Int
+    val winMarginSet: Int
+    val winMinimumGame: Int
+    val winMarginGame: Int
+    val winMinimumGameTiebreak: Int
+    val winMarginGameTiebreak: Int
+    val startingServer: Team
+    val overtimeRule: OvertimeRule
     val players: Players
-) {
-    var sets = ArrayList<Set>()
-    private var mScore = Score(winMinimum, winMargin)
-    var startTime = System.currentTimeMillis()
-        private set
-    var serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+
+    lateinit var sets: ArrayList<Set>
+    private lateinit var mScore: Score
+    val startTime = System.currentTimeMillis()
+    lateinit var serving: Serving
         private set
     private var scoreLog = ScoreStack()
     var changeover = false
@@ -45,32 +51,113 @@ class Match(
     var matchAdded = false
         private set
 
+    constructor(
+        winMinimumMatch: Int, winMarginMatch: Int,
+        winMinimumSet: Int, winMarginSet: Int,
+        winMinimumGame: Int, winMarginGame: Int,
+        winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
+        startingServer: Team,
+        overtimeRule: OvertimeRule,
+        players: Players
+    ) {
+        this.winMinimumMatch = winMinimumMatch
+        this.winMarginMatch = winMarginMatch
+        this.winMinimumSet = winMinimumSet
+        this.winMarginSet = winMarginSet
+        this.winMinimumGame = winMinimumGame
+        this.winMarginGame = winMarginGame
+        this.winMinimumGameTiebreak = winMinimumGameTiebreak
+        this.winMarginGameTiebreak = winMarginGameTiebreak
+        this.startingServer = startingServer
+        this.overtimeRule = overtimeRule
+        this.players = players
+
+        mScore = Score(winMinimumMatch, winMarginMatch)
+        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+        sets = arrayListOf(
+            Set(
+                winMinimumSet,
+                winMarginSet,
+                winMinimumGame,
+                winMarginGame,
+                winMinimumGameTiebreak,
+                winMarginGameTiebreak,
+                overtimeRule,
+                this
+            )
+        )
+    }
+
+    constructor(parcel: Parcel) {
+        winMinimumMatch = parcel.readInt()
+        winMarginMatch = parcel.readInt()
+        winMinimumSet = parcel.readInt()
+        winMarginSet = parcel.readInt()
+        winMinimumGame = parcel.readInt()
+        winMarginGame = parcel.readInt()
+        winMinimumGameTiebreak = parcel.readInt()
+        winMarginGameTiebreak = parcel.readInt()
+        startingServer = parcel.readSerializable() as Team
+        overtimeRule = parcel.readSerializable() as OvertimeRule
+        players = parcel.readSerializable() as Players
+
+        loadScoreLog(parcel.readParcelable(ScoreStack::class.java.classLoader)!!)
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(winMinimumMatch)
+        parcel.writeInt(winMarginMatch)
+        parcel.writeInt(winMinimumSet)
+        parcel.writeInt(winMarginSet)
+        parcel.writeInt(winMinimumGame)
+        parcel.writeInt(winMarginGame)
+        parcel.writeInt(winMinimumGameTiebreak)
+        parcel.writeInt(winMarginGameTiebreak)
+        parcel.writeSerializable(startingServer)
+        parcel.writeSerializable(overtimeRule)
+        parcel.writeSerializable(players)
+
+        // TODO: Is just passing flags correct?
+        parcel.writeParcelable(scoreLog, flags)
+    }
+
+    override fun describeContents() = 0
+
+    companion object CREATOR : Parcelable.Creator<Match> {
+        override fun createFromParcel(parcel: Parcel) = Match(parcel)
+        override fun newArray(size: Int) = arrayOfNulls<Match>(size)
+    }
+
+    private fun loadScoreLog(scoreLog: ScoreStack) {
+        this.scoreLog = ScoreStack()
+        mScore = Score(winMinimumMatch, winMarginMatch)
+        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+        sets = arrayListOf(
+            Set(
+                winMinimumSet,
+                winMarginSet,
+                winMinimumGame,
+                winMarginGame,
+                winMinimumGameTiebreak,
+                winMarginGameTiebreak,
+                overtimeRule,
+                this
+            )
+        )
+
+        val numScores = scoreLog.size
+        for (i in 0 until numScores) {
+            score(scoreLog[i])
+        }
+    }
+
     val winner
         get() = mScore.winner
-
-    init {
-        addNewSet()
-    }
 
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
 
-    private fun addNewSet() = sets.add(
-        Set(
-            winMinimumSet,
-            winMarginSet,
-            winMinimumGame,
-            winMarginGame,
-            winMinimumGameTiebreak,
-            winMarginGameTiebreak,
-            overtime,
-            this
-        )
-    )
-
-    //fun score(team: Team) = mScore.score(team)
-
-    fun score(team: Team, updateLog: Boolean = true) {
+    fun score(team: Team/*, updateLog: Boolean = true*/) {
         changeover = false
         serviceChanged = false
         val winnerGame = currentGame.score(team)
@@ -100,7 +187,18 @@ class Match(
                         )*/
                 } else {
                     // Set is over
-                    addNewSet()
+                    sets.add(
+                        Set(
+                            winMinimumSet,
+                            winMarginSet,
+                            winMinimumGame,
+                            winMarginGame,
+                            winMinimumGameTiebreak,
+                            winMarginGameTiebreak,
+                            overtimeRule,
+                            this
+                        )
+                    )
                 }
             } else {
                 // Game is over
@@ -182,9 +280,7 @@ class Match(
             }
         }
 
-        if (updateLog) {
-            scoreLog.push(team)
-        }
+        scoreLog.push(team)
 
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(
                 Team.TEAM2
@@ -197,24 +293,7 @@ class Match(
     fun undo(): Boolean {
         if (scoreLog.size != 0) {
             scoreLog.pop()
-            //TODO: rewrite old ScoreController old logic
-            /*addMatch(
-                match.winMinimum,
-                match.winMargin,
-                match.winMinimumSet,
-                match.winMarginSet,
-                match.winMinimumGame,
-                match.winMarginGame,
-                match.winMinimumGameTiebreak,
-                match.winMarginGameTiebreak,
-                match.startingServer,
-                match.overtime,
-                match.players,
-                false
-            )
-
-            loadScores()*/
-
+            loadScoreLog(scoreLog)
             return true
         }
         return false
