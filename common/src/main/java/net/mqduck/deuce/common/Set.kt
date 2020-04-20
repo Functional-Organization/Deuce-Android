@@ -19,9 +19,6 @@
 
 package net.mqduck.deuce.common
 
-/**
- * Created by mqduck on 10/31/17.
- */
 class Set(
     private val winMinimum: Int, winMargin: Int,
     private val winMinimumGame: Int, private val winMarginGame: Int,
