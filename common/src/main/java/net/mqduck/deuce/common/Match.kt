@@ -22,9 +22,6 @@ package net.mqduck.deuce.common
 import android.os.Parcel
 import android.os.Parcelable
 
-/**
- * Created by mqduck on 10/31/17.
- */
 class Match : Parcelable {
     val winMinimumMatch: Int
     val winMarginMatch: Int
@@ -151,8 +148,7 @@ class Match : Parcelable {
         }
     }
 
-    val winner
-        get() = mScore.winner
+    val winner get() = mScore.winner
 
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
@@ -186,7 +182,7 @@ class Match : Parcelable {
                             )
                         )*/
                 } else {
-                    // Set is over
+                    // Set is over, Match is not
                     sets.add(
                         Set(
                             winMinimumSet,
@@ -201,7 +197,7 @@ class Match : Parcelable {
                     )
                 }
             } else {
-                // Game is over
+                // Game is over, Set is not
                 currentSet.addNewGame()
                 if (currentGame.tiebreak) {
                     serving = when (serving) {
@@ -282,10 +278,7 @@ class Match : Parcelable {
 
         scoreLog.push(team)
 
-        if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(
-                Team.TEAM2
-            )) % 6 == 0
-        ) {
+        if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 6 == 0) {
             changeover = true
         }
     }

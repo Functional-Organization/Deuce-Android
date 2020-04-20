@@ -24,30 +24,30 @@ import net.mqduck.deuce.common.*
 
 class DeuceWearPreferences(private val preferences: SharedPreferences) {
     companion object {
-        const val PREFERENCE_NUM_SETS = "num_sets"
-        const val PREFERENCE_SERVER = "server"
-        const val PREFERENCE_PLAYERS = "players"
-        const val PREFERENCE_OVERTIME_RULE = "overtime"
-        const val PREFERENCE_CLOCK = "clock"
+        const val KEY_NUM_SETS = "num_sets"
+        const val KEY_SERVER = "server"
+        const val KEY_PLAYERS = "players"
+        const val KEY_OVERTIME_RULE = "overtime"
+        const val KEY_CLOCK = "clock"
     }
 
     var players
-        get() = Players.fromOrdinal(preferences.getInt(PREFERENCE_PLAYERS, DEFAULT_PLAYERS.ordinal))
-        set(players) = preferences.edit().putInt(PREFERENCE_PLAYERS, players.ordinal).apply()
+        get() = Players.fromOrdinal(preferences.getInt(KEY_PLAYERS, DEFAULT_PLAYERS.ordinal))
+        set(players) = preferences.edit().putInt(KEY_PLAYERS, players.ordinal).apply()
 
     var startingServer
-        get() = Team.fromOrdinal(preferences.getInt(PREFERENCE_SERVER, DEFAULT_STARTING_SERVER.ordinal))
-        set(startingServer) = preferences.edit().putInt(PREFERENCE_SERVER, startingServer.ordinal).apply()
+        get() = Team.fromOrdinal(preferences.getInt(KEY_SERVER, DEFAULT_STARTING_SERVER.ordinal))
+        set(startingServer) = preferences.edit().putInt(KEY_SERVER, startingServer.ordinal).apply()
 
     var numSets
-        get() = NumSets.fromOrdinal(preferences.getInt(PREFERENCE_NUM_SETS, DEFAULT_NUM_SETS.ordinal))
-        set(numSets) = preferences.edit().putInt(PREFERENCE_NUM_SETS, numSets.ordinal).apply()
+        get() = NumSets.fromOrdinal(preferences.getInt(KEY_NUM_SETS, DEFAULT_NUM_SETS.ordinal))
+        set(numSets) = preferences.edit().putInt(KEY_NUM_SETS, numSets.ordinal).apply()
 
     var overtime
-        get() = OvertimeRule.fromOrdinal(preferences.getInt(PREFERENCE_OVERTIME_RULE, DEFAULT_OVERTIME_RULE.ordinal))
-        set(overtime) = preferences.edit().putInt(PREFERENCE_OVERTIME_RULE, overtime.ordinal).apply()
+        get() = OvertimeRule.fromOrdinal(preferences.getInt(KEY_OVERTIME_RULE, DEFAULT_OVERTIME_RULE.ordinal))
+        set(overtime) = preferences.edit().putInt(KEY_OVERTIME_RULE, overtime.ordinal).apply()
 
     var clock
-        get() = preferences.getBoolean(PREFERENCE_CLOCK, DEFAULT_CLOCK)
-        set(clock) = preferences.edit().putBoolean(PREFERENCE_CLOCK, clock).apply()
+        get() = preferences.getBoolean(KEY_CLOCK, DEFAULT_CLOCK)
+        set(clock) = preferences.edit().putBoolean(KEY_CLOCK, clock).apply()
 }
