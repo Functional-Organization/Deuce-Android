@@ -27,7 +27,7 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
         const val PREFERENCE_NUM_SETS = "num_sets"
         const val PREFERENCE_SERVER = "server"
         const val PREFERENCE_PLAYERS = "players"
-        const val PREFERENCE_OVERTIME = "overtime"
+        const val PREFERENCE_OVERTIME_RULE = "overtime"
         const val PREFERENCE_CLOCK = "clock"
     }
 
@@ -44,8 +44,8 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
         set(numSets) = preferences.edit().putInt(PREFERENCE_NUM_SETS, numSets.ordinal).apply()
 
     var overtime
-        get() = Overtime.fromOrdinal(preferences.getInt(PREFERENCE_OVERTIME, DEFAULT_OVERTIME.ordinal))
-        set(overtime) = preferences.edit().putInt(PREFERENCE_OVERTIME, overtime.ordinal).apply()
+        get() = OvertimeRule.fromOrdinal(preferences.getInt(PREFERENCE_OVERTIME_RULE, DEFAULT_OVERTIME_RULE.ordinal))
+        set(overtime) = preferences.edit().putInt(PREFERENCE_OVERTIME_RULE, overtime.ordinal).apply()
 
     var clock
         get() = preferences.getBoolean(PREFERENCE_CLOCK, DEFAULT_CLOCK)

@@ -19,6 +19,7 @@
 
 package net.mqduck.deuce
 
+import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
@@ -27,41 +28,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
-import net.mqduck.deuce.common.Team
+import net.mqduck.deuce.common.*
 
 class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
-    lateinit var buttonScoreP1: Button
-    lateinit var buttonScoreP2: Button
-    lateinit var textScoreP1: TextView
-    lateinit var textScoreP2: TextView
-    lateinit var imageBallServingT1: ImageView
-    lateinit var imageBallNotservingT1: ImageView
-    lateinit var imageBallServingT2: ImageView
-    lateinit var imageBallNotservingT2: ImageView
-    lateinit var textScoresMatchP1: TextView
-    lateinit var textScoresMatchP2: TextView
-    lateinit var changeoverArrowDown: ImageView
-    lateinit var changeoverArrowUp: ImageView
-    var posXBallLeftT1 = 0F
-    var posXBallRightT1 = 0F
-    var posXBallLeftT2 = 0F
-    var posXBallRightT2 = 0F
-    var viewCreated = false
+    private var posXBallLeftT1 = 0F
+    private var posXBallRightT1 = 0F
+    private var posXBallLeftT2 = 0F
+    private var posXBallRightT2 = 0F
 
     val ambientMode = mainActivity.ambientMode
 
-    companion object {
-        const val UNDO_ANIMATION_DURATION = 700L
-    }
-
-    init {
-        mainActivity.controller.scoreView = this
-    }
+    private val ballServingGreen = if (ambientMode)
+        net.mqduck.deuce.common.R.drawable.ball_ambient
+    else
+        net.mqduck.deuce.common.R.drawable.ball_green
+    private val ballServingOrange = if (ambientMode)
+        net.mqduck.deuce.common.R.drawable.ball_ambient
+    else
+        net.mqduck.deuce.common.R.drawable.ball_orange
+    private val ballNotservingGreen = if (ambientMode)
+        net.mqduck.deuce.common.R.drawable.ball_void
+    else
+        net.mqduck.deuce.common.R.drawable.ball_darkgreen
+    private val ballNotservingOrange = if (ambientMode)
+        net.mqduck.deuce.common.R.drawable.ball_void
+    else
+        net.mqduck.deuce.common.R.drawable.ball_darkorange
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -70,30 +65,14 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        buttonScoreP1 = button_score_p1
-        buttonScoreP2 = button_score_p2
-        textScoreP1 = button_score_p1
-        textScoreP2 = button_score_p2
-
-        imageBallServingT1 = ball_serving_t1
-        imageBallNotservingT1 = ball_notserving_t1
-        imageBallServingT2 = ball_serving_t2
-        imageBallNotservingT2 = ball_notserving_t2
-
-        textScoresMatchP1 = text_scores_match_p1
-        textScoresMatchP2 = text_scores_match_p2
-
         posXBallLeftT1 = ball_notserving_t1.x
         posXBallRightT2 = posXBallLeftT1
-
-        changeoverArrowDown = changeover_arrow_down
-        changeoverArrowUp = changeover_arrow_up
 
         image_undo.visibility = View.GONE
 
         if (mainActivity.ambientMode) {
-            textScoresMatchP1.setTextColor(Color.WHITE)
-            textScoresMatchP2.setTextColor(Color.WHITE)
+            text_scores_match_p1.setTextColor(Color.WHITE)
+            text_scores_match_p2.setTextColor(Color.WHITE)
             text_clock.setTextColor(Color.WHITE)
             text_clock.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36F)
 
@@ -112,41 +91,183 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
             posXBallLeftT2 = posXBallRightT1
-            mainActivity.controller.redrawDisplay()
+            updateDisplay(false)
         }
-
-        viewCreated = true
-        mainActivity.controller.redrawDisplay()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        button_score_p1.setOnClickListener {
-            mainActivity.setTheme(R.style.DeuceWear_Ambient)
-            mainActivity.controller.score(Team.TEAM1)
-        }
-        button_score_p2.setOnClickListener { mainActivity.controller.score(Team.TEAM2) }
+        button_score_p1.setOnClickListener { score(Team.TEAM1) }
+        button_score_p2.setOnClickListener { score(Team.TEAM2) }
 
         if (!mainActivity.controller.matchAdded) {
             mainActivity.newMatch()
         }
     }
 
-    fun undo() {
-        if (mainActivity.controller.undo()) {
-            image_undo.visibility = View.VISIBLE
-            val fadeout = AlphaAnimation(1F, 0F);
-            fadeout.duration = UNDO_ANIMATION_DURATION
-            image_undo.startAnimation(fadeout)
-            image_undo.postDelayed(Runnable {
-                image_undo.visibility = View.GONE
-            }, UNDO_ANIMATION_DURATION)
-
+    private fun score(team: Team) {
+        mainActivity.controller.score(team)
+        if (mainActivity.controller.serviceChanged) {
+            updateDisplay(false)
+        } else {
+            updateDisplay(true)
+        }
+        if (mainActivity.controller.winner != Winner.NONE) {
+            button_score_p1.isEnabled = false
+            button_score_p2.isEnabled = false
         }
     }
 
-    fun doHapticChangeover() {
-        fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+    private fun updateDisplay(animate: Boolean) {
+        fun moveBall(ball: ImageView, xPos: Float) {
+            if (animate) {
+                ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
+                    duration = BALL_ANIMATION_DURATION
+                    start()
+                }
+            } else {
+                ball.x = xPos
+            }
+        }
+
+        val scores = mainActivity.controller.currentGame.getScoreStrings()
+        button_score_p1.text = scores.player1
+        button_score_p2.text = scores.player2
+
+        if (mainActivity.controller.winner == Winner.NONE) {
+            when (mainActivity.controller.serving) {
+                Serving.PLAYER1_LEFT -> {
+                    ball_serving_t1.setImageResource(ballServingGreen)
+                    moveBall(ball_serving_t1, posXBallLeftT1)
+                    ball_serving_t1.visibility = View.VISIBLE
+                    ball_serving_t2.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.players == Players.DOUBLES) {
+                        ball_notserving_t1.setImageResource(ballNotservingOrange)
+                        moveBall(ball_notserving_t1, posXBallRightT1)
+                        ball_notserving_t1.visibility = View.VISIBLE
+                        ball_notserving_t2.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER1_RIGHT -> {
+                    ball_serving_t1.setImageResource(ballServingGreen)
+                    moveBall(ball_serving_t1, posXBallRightT1)
+                    ball_serving_t1.visibility = View.VISIBLE
+                    ball_serving_t2.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.players == Players.DOUBLES) {
+                        ball_notserving_t1.setImageResource(ballNotservingOrange)
+                        moveBall(ball_notserving_t1, posXBallLeftT1)
+                        ball_notserving_t1.visibility = View.VISIBLE
+                        ball_notserving_t2.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER2_LEFT -> {
+                    ball_serving_t2.setImageResource(ballServingGreen)
+                    moveBall(ball_serving_t2, posXBallLeftT2)
+                    ball_serving_t2.visibility = View.VISIBLE
+                    ball_serving_t1.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.players == Players.DOUBLES) {
+                        ball_notserving_t2.setImageResource(ballNotservingOrange)
+                        moveBall(ball_notserving_t2, posXBallRightT2)
+                        ball_notserving_t2.visibility = View.VISIBLE
+                        ball_notserving_t1.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER2_RIGHT -> {
+                    ball_serving_t2.setImageResource(ballServingGreen)
+                    moveBall(ball_serving_t2, posXBallRightT2)
+                    ball_serving_t2.visibility = View.VISIBLE
+                    ball_serving_t1.visibility = View.INVISIBLE
+
+                    if (mainActivity.controller.players == Players.DOUBLES) {
+                        ball_notserving_t2.setImageResource(ballNotservingOrange)
+                        moveBall(ball_notserving_t2, posXBallLeftT2)
+                        ball_notserving_t2.visibility = View.VISIBLE
+                        ball_notserving_t1.visibility = View.INVISIBLE
+                    }
+                }
+                Serving.PLAYER3_LEFT -> {
+                    ball_serving_t1.setImageResource(ballServingOrange)
+                    moveBall(ball_serving_t1, posXBallLeftT1)
+                    ball_serving_t1.visibility = View.VISIBLE
+                    ball_serving_t2.visibility = View.INVISIBLE
+
+                    ball_notserving_t1.setImageResource(ballNotservingGreen)
+                    moveBall(ball_notserving_t1, posXBallRightT1)
+                    ball_notserving_t1.visibility = View.VISIBLE
+                    ball_notserving_t2.visibility = View.INVISIBLE
+                }
+                Serving.PLAYER3_RIGHT -> {
+                    ball_serving_t1.setImageResource(ballServingOrange)
+                    moveBall(ball_serving_t1, posXBallRightT1)
+                    ball_serving_t1.visibility = View.VISIBLE
+                    ball_serving_t2.visibility = View.INVISIBLE
+
+                    ball_notserving_t1.setImageResource(ballNotservingGreen)
+                    moveBall(ball_notserving_t1, posXBallLeftT1)
+                    ball_notserving_t1.visibility = View.VISIBLE
+                    ball_notserving_t2.visibility = View.INVISIBLE
+                }
+                Serving.PLAYER4_LEFT -> {
+                    ball_serving_t2.setImageResource(ballServingOrange)
+                    moveBall(ball_serving_t2, posXBallLeftT2)
+                    ball_serving_t2.visibility = View.VISIBLE
+                    ball_serving_t1.visibility = View.INVISIBLE
+
+                    ball_notserving_t2.setImageResource(ballNotservingGreen)
+                    moveBall(ball_notserving_t2, posXBallRightT2)
+                    ball_notserving_t2.visibility = View.VISIBLE
+                    ball_notserving_t1.visibility = View.INVISIBLE
+                }
+                Serving.PLAYER4_RIGHT -> {
+                    ball_serving_t2.setImageResource(ballServingOrange)
+                    moveBall(ball_serving_t2, posXBallRightT2)
+                    ball_serving_t2.visibility = View.VISIBLE
+                    ball_serving_t1.visibility = View.INVISIBLE
+
+                    ball_notserving_t2.setImageResource(ballNotservingGreen)
+                    moveBall(ball_notserving_t2, posXBallLeftT2)
+                    ball_notserving_t2.visibility = View.VISIBLE
+                    ball_notserving_t1.visibility = View.INVISIBLE
+                }
+            }
+        } else {
+            ball_serving_t1.visibility = View.INVISIBLE
+            ball_notserving_t1.visibility = View.INVISIBLE
+            ball_serving_t2.visibility = View.INVISIBLE
+            ball_notserving_t2.visibility = View.INVISIBLE
+        }
+
+        var textScoresMatchP1 = ""
+        var textScoresMatchP2 = ""
+        for (set in mainActivity.controller.sets) {
+            textScoresMatchP1 += set.scoreP1.toString() + "  "
+            textScoresMatchP2 += set.scoreP2.toString() + "  "
+        }
+        text_scores_match_p1.text = textScoresMatchP1.trim()
+        text_scores_match_p2.text = textScoresMatchP2.trim()
+
+        if (mainActivity.controller.changeover) {
+            changeover_arrow_down.visibility = View.VISIBLE
+            changeover_arrow_up.visibility = View.VISIBLE
+            fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        } else {
+            changeover_arrow_down.visibility = View.INVISIBLE
+            changeover_arrow_up.visibility = View.INVISIBLE
+        }
+    }
+
+    fun undo() {
+        if (mainActivity.controller.undo()) {
+            image_undo.visibility = View.VISIBLE
+            val fadeout = AlphaAnimation(1F, 0F)
+            fadeout.duration = UNDO_ANIMATION_DURATION
+            image_undo.startAnimation(fadeout)
+            image_undo.postDelayed({ image_undo.visibility = View.GONE }, UNDO_ANIMATION_DURATION)
+            updateDisplay(false)
+        }
     }
 }
