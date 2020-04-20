@@ -19,7 +19,4 @@
 
 package net.mqduck.deuce.common
 
-/**
- * Created by mqduck on 11/6/17.
- */
 class ScoreStrings(val player1: String, val player2: String)
