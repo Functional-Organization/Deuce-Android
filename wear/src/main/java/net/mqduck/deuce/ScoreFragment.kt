@@ -101,19 +101,19 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         button_score_p1.setOnClickListener { score(Team.TEAM1) }
         button_score_p2.setOnClickListener { score(Team.TEAM2) }
 
-        if (!mainActivity.controller.matchAdded) {
+        if (!mainActivity.match.matchAdded) {
             mainActivity.newMatch()
         }
     }
 
     private fun score(team: Team) {
-        mainActivity.controller.score(team)
-        if (mainActivity.controller.serviceChanged) {
+        mainActivity.match.score(team)
+        if (mainActivity.match.serviceChanged) {
             updateDisplay(false)
         } else {
             updateDisplay(true)
         }
-        if (mainActivity.controller.winner != Winner.NONE) {
+        if (mainActivity.match.winner != Winner.NONE) {
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
         }
@@ -131,19 +131,19 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             }
         }
 
-        val scores = mainActivity.controller.currentGame.getScoreStrings()
+        val scores = mainActivity.match.currentGame.getScoreStrings()
         button_score_p1.text = scores.player1
         button_score_p2.text = scores.player2
 
-        if (mainActivity.controller.winner == Winner.NONE) {
-            when (mainActivity.controller.serving) {
+        if (mainActivity.match.winner == Winner.NONE) {
+            when (mainActivity.match.serving) {
                 Serving.PLAYER1_LEFT -> {
                     ball_serving_t1.setImageResource(ballServingGreen)
                     moveBall(ball_serving_t1, posXBallLeftT1)
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallRightT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -156,7 +156,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallLeftT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -169,7 +169,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallRightT2)
                         ball_notserving_t2.visibility = View.VISIBLE
@@ -182,7 +182,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallLeftT2)
                         ball_notserving_t2.visibility = View.VISIBLE
@@ -243,14 +243,14 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
 
         var textScoresMatchP1 = ""
         var textScoresMatchP2 = ""
-        for (set in mainActivity.controller.sets) {
+        for (set in mainActivity.match.sets) {
             textScoresMatchP1 += set.scoreP1.toString() + "  "
             textScoresMatchP2 += set.scoreP2.toString() + "  "
         }
         text_scores_match_p1.text = textScoresMatchP1.trim()
         text_scores_match_p2.text = textScoresMatchP2.trim()
 
-        if (mainActivity.controller.changeover) {
+        if (mainActivity.match.changeover) {
             changeover_arrow_down.visibility = View.VISIBLE
             changeover_arrow_up.visibility = View.VISIBLE
             fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -261,7 +261,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     }
 
     fun undo() {
-        if (mainActivity.controller.undo()) {
+        if (mainActivity.match.undo()) {
             image_undo.visibility = View.VISIBLE
             val fadeout = AlphaAnimation(1F, 0F)
             fadeout.duration = UNDO_ANIMATION_DURATION

@@ -20,6 +20,8 @@
 package net.mqduck.deuce
 
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
@@ -32,25 +34,104 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
-    companion object {
-        private val NAVIGATION_ITEM_MATCH = NavigationItem("Match", R.drawable.match, FragmentEnum.SCORE)
-        private val NAVIGATION_ITEM_SETUP = NavigationItem("Match Setup", R.drawable.setup, FragmentEnum.SETUP)
-        private val NAVIGATION_ITEM_ADVANCED_SETUP = NavigationItem(
-            "Advanced Setup",
-            R.drawable.advanced_setup,
-            FragmentEnum.ADVANCED_SETUP
-        )
+    //TODO: Find a way to disable anti-aliasing on ambient images
+    private enum class NavigationItemList(val list: Array<NavigationItem>) {
+        NAVIGATION_ITEMS_WITHOUT_MATCH(
+            arrayOf(
+                NavigationItem.NAVIGATION_ITEM_SETUP,
+                NavigationItem.NAVIGATION_ITEM_ADVANCED_SETUP
+            )
+        ),
+
+        NAVIGATION_ITEMS_WITH_MATCH(
+            arrayOf(
+                NavigationItem.NAVIGATION_ITEM_MATCH,
+                NavigationItem.NAVIGATION_ITEM_SETUP,
+                NavigationItem.NAVIGATION_ITEM_ADVANCED_SETUP
+            )
+        ),
+
+        NAVIGATION_ITEMS_WITHOUT_MATCH_AMBIENT(
+            arrayOf(
+                NavigationItem.NAVIGATION_ITEM_SETUP_AMBIENT,
+                NavigationItem.NAVIGATION_ITEM_ADVANCED_SETUP_AMBIENT
+            )
+        ),
+
+        NAVIGATION_ITEMS_WITH_MATCH_AMBIENT(
+            arrayOf(
+                NavigationItem.NAVIGATION_ITEM_MATCH_AMBIENT,
+                NavigationItem.NAVIGATION_ITEM_SETUP_AMBIENT,
+                NavigationItem.NAVIGATION_ITEM_ADVANCED_SETUP_AMBIENT
+            )
+        );
+
+        internal enum class NavigationItem(val text: CharSequence, val drawableId: Int, val enum: FragmentEnum) {
+            NAVIGATION_ITEM_MATCH(
+                "Match",
+                R.drawable.match,
+                FragmentEnum.SCORE
+            ),
+
+            NAVIGATION_ITEM_SETUP(
+                "Match Setup",
+                R.drawable.setup,
+                FragmentEnum.SETUP
+            ),
+
+            NAVIGATION_ITEM_ADVANCED_SETUP(
+                "Advanced Setup",
+                R.drawable.advanced_setup,
+                FragmentEnum.ADVANCED_SETUP
+            ),
+
+            NAVIGATION_ITEM_MATCH_AMBIENT(
+                "Match",
+                R.drawable.match_ambient,
+                FragmentEnum.SCORE
+            ),
+
+            NAVIGATION_ITEM_SETUP_AMBIENT(
+                "Match Setup",
+                R.drawable.setup_ambient,
+                FragmentEnum.SETUP
+            ),
+
+            NAVIGATION_ITEM_ADVANCED_SETUP_AMBIENT(
+                "Advanced Setup",
+                R.drawable.advanced_setup_ambient,
+                FragmentEnum.ADVANCED_SETUP
+            )
+        }
     }
 
-    internal var controller = Match(
+    private class DeuceAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
+        override fun onEnterAmbient(ambientDetails: Bundle?) {
+            mainActivity.ambientMode = true
+            mainActivity.switchFragment(mainActivity.currentFragment)
+
+            mainActivity.navigationDrawer.background.setTint(mainActivity.getColor(R.color.black))
+            mainActivity.navigationAdapter.update()
+        }
+
+        override fun onExitAmbient() {
+            mainActivity.ambientMode = false
+            mainActivity.switchFragment(mainActivity.currentFragment)
+
+            mainActivity.navigationDrawer.background.setTint(mainActivity.getColor(R.color.lighter_bg_1))
+            mainActivity.navigationAdapter.update()
+        }
+
+        override fun onUpdateAmbient() {}
+    }
+
+    internal var match = Match(
         0,
         0,
         0,
@@ -79,13 +160,15 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     private var gestureDetector: GestureDetectorCompat? = null
     private var undoButton: Int? = null
 
-    val database = Firebase.firestore
+    lateinit var navigationDrawer: WearableNavigationDrawerView
 
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        navigationDrawer = navigation_drawer
 
         Game.init(this)
 
@@ -168,11 +251,10 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     fun newMatch() {
         matchAdded = true
-        navigationAdapter.enableScore()
-        navigationAdapter.notifyDataSetChanged()
+        navigationAdapter.enableMatch()
         switchFragment(FragmentEnum.SCORE)
 
-        controller = Match(
+        match = Match(
             preferences.numSets.value,
             DEFAULT_WIN_MARGIN_MATCH,
             DEFAULT_WIN_MINIMUM_SET,
@@ -187,37 +269,57 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         )
     }
 
-    private class NavigationItem(
-        val text: CharSequence,
-        val drawableId: Int,
-        val enum: FragmentEnum
-    )
-
     private val navigationAdapter =
         object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
-            private val items = arrayListOf(NAVIGATION_ITEM_SETUP, NAVIGATION_ITEM_ADVANCED_SETUP)
+            //private val items = arrayListOf(NAVIGATION_ITEM_SETUP, NAVIGATION_ITEM_ADVANCED_SETUP)
+            private var items = NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH
 
-            override fun getItemText(pos: Int) = items[pos].text
+            override fun getItemText(pos: Int) = items.list[pos].text
 
-            override fun getItemDrawable(pos: Int) = getDrawable(items[pos].drawableId)
-
-            override fun getCount() = items.size
-
-            fun enableScore() {
-                if (!items.contains(NAVIGATION_ITEM_MATCH)) {
-                    items.add(0, NAVIGATION_ITEM_MATCH)
-                }
+            override fun getItemDrawable(pos: Int): Drawable? /*= getDrawable(items.list[pos].drawableId)*/ {
+                val foo = getDrawable(items.list[pos].drawableId) as VectorDrawable
+                foo.isFilterBitmap = false
+                return foo
             }
 
-            fun getItemEnum(pos: Int) = items[pos].enum
+            override fun getCount() = items.list.size
+
+            fun enableMatch() {
+                // Probably impossible for this condition to be true
+                items = if (ambientMode)
+                    NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT
+                else
+                    NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH
+                update()
+            }
+
+            fun getItemEnum(pos: Int) = items.list[pos].enum
 
             fun getEnumPos(enum: FragmentEnum): Int {
-                for (i in items.indices) {
-                    if (items[i].enum == enum) {
+                for (i in items.list.indices) {
+                    if (items.list[i].enum == enum) {
                         return i
                     }
                 }
                 throw java.lang.IllegalArgumentException("Invalid navigation drawer index")
+            }
+
+            fun update() {
+                items = when (items) {
+                    NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH,
+                    NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH_AMBIENT ->
+                        if (ambientMode)
+                            NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH_AMBIENT
+                        else
+                            NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH
+                    NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH,
+                    NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT ->
+                        if (ambientMode)
+                            NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT
+                        else
+                            NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH
+                }
+                notifyDataSetChanged()
             }
         }
 
@@ -258,19 +360,5 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
             }
         }
-    }
-
-    private class DeuceAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
-        override fun onEnterAmbient(ambientDetails: Bundle?) {
-            mainActivity.ambientMode = true
-            mainActivity.switchFragment(mainActivity.currentFragment)
-        }
-
-        override fun onExitAmbient() {
-            mainActivity.ambientMode = false
-            mainActivity.switchFragment(mainActivity.currentFragment)
-        }
-
-        override fun onUpdateAmbient() {}
     }
 }
