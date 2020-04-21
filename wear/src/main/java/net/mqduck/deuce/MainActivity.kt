@@ -33,6 +33,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.wearable.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 
@@ -161,17 +163,21 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     lateinit var navigationDrawer: WearableNavigationDrawerView
 
+    lateinit var dataClient: DataClient
+
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navigationDrawer = navigation_drawer
-
         Game.init(this)
 
+        navigationDrawer = navigation_drawer
+
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
+
+        dataClient = Wearable.getDataClient(this)
 
         var fragment = FragmentEnum.SETUP
 
@@ -264,13 +270,27 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             DEFAULT_WIN_MARGIN_GAME_TIEBREAK,
             preferences.startingServer,
             preferences.overtime,
-            preferences.players
+            preferences.matchType
         )
+
+        // Create a data map and put data in it
+        val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+            dataMap.putInt(KEY_NUM_SETS, match.winMinimumMatch)
+            dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
+            dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
+            dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
+            dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
+            dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
+            asPutDataRequest()
+        }
+        putDataReq.setUrgent()
+        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataReq)
+        putDataTask.addOnSuccessListener {
+        }
     }
 
     private val navigationAdapter =
         object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
-            //private val items = arrayListOf(NAVIGATION_ITEM_SETUP, NAVIGATION_ITEM_ADVANCED_SETUP)
             private var items = NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH
 
             override fun getItemText(pos: Int) = items.list[pos].text

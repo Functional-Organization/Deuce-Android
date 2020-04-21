@@ -55,7 +55,8 @@ class Match : Parcelable {
         winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
         startingServer: Team,
         overtimeRule: OvertimeRule,
-        matchType: MatchType
+        matchType: MatchType,
+        scoreLog: ScoreStack? = null
     ) {
         this.winMinimumMatch = winMinimumMatch
         this.winMarginMatch = winMarginMatch
@@ -69,20 +70,24 @@ class Match : Parcelable {
         this.overtimeRule = overtimeRule
         this.matchType = matchType
 
-        mScore = Score(winMinimumMatch, winMarginMatch)
-        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
-        sets = arrayListOf(
-            Set(
-                winMinimumSet,
-                winMarginSet,
-                winMinimumGame,
-                winMarginGame,
-                winMinimumGameTiebreak,
-                winMarginGameTiebreak,
-                overtimeRule,
-                this
+        if (scoreLog == null) {
+            mScore = Score(winMinimumMatch, winMarginMatch)
+            serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+            sets = arrayListOf(
+                Set(
+                    winMinimumSet,
+                    winMarginSet,
+                    winMinimumGame,
+                    winMarginGame,
+                    winMinimumGameTiebreak,
+                    winMarginGameTiebreak,
+                    overtimeRule,
+                    this
+                )
             )
-        )
+        } else {
+            loadScoreLog(scoreLog)
+        }
     }
 
     constructor(parcel: Parcel) {
@@ -163,24 +168,6 @@ class Match : Parcelable {
                 val winnerMatch = mScore.score(team)
                 if (winnerMatch != Winner.NONE) {
                     // Match is over
-                    /*scoreView?.buttonScoreP1?.isEnabled = false
-                    scoreView?.buttonScoreP2?.isEnabled = false*/
-                    /*mainActivity.database
-                        .collection("match")
-                        .document("user1")
-                        .collection("matches")
-                        .document("match1")
-                        .set(
-                            hashMapOf(
-                                "slSize" to scoreLog.size,
-                                "slArray" to scoreLog.bitSetToLongArray().toList(),
-                                "wminMatch" to match.winMinimum,
-                                "overtime" to match.overtime.ordinal,
-                                "players" to match.players.ordinal,
-                                "begin" to Timestamp(Date(match.startTime)),
-                                "end" to Timestamp(Date())
-                            )
-                        )*/
                 } else {
                     // Set is over, Match is not
                     sets.add(
@@ -291,4 +278,7 @@ class Match : Parcelable {
         }
         return false
     }
+
+    fun scoreLogArray() = scoreLog.bitSetToLongArray()
+    fun scoreLogSize() = scoreLog.size
 }

@@ -22,6 +22,7 @@ package net.mqduck.deuce
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -30,10 +31,19 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.wearable.DataItem
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.PutDataRequest
 import kotlinx.android.synthetic.main.fragment_score.*
 import net.mqduck.deuce.common.*
 
 class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
+    companion object {
+        const val BALL_ANIMATION_DURATION = 250L
+        const val UNDO_ANIMATION_DURATION = 700L
+    }
+
     private var posXBallLeftT1 = 0F
     private var posXBallRightT1 = 0F
     private var posXBallLeftT2 = 0F
@@ -116,6 +126,17 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         if (mainActivity.match.winner != Winner.NONE) {
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
+        }
+
+        val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+            dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.match.scoreLogArray())
+            dataMap.putInt(KEY_SCORE_SIZE, mainActivity.match.scoreLogSize())
+            asPutDataRequest()
+        }
+        putDataReq.setUrgent()
+        val putDataTask: Task<DataItem> = mainActivity.dataClient.putDataItem(putDataReq)
+        putDataTask.addOnSuccessListener {
+            Log.d("foo", "score success")
         }
     }
 

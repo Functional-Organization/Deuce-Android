@@ -57,12 +57,12 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
 
         radio_singles.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.players = MatchType.SINGLES
+                mainActivity.preferences.matchType = MatchType.SINGLES
             }
         }
         radio_doubles.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.players = MatchType.DOUBLES
+                mainActivity.preferences.matchType = MatchType.DOUBLES
             }
         }
 
@@ -115,7 +115,7 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (mainActivity.preferences.players == MatchType.SINGLES) {
+        if (mainActivity.preferences.matchType == MatchType.SINGLES) {
             radio_singles.isChecked = true
         } else {
             radio_doubles.isChecked = true

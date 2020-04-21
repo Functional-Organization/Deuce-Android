@@ -23,17 +23,9 @@ import android.content.SharedPreferences
 import net.mqduck.deuce.common.*
 
 class DeuceWearPreferences(private val preferences: SharedPreferences) {
-    companion object {
-        const val KEY_NUM_SETS = "num_sets"
-        const val KEY_SERVER = "server"
-        const val KEY_PLAYERS = "players"
-        const val KEY_OVERTIME_RULE = "overtime"
-        const val KEY_CLOCK = "clock"
-    }
-
-    var players
-        get() = MatchType.fromOrdinal(preferences.getInt(KEY_PLAYERS, DEFAULT_PLAYERS.ordinal))
-        set(players) = preferences.edit().putInt(KEY_PLAYERS, players.ordinal).apply()
+    var matchType
+        get() = MatchType.fromOrdinal(preferences.getInt(KEY_MATCH_TYPE, DEFAULT_MATCH_TYPE.ordinal))
+        set(players) = preferences.edit().putInt(KEY_MATCH_TYPE, players.ordinal).apply()
 
     var startingServer
         get() = Team.fromOrdinal(preferences.getInt(KEY_SERVER, DEFAULT_STARTING_SERVER.ordinal))

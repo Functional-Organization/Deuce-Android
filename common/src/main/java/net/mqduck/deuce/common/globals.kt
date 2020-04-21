@@ -28,11 +28,18 @@ const val DEFAULT_WIN_MARGIN_GAME = 2
 const val DEFAULT_WIN_MINIMUM_GAME_TIEBREAK = 7
 const val DEFAULT_WIN_MARGIN_GAME_TIEBREAK = 2
 
-val DEFAULT_PLAYERS = MatchType.SINGLES
+val DEFAULT_MATCH_TYPE = MatchType.SINGLES
 val DEFAULT_STARTING_SERVER = Team.TEAM1
 val DEFAULT_NUM_SETS = NumSets.THREE
 val DEFAULT_OVERTIME_RULE = OvertimeRule.TIEBREAK
 const val DEFAULT_CLOCK = false
 
-const val BALL_ANIMATION_DURATION = 250L
-const val UNDO_ANIMATION_DURATION = 700L
+const val KEY_NUM_SETS = "num_sets"
+const val KEY_SERVER = "server"
+const val KEY_MATCH_TYPE = "type"
+const val KEY_OVERTIME_RULE = "overtime"
+const val KEY_CLOCK = "clock"
+const val KEY_SCORE_ARRAY = "score_array"
+const val KEY_SCORE_SIZE = "score_size"
+
+const val PATH_CURRENT_MATCH = "/current_match"

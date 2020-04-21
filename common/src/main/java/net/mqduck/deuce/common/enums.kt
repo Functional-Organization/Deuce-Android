@@ -54,7 +54,7 @@ enum class MatchType {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {
             SINGLES.ordinal -> SINGLES
             DOUBLES.ordinal -> DOUBLES
-            else -> DEFAULT_PLAYERS
+            else -> DEFAULT_MATCH_TYPE
         }
     }
 }

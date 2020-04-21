@@ -41,7 +41,7 @@ class ScoreStack : List<Team>, Parcelable {
         bitSet = parcel.readSerializable() as BitSet
     }
 
-    private constructor(size: Int, bitSet: BitSet) {
+    constructor(size: Int, bitSet: BitSet) {
         this.size = size
         this.bitSet = bitSet
     }

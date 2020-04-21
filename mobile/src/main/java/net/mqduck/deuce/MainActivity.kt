@@ -20,12 +20,78 @@
 package net.mqduck.deuce
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.wearable.*
+import kotlinx.android.synthetic.main.activity_main.*
+import net.mqduck.deuce.common.*
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener {
+    var match = Match(
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        Team.TEAM1,
+        OvertimeRule.TIEBREAK,
+        MatchType.SINGLES
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Game.init(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Wearable.getDataClient(this).addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Wearable.getDataClient(this).removeListener(this)
+    }
+
+    override fun onDataChanged(dataEvents: DataEventBuffer) {
+        Log.d("foo", "outside")
+        dataEvents.forEach { event ->
+            // DataItem changed
+            if (event.type == DataEvent.TYPE_CHANGED) {
+                event.dataItem.also { item ->
+                    if (item.uri.path?.compareTo(PATH_CURRENT_MATCH) == 0) {
+                        DataMapItem.fromDataItem(item).dataMap.apply {
+                            Log.d("foo", "inner")
+                            match = Match(
+                                getInt(KEY_NUM_SETS, DEFAULT_NUM_SETS.value),
+                                DEFAULT_WIN_MARGIN_MATCH,
+                                DEFAULT_WIN_MINIMUM_SET,
+                                DEFAULT_WIN_MARGIN_SET,
+                                DEFAULT_WIN_MINIMUM_GAME,
+                                DEFAULT_WIN_MARGIN_GAME,
+                                DEFAULT_WIN_MINIMUM_GAME_TIEBREAK,
+                                DEFAULT_WIN_MARGIN_GAME_TIEBREAK,
+                                Team.fromOrdinal(getInt(KEY_SERVER, DEFAULT_STARTING_SERVER.ordinal)),
+                                OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE, DEFAULT_OVERTIME_RULE.ordinal)),
+                                MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE, DEFAULT_MATCH_TYPE.ordinal)),
+                                ScoreStack(getInt(KEY_SCORE_SIZE, 0), BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY)))
+                            )
+                        }
+
+                        val scoreStrings = match.currentGame.getScoreStrings()
+                        score1.text = scoreStrings.player1
+                        score2.text = scoreStrings.player2
+                    }
+                }
+            } else if (event.type == DataEvent.TYPE_DELETED) {
+                // DataItem deleted
+            }
+        }
     }
 }
