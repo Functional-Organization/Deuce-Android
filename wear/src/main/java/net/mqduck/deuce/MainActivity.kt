@@ -21,7 +21,6 @@ package net.mqduck.deuce
 
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
@@ -276,11 +275,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
             override fun getItemText(pos: Int) = items.list[pos].text
 
-            override fun getItemDrawable(pos: Int): Drawable? /*= getDrawable(items.list[pos].drawableId)*/ {
-                val foo = getDrawable(items.list[pos].drawableId) as VectorDrawable
-                foo.isFilterBitmap = false
-                return foo
-            }
+            override fun getItemDrawable(pos: Int): Drawable? = getDrawable(items.list[pos].drawableId)
 
             override fun getCount() = items.list.size
 
