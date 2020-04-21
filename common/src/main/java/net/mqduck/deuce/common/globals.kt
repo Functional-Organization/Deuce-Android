@@ -41,5 +41,6 @@ const val KEY_OVERTIME_RULE = "overtime"
 const val KEY_CLOCK = "clock"
 const val KEY_SCORE_ARRAY = "score_array"
 const val KEY_SCORE_SIZE = "score_size"
+const val KEY_START_TIME = "start_time"
 
 const val PATH_CURRENT_MATCH = "/current_match"

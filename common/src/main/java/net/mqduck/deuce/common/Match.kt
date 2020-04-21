@@ -37,7 +37,7 @@ class Match : Parcelable {
 
     lateinit var sets: ArrayList<Set>
     private lateinit var mScore: Score
-    val startTime = System.currentTimeMillis()
+    val startTime: Long
     lateinit var serving: Serving
         private set
     private var scoreLog = ScoreStack()
@@ -55,8 +55,7 @@ class Match : Parcelable {
         winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
         startingServer: Team,
         overtimeRule: OvertimeRule,
-        matchType: MatchType,
-        scoreLog: ScoreStack? = null
+        matchType: MatchType
     ) {
         this.winMinimumMatch = winMinimumMatch
         this.winMarginMatch = winMarginMatch
@@ -69,25 +68,49 @@ class Match : Parcelable {
         this.startingServer = startingServer
         this.overtimeRule = overtimeRule
         this.matchType = matchType
+        startTime = System.currentTimeMillis()
 
-        if (scoreLog == null) {
-            mScore = Score(winMinimumMatch, winMarginMatch)
-            serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
-            sets = arrayListOf(
-                Set(
-                    winMinimumSet,
-                    winMarginSet,
-                    winMinimumGame,
-                    winMarginGame,
-                    winMinimumGameTiebreak,
-                    winMarginGameTiebreak,
-                    overtimeRule,
-                    this
-                )
+        mScore = Score(winMinimumMatch, winMarginMatch)
+        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
+        sets = arrayListOf(
+            Set(
+                winMinimumSet,
+                winMarginSet,
+                winMinimumGame,
+                winMarginGame,
+                winMinimumGameTiebreak,
+                winMarginGameTiebreak,
+                overtimeRule,
+                this
             )
-        } else {
-            loadScoreLog(scoreLog)
-        }
+        )
+    }
+
+    constructor(
+        winMinimumMatch: Int, winMarginMatch: Int,
+        winMinimumSet: Int, winMarginSet: Int,
+        winMinimumGame: Int, winMarginGame: Int,
+        winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
+        startingServer: Team,
+        overtimeRule: OvertimeRule,
+        matchType: MatchType,
+        startTime: Long,
+        scoreLog: ScoreStack
+    ) {
+        this.winMinimumMatch = winMinimumMatch
+        this.winMarginMatch = winMarginMatch
+        this.winMinimumSet = winMinimumSet
+        this.winMarginSet = winMarginSet
+        this.winMinimumGame = winMinimumGame
+        this.winMarginGame = winMarginGame
+        this.winMinimumGameTiebreak = winMinimumGameTiebreak
+        this.winMarginGameTiebreak = winMarginGameTiebreak
+        this.startingServer = startingServer
+        this.overtimeRule = overtimeRule
+        this.matchType = matchType
+        this.startTime = startTime
+
+        loadScoreLog(scoreLog)
     }
 
     constructor(parcel: Parcel) {
@@ -102,6 +125,7 @@ class Match : Parcelable {
         startingServer = parcel.readSerializable() as Team
         overtimeRule = parcel.readSerializable() as OvertimeRule
         matchType = parcel.readSerializable() as MatchType
+        startTime = parcel.readLong()
 
         loadScoreLog(parcel.readParcelable(ScoreStack::class.java.classLoader)!!)
     }
@@ -118,6 +142,7 @@ class Match : Parcelable {
         parcel.writeSerializable(startingServer)
         parcel.writeSerializable(overtimeRule)
         parcel.writeSerializable(matchType)
+        parcel.writeLong(startTime)
 
         // TODO: Is just passing flags correct?
         parcel.writeParcelable(scoreLog, flags)

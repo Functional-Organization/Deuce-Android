@@ -279,6 +279,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
             dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
             dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
+            dataMap.putLong(KEY_START_TIME, match.startTime)
             dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
             dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
             asPutDataRequest()
