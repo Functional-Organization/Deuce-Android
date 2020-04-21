@@ -36,7 +36,7 @@ class Set(
     fun score(team: Team) = mScore.score(team)
 
     fun addNewGame() {
-        if (overtimeRule == OvertimeRule.TIEBREAK && mScore.scoreP1 == winMinimum && mScore.scoreP2 == winMinimum) {
+        if (overtimeRule == OvertimeRule.TIEBREAK && mScore.scoreTeam1 == winMinimum && mScore.scoreTeam2 == winMinimum) {
             mScore.winMargin = 1
             games.add(Game(winMinimumGameTiebreak, winMarginGameTiebreak, match, true))
         } else {
@@ -44,12 +44,8 @@ class Set(
         }
     }
 
-    fun getScore(team: Team) = mScore.getScore(team)
-
-    fun getScoreStrs() = ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
-
     val currentGame get() = games.last()
 
-    val scoreP1 get() = mScore.scoreP1
-    val scoreP2 get() = mScore.scoreP2
+    val scoreP1 get() = mScore.scoreTeam1
+    val scoreP2 get() = mScore.scoreTeam2
 }

@@ -32,7 +32,7 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
     }
 
     var players
-        get() = Players.fromOrdinal(preferences.getInt(KEY_PLAYERS, DEFAULT_PLAYERS.ordinal))
+        get() = MatchType.fromOrdinal(preferences.getInt(KEY_PLAYERS, DEFAULT_PLAYERS.ordinal))
         set(players) = preferences.edit().putInt(KEY_PLAYERS, players.ordinal).apply()
 
     var startingServer

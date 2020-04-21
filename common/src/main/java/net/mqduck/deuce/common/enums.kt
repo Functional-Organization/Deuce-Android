@@ -47,7 +47,7 @@ enum class Serving {
     PLAYER4_RIGHT;
 }
 
-enum class Players {
+enum class MatchType {
     SINGLES, DOUBLES;
 
     companion object {

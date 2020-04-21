@@ -38,23 +38,40 @@ class Game(winMinimum: Int, winMargin: Int, private val match: Match, val tiebre
 
     private val mScore = Score(winMinimum, winMargin)
 
+    /**
+     * Adds a point to the score of a team for this game.
+     *
+     * @param team The scoring team.
+     * @return The winning team, if any.
+     */
     fun score(team: Team) = mScore.score(team)
 
+    /**
+     * Returns the current score of a team for this game.
+     *
+     * @param team The team to get the score of.
+     */
     fun getScore(team: Team) = mScore.getScore(team)
 
+    /**
+     * Returns Strings representing the current game scores in standard tennis terminology.
+     */
     fun getScoreStrings(): ScoreStrings {
         return when {
             mScore.winner == Winner.TEAM1 -> ScoreStrings("\uD83C\uDFC6", "")
             mScore.winner == Winner.TEAM2 -> ScoreStrings("", "\uD83C\uDFC6")
-            tiebreak -> ScoreStrings(mScore.scoreP1.toString(), mScore.scoreP2.toString())
-            mScore.scoreP1 < 3 || mScore.scoreP2 < 3 -> ScoreStrings(scoreMap[mScore.scoreP1], scoreMap[mScore.scoreP2])
-            mScore.scoreP1 > mScore.scoreP2 -> when (match.serving) {
+
+            tiebreak -> ScoreStrings(mScore.scoreTeam1.toString(), mScore.scoreTeam2.toString())
+
+            mScore.scoreTeam1 < 3 || mScore.scoreTeam2 < 3 ->
+                ScoreStrings(scoreMap[mScore.scoreTeam1], scoreMap[mScore.scoreTeam2])
+            mScore.scoreTeam1 > mScore.scoreTeam2 -> when (match.serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
                     ScoreStrings(strAdIn, "")
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
                     ScoreStrings(strAdOut, "")
             }
-            mScore.scoreP1 < mScore.scoreP2 -> when (match.serving) {
+            mScore.scoreTeam1 < mScore.scoreTeam2 -> when (match.serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT ->
                     ScoreStrings("", strAdOut)
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->

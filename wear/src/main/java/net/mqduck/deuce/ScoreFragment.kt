@@ -143,7 +143,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.players == Players.DOUBLES) {
+                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallRightT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -156,7 +156,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.players == Players.DOUBLES) {
+                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallLeftT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -169,7 +169,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.players == Players.DOUBLES) {
+                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallRightT2)
                         ball_notserving_t2.visibility = View.VISIBLE
@@ -182,7 +182,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.controller.players == Players.DOUBLES) {
+                    if (mainActivity.controller.matchType == MatchType.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallLeftT2)
                         ball_notserving_t2.visibility = View.VISIBLE

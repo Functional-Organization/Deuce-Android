@@ -23,6 +23,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.*
 
+/**
+ * A stack of Teams. This can be used a record of points scored.
+ */
 class ScoreStack : List<Team>, Parcelable {
     private val bitSet: BitSet
     override var size: Int
@@ -153,11 +156,21 @@ class ScoreStack : List<Team>, Parcelable {
         return ScoreStack(toIndex - fromIndex, bitSet.get(fromIndex, toIndex))
     }
 
+    /**
+     * Pushed a Team to the top of the stack.
+     *
+     * @param element The Team to push.
+     */
     fun push(element: Team) {
         bitSet[size] = teamToBool(element)
         ++size
     }
 
+    /**
+     * Pops the Team at the top of the stack.
+     *
+     * @return The popped Team.
+     */
     fun pop() {
         if (size > 0) {
             --size
@@ -182,5 +195,8 @@ class ScoreStack : List<Team>, Parcelable {
         }
     }
 
+    /**
+     * Returns the underlying bitset representing the Team list converted to a Long array.
+     */
     fun bitSetToLongArray() = bitSet.toLongArray()
 }

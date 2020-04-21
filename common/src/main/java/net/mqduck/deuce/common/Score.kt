@@ -19,6 +19,15 @@
 
 package net.mqduck.deuce.common
 
+/**
+ * Generic scorekeeping class for Games, Sets and Matches.
+ *
+ * @constructor
+ * Creates a new 0-0 score.
+ *
+ * @param winMinimum The minimum number of points necessary for one team to win.
+ * @param winMargin The minimum point margin between the winning and losing team to count as a win.
+ */
 class Score(winMinimum: Int, winMargin: Int) {
     var winMinimum: Int = winMinimum
         set(value) {
@@ -31,39 +40,53 @@ class Score(winMinimum: Int, winMargin: Int) {
             updateWinner()
         }
 
-    var scoreP1 = 0
+    var scoreTeam1 = 0
         set(value) {
             field = value
             updateWinner()
         }
 
-    var scoreP2 = 0
+    var scoreTeam2 = 0
         set(value) {
             field = value
             updateWinner()
         }
 
+    /**
+     *  The winning team, if any.
+     */
     var winner = Winner.NONE
         private set
 
     private fun updateWinner() {
         winner = when {
-            scoreP1 >= winMinimum && (scoreP1 - scoreP2) >= winMargin -> Winner.TEAM1
-            scoreP2 >= winMinimum && (scoreP2 - scoreP1) >= winMargin -> Winner.TEAM2
+            scoreTeam1 >= winMinimum && (scoreTeam1 - scoreTeam2) >= winMargin -> Winner.TEAM1
+            scoreTeam2 >= winMinimum && (scoreTeam2 - scoreTeam1) >= winMargin -> Winner.TEAM2
             else -> Winner.NONE
         }
     }
 
+    /**
+     * Adds a point to the score of a team.
+     *
+     * @param team The scoring team.
+     * @return The winning team, if any.
+     */
     fun score(team: Team): Winner {
         when (team) {
-            Team.TEAM1 -> ++scoreP1
-            Team.TEAM2 -> ++scoreP2
+            Team.TEAM1 -> ++scoreTeam1
+            Team.TEAM2 -> ++scoreTeam2
         }
         return winner
     }
 
+    /**
+     * Returns the current score of a team.
+     *
+     * @param team The team to get the score of.
+     */
     fun getScore(team: Team) = when (team) {
-        Team.TEAM1 -> scoreP1
-        Team.TEAM2 -> scoreP2
+        Team.TEAM1 -> scoreTeam1
+        Team.TEAM2 -> scoreTeam2
     }
 }

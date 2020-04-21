@@ -33,7 +33,7 @@ class Match : Parcelable {
     val winMarginGameTiebreak: Int
     val startingServer: Team
     val overtimeRule: OvertimeRule
-    val players: Players
+    val matchType: MatchType
 
     lateinit var sets: ArrayList<Set>
     private lateinit var mScore: Score
@@ -55,7 +55,7 @@ class Match : Parcelable {
         winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
         startingServer: Team,
         overtimeRule: OvertimeRule,
-        players: Players
+        matchType: MatchType
     ) {
         this.winMinimumMatch = winMinimumMatch
         this.winMarginMatch = winMarginMatch
@@ -67,7 +67,7 @@ class Match : Parcelable {
         this.winMarginGameTiebreak = winMarginGameTiebreak
         this.startingServer = startingServer
         this.overtimeRule = overtimeRule
-        this.players = players
+        this.matchType = matchType
 
         mScore = Score(winMinimumMatch, winMarginMatch)
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
@@ -96,7 +96,7 @@ class Match : Parcelable {
         winMarginGameTiebreak = parcel.readInt()
         startingServer = parcel.readSerializable() as Team
         overtimeRule = parcel.readSerializable() as OvertimeRule
-        players = parcel.readSerializable() as Players
+        matchType = parcel.readSerializable() as MatchType
 
         loadScoreLog(parcel.readParcelable(ScoreStack::class.java.classLoader)!!)
     }
@@ -112,7 +112,7 @@ class Match : Parcelable {
         parcel.writeInt(winMarginGameTiebreak)
         parcel.writeSerializable(startingServer)
         parcel.writeSerializable(overtimeRule)
-        parcel.writeSerializable(players)
+        parcel.writeSerializable(matchType)
 
         // TODO: Is just passing flags correct?
         parcel.writeParcelable(scoreLog, flags)
@@ -218,12 +218,12 @@ class Match : Parcelable {
 
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
-                    if (players == Players.DOUBLES && startingServer == Team.TEAM2)
+                    if (matchType == MatchType.DOUBLES && startingServer == Team.TEAM2)
                         Serving.PLAYER4_RIGHT
                     else
                         Serving.PLAYER2_RIGHT
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
-                    if (players == Players.DOUBLES && startingServer == Team.TEAM1)
+                    if (matchType == MatchType.DOUBLES && startingServer == Team.TEAM1)
                         Serving.PLAYER3_RIGHT
                     else
                         Serving.PLAYER1_RIGHT
@@ -241,12 +241,12 @@ class Match : Parcelable {
         ) {
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->
-                    if (players == Players.DOUBLES && startingServer == Team.TEAM2)
+                    if (matchType == MatchType.DOUBLES && startingServer == Team.TEAM2)
                         Serving.PLAYER4_LEFT
                     else
                         Serving.PLAYER2_LEFT
                 Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT ->
-                    if (players == Players.DOUBLES && startingServer == Team.TEAM1)
+                    if (matchType == MatchType.DOUBLES && startingServer == Team.TEAM1)
                         Serving.PLAYER3_LEFT
                     else
                         Serving.PLAYER1_LEFT

@@ -25,8 +25,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_setup.*
+import net.mqduck.deuce.common.MatchType
 import net.mqduck.deuce.common.NumSets
-import net.mqduck.deuce.common.Players
 import net.mqduck.deuce.common.Team
 import kotlin.random.Random
 
@@ -57,12 +57,12 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
 
         radio_singles.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.players = Players.SINGLES
+                mainActivity.preferences.players = MatchType.SINGLES
             }
         }
         radio_doubles.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.players = Players.DOUBLES
+                mainActivity.preferences.players = MatchType.DOUBLES
             }
         }
 
@@ -115,7 +115,7 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (mainActivity.preferences.players == Players.SINGLES) {
+        if (mainActivity.preferences.players == MatchType.SINGLES) {
             radio_singles.isChecked = true
         } else {
             radio_doubles.isChecked = true
