@@ -132,7 +132,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         override fun onUpdateAmbient() {}
     }
 
-    internal var match = Match(
+    /*internal var match = Match(
         0,
         0,
         0,
@@ -144,6 +144,14 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         Team.TEAM1,
         OvertimeRule.TIEBREAK,
         MatchType.SINGLES
+    )*/
+    internal var match = DeuceMatch(
+        NumSets.THREE,
+        Team.TEAM1,
+        OvertimeRule.TIEBREAK,
+        MatchType.SINGLES,
+        0,
+        ScoreStack()
     )
     internal lateinit var preferences: DeuceWearPreferences
 
@@ -259,7 +267,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationAdapter.enableMatch()
         switchFragment(FragmentEnum.SCORE)
 
-        match = Match(
+        /*match = Match(
             preferences.numSets.value,
             DEFAULT_WIN_MARGIN_MATCH,
             DEFAULT_WIN_MINIMUM_SET,
@@ -271,6 +279,14 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             preferences.startingServer,
             preferences.overtime,
             preferences.matchType
+        )*/
+        match = DeuceMatch(
+            preferences.numSets,
+            preferences.startingServer,
+            preferences.overtime,
+            preferences.matchType,
+            System.currentTimeMillis(),
+            ScoreStack()
         )
 
         // Create a data map and put data in it

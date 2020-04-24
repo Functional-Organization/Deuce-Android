@@ -19,28 +19,26 @@
 
 package net.mqduck.deuce.common
 
-import android.os.Parcel
-import android.os.Parcelable
-
-class Match : Parcelable {
-    val winMinimumMatch: Int
-    val winMarginMatch: Int
-    val winMinimumSet: Int
-    val winMarginSet: Int
-    val winMinimumGame: Int
-    val winMarginGame: Int
-    val winMinimumGameTiebreak: Int
-    val winMarginGameTiebreak: Int
-    val startingServer: Team
-    val overtimeRule: OvertimeRule
-    val matchType: MatchType
+open class Match(
+    val winMinimumMatch: Int,
+    val winMarginMatch: Int,
+    val winMinimumSet: Int,
+    val winMarginSet: Int,
+    val winMinimumGame: Int,
+    val winMarginGame: Int,
+    val winMinimumGameTiebreak: Int,
+    val winMarginGameTiebreak: Int,
+    val startingServer: Team,
+    val overtimeRule: OvertimeRule,
+    val matchType: MatchType,
+    val startTime: Long,
+    val scoreLog: ScoreStack
+) /*: Parcelable*/ {
 
     lateinit var sets: ArrayList<Set>
     private lateinit var mScore: Score
-    val startTime: Long
     lateinit var serving: Serving
         private set
-    private var scoreLog = ScoreStack()
     var changeover = false
         private set
     var serviceChanged = true
@@ -48,7 +46,11 @@ class Match : Parcelable {
     var matchAdded = false
         private set
 
-    constructor(
+    init {
+        loadScoreLog()
+    }
+
+    /*constructor(
         winMinimumMatch: Int, winMarginMatch: Int,
         winMinimumSet: Int, winMarginSet: Int,
         winMinimumGame: Int, winMarginGame: Int,
@@ -153,10 +155,9 @@ class Match : Parcelable {
     companion object CREATOR : Parcelable.Creator<Match> {
         override fun createFromParcel(parcel: Parcel) = Match(parcel)
         override fun newArray(size: Int) = arrayOfNulls<Match>(size)
-    }
+    }*/
 
-    private fun loadScoreLog(scoreLog: ScoreStack) {
-        this.scoreLog = ScoreStack()
+    private fun loadScoreLog() {
         mScore = Score(winMinimumMatch, winMarginMatch)
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
         sets = arrayListOf(
@@ -172,9 +173,8 @@ class Match : Parcelable {
             )
         )
 
-        val numScores = scoreLog.size
-        for (i in 0 until numScores) {
-            score(scoreLog[i])
+        for (i in 0 until scoreLog.size) {
+            score(scoreLog[i], false)
         }
     }
 
@@ -183,7 +183,7 @@ class Match : Parcelable {
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
 
-    fun score(team: Team/*, updateLog: Boolean = true*/) {
+    private fun score(team: Team, updateLog: Boolean) {
         changeover = false
         serviceChanged = false
         val winnerGame = currentGame.score(team)
@@ -288,22 +288,26 @@ class Match : Parcelable {
             }
         }
 
-        scoreLog.push(team)
+        if (updateLog) {
+            scoreLog.push(team)
+        }
 
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 6 == 0) {
             changeover = true
         }
     }
 
+    fun score(team: Team) = score(team, true)
+
     fun undo(): Boolean {
         if (scoreLog.size != 0) {
             scoreLog.pop()
-            loadScoreLog(scoreLog)
+            loadScoreLog()
             return true
         }
         return false
     }
 
-    fun scoreLogArray() = scoreLog.bitSetToLongArray()
+    fun scoreLogArray(): LongArray = scoreLog.bitSetToLongArray()
     fun scoreLogSize() = scoreLog.size
 }
