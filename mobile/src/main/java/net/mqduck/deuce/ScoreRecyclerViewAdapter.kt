@@ -30,7 +30,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
-import net.mqduck.deuce.ScoresFragment.OnListFragmentInteractionListener
+import net.mqduck.deuce.ScoresFragment.OnMatchInteractionListener
 import net.mqduck.deuce.common.Match
 import net.mqduck.deuce.common.Winner
 import java.text.SimpleDateFormat
@@ -41,7 +41,7 @@ import kotlin.math.roundToInt
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
- * specified [OnListFragmentInteractionListener].
+ * specified [OnMatchInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
 /*class ScoreRecyclerViewAdapter(
@@ -90,7 +90,7 @@ import kotlin.math.roundToInt
 
 class ScoreRecyclerViewAdapter(
     private val matches: List<Match>,
-    private val listener: OnListFragmentInteractionListener?,
+    private val listener: OnMatchInteractionListener?,
     private val context: Activity
 ) : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -101,8 +101,6 @@ class ScoreRecyclerViewAdapter(
     }
 
     companion object {
-        //val dateFormat = android.text.format.DateFormat.getDateFormat(mainActivity)
-        //val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
         val dateFormat = SimpleDateFormat.getDateInstance()
         val setLayoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -118,6 +116,8 @@ class ScoreRecyclerViewAdapter(
         }
     }
 
+    private val onClickListener: View.OnClickListener
+
     init {
         /*mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as DummyItem
@@ -125,6 +125,10 @@ class ScoreRecyclerViewAdapter(
             // one) that an item has been selected.
             mListener?.onListFragmentInteraction(item)
         }*/
+        onClickListener = View.OnClickListener { view ->
+            val match = view.tag as Match
+            listener?.onMatchInteraction(match)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -160,10 +164,10 @@ class ScoreRecyclerViewAdapter(
             holder.setsContainer.addView(set, setLayoutParams)
         }
 
-        /*with(holder.mView) {
-            tag = item
-            setOnClickListener(mOnClickListener)
-        }*/
+        with(holder.view) {
+            tag = match
+            setOnClickListener(onClickListener)
+        }
     }
 
     override fun getItemCount() = matches.size

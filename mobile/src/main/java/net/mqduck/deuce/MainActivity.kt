@@ -24,7 +24,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.wearable.*
 import net.mqduck.deuce.common.*
-import net.mqduck.deuce.dummy.DummyContent
 import java.util.*
 
 //import android.util.Log
@@ -32,7 +31,7 @@ import java.util.*
 lateinit var mainActivity: MainActivity
 
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
-    ScoresFragment.OnListFragmentInteractionListener {
+    ScoresFragment.OnMatchInteractionListener {
     internal var match = DeuceMatch()
 
     init {
@@ -88,7 +87,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         }
     }
 
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-        TODO("Not yet implemented")
+    override fun onMatchInteraction(item: Match?) {
+        Log.d("foo", "match interaction")
     }
 }
