@@ -22,6 +22,7 @@ package net.mqduck.deuce
 
 import android.app.Activity
 import android.graphics.Typeface
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ import net.mqduck.deuce.common.Match
 import net.mqduck.deuce.common.Winner
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 //import net.mqduck.deuce.dummy.DummyContent.DummyItem
 
@@ -108,7 +110,11 @@ class ScoreRecyclerViewAdapter(
         )
 
         init {
-            setLayoutParams.setMargins(20, 0, 20, 0)
+            val margin = (8.0
+                    * mainActivity.resources.displayMetrics.densityDpi.toFloat()
+                    / DisplayMetrics.DENSITY_DEFAULT.toFloat()
+                    ).roundToInt()
+            setLayoutParams.setMargins(margin, 0, margin, 0)
         }
     }
 
@@ -129,19 +135,6 @@ class ScoreRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val match = matches[position]
 
-        /*val set1 = LayoutInflater.from(context).inflate(R.layout.set, null)
-        set1.text_set_number.text = 1.toString()
-        set1.text_team1_set_score.text = 0.toString()
-        set1.text_team2_set_score.text = 0.toString()
-
-        val set2 = LayoutInflater.from(context).inflate(R.layout.set, null)
-        set2.text_set_number.text = 2.toString()
-        set2.text_team1_set_score.text = 1.toString()
-        set2.text_team2_set_score.text = 2.toString()
-
-        holder.setsContainer.addView(set1)
-        holder.setsContainer.addView(set2)*/
-
         holder.date.text = dateFormat.format(Date(match.startTime))
         holder.nameTeam1.text = match.nameTeam1
         holder.nameTeam2.text = match.nameTeam2
@@ -153,7 +146,7 @@ class ScoreRecyclerViewAdapter(
         }
 
         for (i in 0 until match.sets.size) {
-            val set = LayoutInflater.from(context).inflate(R.layout.set, null)
+            val set = LayoutInflater.from(context).inflate(R.layout.set, holder.setsContainer, false)
             set.set_number.text = (i + 1).toString()
             set.team1_set_score.text = match.sets[i].scoreP1.toString()
             set.team2_set_score.text = match.sets[i].scoreP2.toString()
