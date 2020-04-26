@@ -23,13 +23,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.wearable.*
-import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
+import net.mqduck.deuce.dummy.DummyContent
 import java.util.*
 
 //import android.util.Log
 
-class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener {
+class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
+    ScoresFragment.OnListFragmentInteractionListener {
     internal var match = DeuceMatch()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,13 +70,17 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener {
                         }
 
                         val scoreStrings = match.currentGame.getScoreStrings()
-                        score1.text = scoreStrings.player1
-                        score2.text = scoreStrings.player2
+                        //score1.text = scoreStrings.player1
+                        //score2.text = scoreStrings.player2
                     }
                 }
             } else if (event.type == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
             }
         }
+    }
+
+    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
+        TODO("Not yet implemented")
     }
 }
