@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener {
                         DataMapItem.fromDataItem(item).dataMap.apply {
                             Log.d("foo", "inner")
                             match = Match(
-                                getInt(KEY_NUM_SETS, DEFAULT_NUM_SETS.value),
+                                getInt(KEY_NUM_SETS),
                                 DEFAULT_WIN_MARGIN_MATCH,
                                 DEFAULT_WIN_MINIMUM_SET,
                                 DEFAULT_WIN_MARGIN_SET,
@@ -77,10 +77,11 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener {
                                 DEFAULT_WIN_MARGIN_GAME,
                                 DEFAULT_WIN_MINIMUM_GAME_TIEBREAK,
                                 DEFAULT_WIN_MARGIN_GAME_TIEBREAK,
-                                Team.fromOrdinal(getInt(KEY_SERVER, DEFAULT_STARTING_SERVER.ordinal)),
-                                OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE, DEFAULT_OVERTIME_RULE.ordinal)),
-                                MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE, DEFAULT_MATCH_TYPE.ordinal)),
-                                ScoreStack(getInt(KEY_SCORE_SIZE, 0), BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY)))
+                                Team.fromOrdinal(getInt(KEY_SERVER)),
+                                OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE)),
+                                MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE)),
+                                getLong(KEY_START_TIME),
+                                ScoreStack(getInt(KEY_SCORE_SIZE), BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY)))
                             )
                         }
 
