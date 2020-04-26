@@ -114,21 +114,21 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
     }
 
-    private class DeuceAmbientCallback(val mainActivity: MainActivity) : AmbientModeSupport.AmbientCallback() {
+    private inner class DeuceAmbientCallback : AmbientModeSupport.AmbientCallback() {
         override fun onEnterAmbient(ambientDetails: Bundle?) {
-            mainActivity.ambientMode = true
-            mainActivity.switchFragment(mainActivity.currentFragment)
+            ambientMode = true
+            switchFragment(currentFragment)
 
-            mainActivity.navigationDrawer.background.setTint(mainActivity.getColor(R.color.black))
-            mainActivity.navigationAdapter.update()
+            navigationDrawer.background.setTint(getColor(R.color.black))
+            navigationAdapter.update()
         }
 
         override fun onExitAmbient() {
-            mainActivity.ambientMode = false
-            mainActivity.switchFragment(mainActivity.currentFragment)
+            ambientMode = false
+            switchFragment(currentFragment)
 
-            mainActivity.navigationDrawer.background.setTint(mainActivity.getColor(R.color.lighter_bg_1))
-            mainActivity.navigationAdapter.update()
+            navigationDrawer.background.setTint(getColor(R.color.lighter_bg_1))
+            navigationAdapter.update()
         }
 
         override fun onUpdateAmbient() {}
@@ -155,7 +155,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     lateinit var dataClient: DataClient
 
-    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
+    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // https://github.com/Subhipster-Collective/Deuce-Android/issues/21
