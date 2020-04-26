@@ -21,6 +21,7 @@ package net.mqduck.deuce
 
 
 import android.app.Activity
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
 import net.mqduck.deuce.ScoresFragment.OnListFragmentInteractionListener
 import net.mqduck.deuce.common.Match
+import net.mqduck.deuce.common.Winner
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -100,6 +102,14 @@ class ScoreRecyclerViewAdapter(
         //val dateFormat = android.text.format.DateFormat.getDateFormat(mainActivity)
         //val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
         val dateFormat = SimpleDateFormat.getDateInstance()
+        val setLayoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        init {
+            setLayoutParams.setMargins(20, 0, 20, 0)
+        }
     }
 
     init {
@@ -136,12 +146,25 @@ class ScoreRecyclerViewAdapter(
         holder.nameTeam1.text = match.nameTeam1
         holder.nameTeam2.text = match.nameTeam2
 
+        if (match.winner == Winner.TEAM1) {
+            holder.nameTeam1.setTypeface(holder.nameTeam1.typeface, Typeface.BOLD)
+        } else if (match.winner == Winner.TEAM2) {
+            holder.nameTeam2.setTypeface(holder.nameTeam2.typeface, Typeface.BOLD)
+        }
+
         for (i in 0 until match.sets.size) {
             val set = LayoutInflater.from(context).inflate(R.layout.set, null)
-            set.set_number.text = i.toString()
+            set.set_number.text = (i + 1).toString()
             set.team1_set_score.text = match.sets[i].scoreP1.toString()
             set.team2_set_score.text = match.sets[i].scoreP2.toString()
-            holder.setsContainer.addView(set)
+
+            if (match.winner == Winner.TEAM1) {
+                set.team1_set_score.setTypeface(set.team1_set_score.typeface, Typeface.BOLD)
+            } else if (match.winner == Winner.TEAM2) {
+                set.team2_set_score.setTypeface(set.team2_set_score.typeface, Typeface.BOLD)
+            }
+
+            holder.setsContainer.addView(set, setLayoutParams)
         }
 
         /*with(holder.mView) {

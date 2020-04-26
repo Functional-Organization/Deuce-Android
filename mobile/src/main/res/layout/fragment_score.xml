@@ -21,7 +21,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="8dp"
+    android:orientation="horizontal"
+    android:theme="@style/ListItem">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -32,18 +36,25 @@
             android:id="@+id/text_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/secondary_text"
             tools:text="1/1/1970" />
 
         <TextView
             android:id="@+id/text_team_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             tools:text="@string/opponent" />
 
         <TextView
             android:id="@+id/text_team_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             tools:text="@string/myself" />
     </LinearLayout>
 
@@ -51,19 +62,18 @@
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?android:attr/listDivider" />
-
-    <!--<include
-        android:id="@+id/sets_container"
-        layout="@layout/set"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />-->
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/sets_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal" />
+
+    <!--<include
+        android:id="@+id/sets_container"
+        layout="@layout/set"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />-->
 
 </LinearLayout>
