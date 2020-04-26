@@ -19,15 +19,18 @@
 
 package net.mqduck.deuce.common
 
+import android.os.Parcel
+import android.os.Parcelable
+
 class DeuceMatch(
-    numSets: NumSets,
+    numSets: Int,
     startingServer: Team,
     overtimeRule: OvertimeRule,
     matchType: MatchType,
     startTime: Long,
     scoreLog: ScoreStack
 ) : Match(
-    numSets.value,
+    numSets,
     DEFAULT_WIN_MARGIN_MATCH,
     DEFAULT_WIN_MINIMUM_SET,
     DEFAULT_WIN_MARGIN_SET,
@@ -40,4 +43,36 @@ class DeuceMatch(
     matchType,
     startTime,
     scoreLog
-)
+), Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readSerializable() as Team,
+        parcel.readSerializable() as OvertimeRule,
+        parcel.readSerializable() as MatchType,
+        parcel.readLong(),
+        parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(winMinimumMatch)
+        parcel.writeSerializable(startingServer)
+        parcel.writeSerializable(overtimeRule)
+        parcel.writeSerializable(matchType)
+        parcel.writeLong(startTime)
+        parcel.writeParcelable(scoreLog, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<DeuceMatch> {
+        override fun createFromParcel(parcel: Parcel): DeuceMatch {
+            return DeuceMatch(parcel)
+        }
+
+        override fun newArray(size: Int): Array<DeuceMatch?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

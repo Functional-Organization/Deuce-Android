@@ -38,6 +38,8 @@ import com.google.android.gms.wearable.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 
+//import android.util.Log
+
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
@@ -132,21 +134,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         override fun onUpdateAmbient() {}
     }
 
-    /*internal var match = Match(
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        Team.TEAM1,
-        OvertimeRule.TIEBREAK,
-        MatchType.SINGLES
-    )*/
     internal var match = DeuceMatch(
-        NumSets.THREE,
+        NumSets.THREE.value,
         Team.TEAM1,
         OvertimeRule.TIEBREAK,
         MatchType.SINGLES,
@@ -176,6 +165,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // https://github.com/Subhipster-Collective/Deuce-Android/issues/21
+        savedInstanceState?.remove("android:support:fragments")
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -190,18 +182,21 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         var fragment = FragmentEnum.SETUP
 
         savedInstanceState?.let {
-            //TODO: bundle
-            //controller.loadInstanceState(savedInstanceState.getBundle("controllerState")!!)
-            if (savedInstanceState.containsKey("setupState")) {
+            /*if (savedInstanceState.containsKey("setupState")) {
                 setupFragment.setInitialSavedState(savedInstanceState.getParcelable("setupState"))
             }
             if (savedInstanceState.containsKey("scoreState")) {
                 scoreFragment.setInitialSavedState(savedInstanceState.getParcelable("scoreState"))
+            }*/
+            if (savedInstanceState.containsKey(KEY_CURRENT_FRAGMENT)) {
+                fragment = savedInstanceState.getSerializable(KEY_CURRENT_FRAGMENT) as FragmentEnum
             }
-            fragment = savedInstanceState.getSerializable("currentFragment") as FragmentEnum
-            matchAdded = savedInstanceState.getBoolean("matchAdded")
-            if (matchAdded) {
-                navigationAdapter.notifyDataSetChanged()
+            if (savedInstanceState.containsKey(KEY_MATCH)) {
+                match = savedInstanceState.getParcelable(KEY_MATCH)!!
+            }
+            if (savedInstanceState.containsKey(KEY_MATCH_ADDED)) {
+                matchAdded = savedInstanceState.getBoolean(KEY_MATCH_ADDED)
+                navigationAdapter.enableMatch()
             }
             navigationAdapter.notifyDataSetChanged()
         }
@@ -239,10 +234,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        //TODO: bundle
-//        outState.putBundle("controllerState", controller.saveInstanceState())
-        outState.putSerializable("currentFragment", currentFragment)
-        outState.putBoolean("matchAdded", matchAdded)
+        outState.putParcelable(KEY_MATCH, match)
+        outState.putSerializable(KEY_CURRENT_FRAGMENT, currentFragment)
+        outState.putBoolean(KEY_MATCH_ADDED, matchAdded)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -267,21 +261,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationAdapter.enableMatch()
         switchFragment(FragmentEnum.SCORE)
 
-        /*match = Match(
-            preferences.numSets.value,
-            DEFAULT_WIN_MARGIN_MATCH,
-            DEFAULT_WIN_MINIMUM_SET,
-            DEFAULT_WIN_MARGIN_SET,
-            DEFAULT_WIN_MINIMUM_GAME,
-            DEFAULT_WIN_MARGIN_GAME,
-            DEFAULT_WIN_MINIMUM_GAME_TIEBREAK,
-            DEFAULT_WIN_MARGIN_GAME_TIEBREAK,
-            preferences.startingServer,
-            preferences.overtime,
-            preferences.matchType
-        )*/
         match = DeuceMatch(
-            preferences.numSets,
+            preferences.numSets.value,
             preferences.startingServer,
             preferences.overtime,
             preferences.matchType,
