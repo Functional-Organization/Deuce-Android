@@ -33,7 +33,7 @@ open class Match(
     val matchType: MatchType,
     val startTime: Long,
     val scoreLog: ScoreStack
-) /*: Parcelable*/ {
+) {
 
     lateinit var sets: ArrayList<Set>
     private lateinit var mScore: Score
@@ -43,119 +43,10 @@ open class Match(
         private set
     var serviceChanged = true
         private set
-    var matchAdded = false
-        private set
 
     init {
         loadScoreLog()
     }
-
-    /*constructor(
-        winMinimumMatch: Int, winMarginMatch: Int,
-        winMinimumSet: Int, winMarginSet: Int,
-        winMinimumGame: Int, winMarginGame: Int,
-        winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
-        startingServer: Team,
-        overtimeRule: OvertimeRule,
-        matchType: MatchType
-    ) {
-        this.winMinimumMatch = winMinimumMatch
-        this.winMarginMatch = winMarginMatch
-        this.winMinimumSet = winMinimumSet
-        this.winMarginSet = winMarginSet
-        this.winMinimumGame = winMinimumGame
-        this.winMarginGame = winMarginGame
-        this.winMinimumGameTiebreak = winMinimumGameTiebreak
-        this.winMarginGameTiebreak = winMarginGameTiebreak
-        this.startingServer = startingServer
-        this.overtimeRule = overtimeRule
-        this.matchType = matchType
-        startTime = System.currentTimeMillis()
-
-        mScore = Score(winMinimumMatch, winMarginMatch)
-        serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
-        sets = arrayListOf(
-            Set(
-                winMinimumSet,
-                winMarginSet,
-                winMinimumGame,
-                winMarginGame,
-                winMinimumGameTiebreak,
-                winMarginGameTiebreak,
-                overtimeRule,
-                this
-            )
-        )
-    }
-
-    constructor(
-        winMinimumMatch: Int, winMarginMatch: Int,
-        winMinimumSet: Int, winMarginSet: Int,
-        winMinimumGame: Int, winMarginGame: Int,
-        winMinimumGameTiebreak: Int, winMarginGameTiebreak: Int,
-        startingServer: Team,
-        overtimeRule: OvertimeRule,
-        matchType: MatchType,
-        startTime: Long,
-        scoreLog: ScoreStack
-    ) {
-        this.winMinimumMatch = winMinimumMatch
-        this.winMarginMatch = winMarginMatch
-        this.winMinimumSet = winMinimumSet
-        this.winMarginSet = winMarginSet
-        this.winMinimumGame = winMinimumGame
-        this.winMarginGame = winMarginGame
-        this.winMinimumGameTiebreak = winMinimumGameTiebreak
-        this.winMarginGameTiebreak = winMarginGameTiebreak
-        this.startingServer = startingServer
-        this.overtimeRule = overtimeRule
-        this.matchType = matchType
-        this.startTime = startTime
-
-        loadScoreLog(scoreLog)
-    }
-
-    constructor(parcel: Parcel) {
-        winMinimumMatch = parcel.readInt()
-        winMarginMatch = parcel.readInt()
-        winMinimumSet = parcel.readInt()
-        winMarginSet = parcel.readInt()
-        winMinimumGame = parcel.readInt()
-        winMarginGame = parcel.readInt()
-        winMinimumGameTiebreak = parcel.readInt()
-        winMarginGameTiebreak = parcel.readInt()
-        startingServer = parcel.readSerializable() as Team
-        overtimeRule = parcel.readSerializable() as OvertimeRule
-        matchType = parcel.readSerializable() as MatchType
-        startTime = parcel.readLong()
-
-        loadScoreLog(parcel.readParcelable(ScoreStack::class.java.classLoader)!!)
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(winMinimumMatch)
-        parcel.writeInt(winMarginMatch)
-        parcel.writeInt(winMinimumSet)
-        parcel.writeInt(winMarginSet)
-        parcel.writeInt(winMinimumGame)
-        parcel.writeInt(winMarginGame)
-        parcel.writeInt(winMinimumGameTiebreak)
-        parcel.writeInt(winMarginGameTiebreak)
-        parcel.writeSerializable(startingServer)
-        parcel.writeSerializable(overtimeRule)
-        parcel.writeSerializable(matchType)
-        parcel.writeLong(startTime)
-
-        // TODO: Is just passing flags correct?
-        parcel.writeParcelable(scoreLog, flags)
-    }
-
-    override fun describeContents() = 0
-
-    companion object CREATOR : Parcelable.Creator<Match> {
-        override fun createFromParcel(parcel: Parcel) = Match(parcel)
-        override fun newArray(size: Int) = arrayOfNulls<Match>(size)
-    }*/
 
     private fun loadScoreLog() {
         mScore = Score(winMinimumMatch, winMarginMatch)

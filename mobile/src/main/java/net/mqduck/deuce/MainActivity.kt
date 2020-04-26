@@ -27,20 +27,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 import java.util.*
 
+//import android.util.Log
+
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener {
-    var match = Match(
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        Team.TEAM1,
-        OvertimeRule.TIEBREAK,
-        MatchType.SINGLES
-    )
+    internal var match = DeuceMatch()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,16 +57,9 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener {
                 event.dataItem.also { item ->
                     if (item.uri.path?.compareTo(PATH_CURRENT_MATCH) == 0) {
                         DataMapItem.fromDataItem(item).dataMap.apply {
-                            Log.d("foo", "inner")
-                            match = Match(
+                            Log.d("foo", "inside")
+                            match = DeuceMatch(
                                 getInt(KEY_NUM_SETS),
-                                DEFAULT_WIN_MARGIN_MATCH,
-                                DEFAULT_WIN_MINIMUM_SET,
-                                DEFAULT_WIN_MARGIN_SET,
-                                DEFAULT_WIN_MINIMUM_GAME,
-                                DEFAULT_WIN_MARGIN_GAME,
-                                DEFAULT_WIN_MINIMUM_GAME_TIEBREAK,
-                                DEFAULT_WIN_MARGIN_GAME_TIEBREAK,
                                 Team.fromOrdinal(getInt(KEY_SERVER)),
                                 OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE)),
                                 MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE)),

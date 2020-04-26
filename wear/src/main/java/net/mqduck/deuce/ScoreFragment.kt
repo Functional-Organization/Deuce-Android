@@ -22,6 +22,7 @@ package net.mqduck.deuce
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -130,8 +131,9 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         }
         putDataReq.setUrgent()
         val putDataTask: Task<DataItem> = mainActivity.dataClient.putDataItem(putDataReq)
+        Log.d("foo", "trying to send score")
         putDataTask.addOnSuccessListener {
-            //Log.d("foo", "score success")
+            Log.d("foo", "score success")
         }
     }
 

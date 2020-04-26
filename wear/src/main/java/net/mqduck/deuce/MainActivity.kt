@@ -134,14 +134,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         override fun onUpdateAmbient() {}
     }
 
-    internal var match = DeuceMatch(
-        NumSets.THREE.value,
-        Team.TEAM1,
-        OvertimeRule.TIEBREAK,
-        MatchType.SINGLES,
-        0,
-        ScoreStack()
-    )
+    internal var match = DeuceMatch()
     internal lateinit var preferences: DeuceWearPreferences
 
     private var setupFragment = SetupFragment(this)

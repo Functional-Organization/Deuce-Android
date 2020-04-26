@@ -44,6 +44,8 @@ class DeuceMatch(
     startTime,
     scoreLog
 ), Parcelable {
+    constructor() : this(0, Team.TEAM1, OvertimeRule.TIEBREAK, MatchType.SINGLES, 0, ScoreStack())
+
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readSerializable() as Team,
