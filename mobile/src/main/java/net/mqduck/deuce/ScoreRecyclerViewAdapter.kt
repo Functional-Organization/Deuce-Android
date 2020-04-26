@@ -20,21 +20,27 @@
 package net.mqduck.deuce
 
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_score.view.*
+import kotlinx.android.synthetic.main.set.view.*
 import net.mqduck.deuce.ScoresFragment.OnListFragmentInteractionListener
-import net.mqduck.deuce.dummy.DummyContent.DummyItem
+import net.mqduck.deuce.common.Match
+import java.text.SimpleDateFormat
+import java.util.*
+
+//import net.mqduck.deuce.dummy.DummyContent.DummyItem
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
  * specified [OnListFragmentInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
-class ScoreRecyclerViewAdapter(
+/*class ScoreRecyclerViewAdapter(
     private val mValues: List<DummyItem>,
     private val mListener: OnListFragmentInteractionListener?
 ) : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
@@ -76,4 +82,73 @@ class ScoreRecyclerViewAdapter(
             return super.toString() + " '" + mContentView.text + "'"
         }
     }
+}*/
+
+class ScoreRecyclerViewAdapter(
+    private val matches: List<Match>,
+    private val listener: OnListFragmentInteractionListener?,
+    private val context: Activity
+) : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val date = view.text_date
+        val nameTeam1 = view.text_team_1
+        val nameTeam2 = view.text_team_2
+        val setsContainer = view.sets_container as LinearLayout
+    }
+
+    companion object {
+        //val dateFormat = android.text.format.DateFormat.getDateFormat(mainActivity)
+        //val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val dateFormat = SimpleDateFormat.getDateInstance()
+    }
+
+    init {
+        /*mOnClickListener = View.OnClickListener { v ->
+            val item = v.tag as DummyItem
+            // Notify the active callbacks interface (the activity, if the fragment is attached to
+            // one) that an item has been selected.
+            mListener?.onListFragmentInteraction(item)
+        }*/
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_score, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val match = matches[position]
+
+        /*val set1 = LayoutInflater.from(context).inflate(R.layout.set, null)
+        set1.text_set_number.text = 1.toString()
+        set1.text_team1_set_score.text = 0.toString()
+        set1.text_team2_set_score.text = 0.toString()
+
+        val set2 = LayoutInflater.from(context).inflate(R.layout.set, null)
+        set2.text_set_number.text = 2.toString()
+        set2.text_team1_set_score.text = 1.toString()
+        set2.text_team2_set_score.text = 2.toString()
+
+        holder.setsContainer.addView(set1)
+        holder.setsContainer.addView(set2)*/
+
+        holder.date.text = dateFormat.format(Date(match.startTime))
+        holder.nameTeam1.text = match.nameTeam1
+        holder.nameTeam2.text = match.nameTeam2
+
+        for (i in 0 until match.sets.size) {
+            val set = LayoutInflater.from(context).inflate(R.layout.set, null)
+            set.set_number.text = i.toString()
+            set.team1_set_score.text = match.sets[i].scoreP1.toString()
+            set.team2_set_score.text = match.sets[i].scoreP2.toString()
+            holder.setsContainer.addView(set)
+        }
+
+        /*with(holder.mView) {
+            tag = item
+            setOnClickListener(mOnClickListener)
+        }*/
+    }
+
+    override fun getItemCount() = matches.size
 }

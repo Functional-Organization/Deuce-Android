@@ -28,7 +28,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.mqduck.deuce.dummy.DummyContent
+import net.mqduck.deuce.common.*
 import net.mqduck.deuce.dummy.DummyContent.DummyItem
 
 /**
@@ -64,7 +64,30 @@ class ScoresFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = ScoreRecyclerViewAdapter(DummyContent.ITEMS, listener)
+                //adapter = ScoreRecyclerViewAdapter(DummyContent.ITEMS, listener)
+
+                val scoreLog = ScoreStack()
+                for (i in 0 until 72) {
+                    scoreLog.push(Team.TEAM1)
+                }
+                val matches = arrayListOf(
+                    DeuceMatch(),
+                    DeuceMatch(
+                        3,
+                        Team.TEAM1,
+                        OvertimeRule.TIEBREAK,
+                        MatchType.SINGLES,
+                        0,
+                        scoreLog,
+                        "Myself",
+                        "Opponent"
+                    )
+                )
+                adapter = ScoreRecyclerViewAdapter(
+                    matches,
+                    listener,
+                    mainActivity
+                )
             }
         }
         return view
@@ -101,7 +124,6 @@ class ScoresFragment : Fragment() {
     }
 
     companion object {
-
         // TODO: Customize parameter argument names
         const val ARG_COLUMN_COUNT = "column-count"
 

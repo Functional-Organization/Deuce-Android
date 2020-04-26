@@ -32,9 +32,10 @@ open class Match(
     val overtimeRule: OvertimeRule,
     val matchType: MatchType,
     val startTime: Long,
-    val scoreLog: ScoreStack
+    val scoreLog: ScoreStack,
+    val nameTeam1: String,
+    val nameTeam2: String
 ) {
-
     lateinit var sets: ArrayList<Set>
     private lateinit var mScore: Score
     lateinit var serving: Serving
@@ -43,6 +44,9 @@ open class Match(
         private set
     var serviceChanged = true
         private set
+
+    val scoreTeam1 get() = mScore.scoreTeam1
+    val scoreTeam2 get() = mScore.scoreTeam2
 
     init {
         loadScoreLog()

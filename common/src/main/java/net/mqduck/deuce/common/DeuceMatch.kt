@@ -28,7 +28,9 @@ class DeuceMatch(
     overtimeRule: OvertimeRule,
     matchType: MatchType,
     startTime: Long,
-    scoreLog: ScoreStack
+    scoreLog: ScoreStack,
+    nameTeam1: String,
+    nameTeam2: String
 ) : Match(
     numSets,
     DEFAULT_WIN_MARGIN_MATCH,
@@ -42,9 +44,19 @@ class DeuceMatch(
     overtimeRule,
     matchType,
     startTime,
-    scoreLog
+    scoreLog,
+    nameTeam1,
+    nameTeam2
 ), Parcelable {
-    constructor() : this(0, Team.TEAM1, OvertimeRule.TIEBREAK, MatchType.SINGLES, 0, ScoreStack())
+    constructor() : this(
+        0,
+        Team.TEAM1,
+        OvertimeRule.TIEBREAK,
+        MatchType.SINGLES,
+        0,
+        ScoreStack(),
+        DEFAULT_NAME_TEAM1, DEFAULT_NAME_TEAM2
+    )
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -52,7 +64,9 @@ class DeuceMatch(
         parcel.readSerializable() as OvertimeRule,
         parcel.readSerializable() as MatchType,
         parcel.readLong(),
-        parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!
+        parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!,
+        parcel.readString()!!,
+        parcel.readString()!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -62,6 +76,8 @@ class DeuceMatch(
         parcel.writeSerializable(matchType)
         parcel.writeLong(startTime)
         parcel.writeParcelable(scoreLog, flags)
+        parcel.writeString(nameTeam1)
+        parcel.writeString(nameTeam2)
     }
 
     override fun describeContents(): Int {

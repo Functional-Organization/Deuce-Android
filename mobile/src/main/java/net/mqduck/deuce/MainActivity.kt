@@ -29,9 +29,15 @@ import java.util.*
 
 //import android.util.Log
 
+lateinit var mainActivity: MainActivity
+
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresFragment.OnListFragmentInteractionListener {
     internal var match = DeuceMatch()
+
+    init {
+        mainActivity = this
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +71,9 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                 OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE)),
                                 MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE)),
                                 getLong(KEY_START_TIME),
-                                ScoreStack(getInt(KEY_SCORE_SIZE), BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY)))
+                                ScoreStack(getInt(KEY_SCORE_SIZE), BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY))),
+                                getString(KEY_NAME_TEAM1),
+                                getString(KEY_NAME_TEAM2)
                             )
                         }
 

@@ -34,6 +34,9 @@ val DEFAULT_NUM_SETS = NumSets.THREE
 val DEFAULT_OVERTIME_RULE = OvertimeRule.TIEBREAK
 const val DEFAULT_CLOCK = false
 
+const val DEFAULT_NAME_TEAM1 = "Myself"
+const val DEFAULT_NAME_TEAM2 = "Opponent"
+
 const val KEY_NUM_SETS = "num_sets"
 const val KEY_SERVER = "server"
 const val KEY_MATCH_TYPE = "type"
@@ -45,5 +48,7 @@ const val KEY_START_TIME = "start_time"
 const val KEY_CURRENT_FRAGMENT = "current_fragment"
 const val KEY_MATCH = "match"
 const val KEY_MATCH_ADDED = "match_added"
+const val KEY_NAME_TEAM1 = "name_team1"
+const val KEY_NAME_TEAM2 = "name_team2"
 
 const val PATH_CURRENT_MATCH = "/current_match"

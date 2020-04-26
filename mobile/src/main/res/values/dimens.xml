@@ -18,5 +18,5 @@
   -->
 
 <resources>
-    <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_margin">4dp</dimen>
 </resources>
