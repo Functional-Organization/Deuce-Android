@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresFragment.OnMatchInteractionListener {
     internal var match = DeuceMatch()
 
+    private lateinit var scoresFragment: ScoresFragment
+
     init {
         mainActivity = this
     }
@@ -44,6 +46,8 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         setContentView(R.layout.activity_main)
 
         Game.init(this)
+
+        scoresFragment = fragment_scores as ScoresFragment
     }
 
     override fun onResume() {
@@ -89,10 +93,13 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         }
     }
 
-    override fun onMatchInteraction(match: Match?) {
-        match?.let {
-            val infoDialog = ScoresFragment.InfoDialog(match)
-            infoDialog.show(fragment_scores.fragmentManager!!, "info")
+    override fun onMatchInteraction(item: Match?) {
+        // TODO: Make less ugly
+        item?.let {
+            scoresFragment.fragmentManager?.let {
+                val infoDialog = InfoDialog(item, scoresFragment)
+                infoDialog.show(it, "info")
+            }
         }
     }
 }

@@ -34,8 +34,8 @@ open class Match(
     val startTime: Long,
     var endTime: Long,
     val scoreLog: ScoreStack,
-    val nameTeam1: String,
-    val nameTeam2: String
+    var nameTeam1: String,
+    var nameTeam2: String
 ) {
     lateinit var sets: ArrayList<Set>
     private lateinit var mScore: Score

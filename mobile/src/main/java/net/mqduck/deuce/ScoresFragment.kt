@@ -19,21 +19,16 @@
 
 package net.mqduck.deuce
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.info_dialog.view.*
 import net.mqduck.deuce.common.*
-import java.util.*
 
 /**
  * A fragment representing a list of Items.
@@ -41,34 +36,7 @@ import java.util.*
  * [ScoresFragment.OnMatchInteractionListener] interface.
  */
 class ScoresFragment : Fragment() {
-    class InfoDialog(val match: Match) : DialogFragment() {
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            //return super.onCreateDialog(savedInstanceState)
-
-            return activity?.let {
-                val builder = AlertDialog.Builder(it)
-                val inflater = requireActivity().layoutInflater
-                val view = inflater.inflate(R.layout.info_dialog, null)
-                view.start_time.text = timeFormat.format(Date(match.startTime))
-                if (match.endTime >= 0) {
-                    view.label_end_time.visibility = View.VISIBLE
-                    view.end_time.text = timeFormat.format(Date(match.endTime))
-                } else {
-                    view.label_end_time.visibility = View.INVISIBLE
-                }
-                view.edit_name_team1.setText(match.nameTeam1)
-                view.edit_name_team2.setText(match.nameTeam2)
-                builder.setView(view)
-                /*.setPositiveButton("Positive", DialogInterface.OnClickListener { dialog, id ->
-                    Log.d("foo", "positive")
-                })*/
-                /*.setNegativeButton("Negative", DialogInterface.OnClickListener { dialog, which ->
-                    Log.d("foo", "negative")
-                })*/
-                builder.create()
-            } ?: throw IllegalStateException("Activity cannot be null")
-        }
-    }
+    lateinit var view: RecyclerView
 
     // TODO: Customize parameters
     private var columnCount = 1
@@ -87,7 +55,7 @@ class ScoresFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_scores_list, container, false)
+        view = inflater.inflate(R.layout.fragment_scores_list, container, false) as RecyclerView
 
         // Set the adapter
         if (view is RecyclerView) {
