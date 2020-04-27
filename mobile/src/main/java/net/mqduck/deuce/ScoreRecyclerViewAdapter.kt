@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.set.view.*
 import net.mqduck.deuce.ScoresFragment.OnMatchInteractionListener
 import net.mqduck.deuce.common.Match
 import net.mqduck.deuce.common.Winner
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -101,7 +100,6 @@ class ScoreRecyclerViewAdapter(
     }
 
     companion object {
-        val dateFormat = SimpleDateFormat.getDateInstance()
         val setLayoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.MATCH_PARENT

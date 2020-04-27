@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.wearable.*
+import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 import java.util.*
 
@@ -87,7 +88,10 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         }
     }
 
-    override fun onMatchInteraction(item: Match?) {
-        Log.d("foo", "match interaction")
+    override fun onMatchInteraction(match: Match?) {
+        match?.let {
+            val infoDialog = ScoresFragment.InfoDialog(match)
+            infoDialog.show(fragment_scores.fragmentManager!!, "info")
+        }
     }
 }
