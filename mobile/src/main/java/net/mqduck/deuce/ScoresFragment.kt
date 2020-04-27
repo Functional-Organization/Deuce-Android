@@ -22,9 +22,7 @@ package net.mqduck.deuce
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,13 +50,21 @@ class ScoresFragment : Fragment() {
                 val inflater = requireActivity().layoutInflater
                 val view = inflater.inflate(R.layout.info_dialog, null)
                 view.start_time.text = timeFormat.format(Date(match.startTime))
+                if (match.endTime >= 0) {
+                    view.label_end_time.visibility = View.VISIBLE
+                    view.end_time.text = timeFormat.format(Date(match.endTime))
+                } else {
+                    view.label_end_time.visibility = View.INVISIBLE
+                }
+                view.edit_name_team1.setText(match.nameTeam1)
+                view.edit_name_team2.setText(match.nameTeam2)
                 builder.setView(view)
-                    .setPositiveButton("Positive", DialogInterface.OnClickListener { dialog, id ->
-                        Log.d("foo", "positive")
-                    })
-                    .setNegativeButton("Negative", DialogInterface.OnClickListener { dialog, which ->
-                        Log.d("foo", "negative")
-                    })
+                /*.setPositiveButton("Positive", DialogInterface.OnClickListener { dialog, id ->
+                    Log.d("foo", "positive")
+                })*/
+                /*.setNegativeButton("Negative", DialogInterface.OnClickListener { dialog, which ->
+                    Log.d("foo", "negative")
+                })*/
                 builder.create()
             } ?: throw IllegalStateException("Activity cannot be null")
         }
@@ -104,6 +110,7 @@ class ScoresFragment : Fragment() {
                         OvertimeRule.TIEBREAK,
                         MatchType.SINGLES,
                         416846345451,
+                        416847346451,
                         scoreLog,
                         "Myself",
                         "Opponent"

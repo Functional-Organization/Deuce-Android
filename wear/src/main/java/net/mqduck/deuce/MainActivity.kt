@@ -260,7 +260,10 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             preferences.overtime,
             preferences.matchType,
             System.currentTimeMillis(),
-            ScoreStack()
+            -1,
+            ScoreStack(),
+            DEFAULT_NAME_TEAM1,
+            DEFAULT_NAME_TEAM2
         )
 
         // Create a data map and put data in it

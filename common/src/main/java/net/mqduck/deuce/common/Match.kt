@@ -32,6 +32,7 @@ open class Match(
     val overtimeRule: OvertimeRule,
     val matchType: MatchType,
     val startTime: Long,
+    var endTime: Long,
     val scoreLog: ScoreStack,
     val nameTeam1: String,
     val nameTeam2: String
@@ -44,9 +45,6 @@ open class Match(
         private set
     var serviceChanged = true
         private set
-
-    val scoreTeam1 get() = mScore.scoreTeam1
-    val scoreTeam2 get() = mScore.scoreTeam2
 
     init {
         loadScoreLog()
@@ -87,7 +85,9 @@ open class Match(
             if (winnerSet != Winner.NONE) {
                 val winnerMatch = mScore.score(team)
                 if (winnerMatch != Winner.NONE) {
-                    // Match is over
+                    if (endTime < 0) {
+                        endTime = System.currentTimeMillis()
+                    }
                 } else {
                     // Set is over, Match is not
                     sets.add(
