@@ -26,7 +26,8 @@
     android:layout_marginRight="8dp"
     android:orientation="horizontal"
     android:theme="@style/ListItem"
-    android:elevation="2dp">
+    android:elevation="2dp"
+    tools:targetApi="lollipop">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -72,11 +73,5 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal" />
-
-    <!--<include
-        android:id="@+id/sets_container"
-        layout="@layout/set"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />-->
 
 </LinearLayout>
