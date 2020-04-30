@@ -80,10 +80,6 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                 getString(KEY_NAME_TEAM2)
                             )
                         }
-
-                        val scoreStrings = match.currentGame.getScoreStrings()
-                        //score1.text = scoreStrings.player1
-                        //score2.text = scoreStrings.player2
                     }
                 }
             } else if (event.type == DataEvent.TYPE_DELETED) {

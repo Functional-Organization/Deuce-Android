@@ -28,6 +28,7 @@ class DeuceMatch(
     overtimeRule: OvertimeRule,
     matchType: MatchType,
     playTimes: PlayTimes,
+    setTimesLog: ArrayList<PlayTimes>,
     scoreLog: ScoreStack,
     nameTeam1: String,
     nameTeam2: String
@@ -44,6 +45,7 @@ class DeuceMatch(
     overtimeRule,
     matchType,
     playTimes,
+    setTimesLog,
     scoreLog,
     nameTeam1,
     nameTeam2
@@ -54,6 +56,7 @@ class DeuceMatch(
         OvertimeRule.TIEBREAK,
         MatchType.SINGLES,
         PlayTimes(),
+        ArrayList<PlayTimes>(),
         ScoreStack(),
         DEFAULT_NAME_TEAM1,
         DEFAULT_NAME_TEAM2
@@ -65,6 +68,7 @@ class DeuceMatch(
         parcel.readSerializable() as OvertimeRule,
         parcel.readSerializable() as MatchType,
         parcel.readParcelable<PlayTimes>(PlayTimes::class.java.classLoader)!!,
+        parcel.createTypedArrayList(PlayTimes.CREATOR)!!,
         parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!,
         parcel.readString()!!,
         parcel.readString()!!
@@ -76,6 +80,7 @@ class DeuceMatch(
         parcel.writeSerializable(overtimeRule)
         parcel.writeSerializable(matchType)
         parcel.writeParcelable(playTimes, flags)
+        parcel.writeTypedArray(setTimesLog.toArray() as Array<PlayTimes>, flags)
         parcel.writeParcelable(scoreLog, flags)
         parcel.writeString(nameTeam1)
         parcel.writeString(nameTeam2)
