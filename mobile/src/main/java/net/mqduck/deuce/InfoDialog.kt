@@ -36,7 +36,7 @@ class InfoDialog(val match: Match, val scoresFragment: ScoresFragment) : DialogF
 
         val builder = AlertDialog.Builder(activity)
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.info_dialog, null)
+        val view = inflater.inflate(R.layout.info_dialog, scoresFragment.view, false)
         view.start_time.text = timeFormat.format(Date(match.startTime))
         if (match.endTime >= 0) {
             view.label_end_time.visibility = View.VISIBLE
@@ -48,27 +48,27 @@ class InfoDialog(val match: Match, val scoresFragment: ScoresFragment) : DialogF
         view.edit_name_team2.setText(match.nameTeam2)
 
         builder.setView(view)
-            .setPositiveButton("Save Changes") { dialog, id ->
+            .setPositiveButton(resources.getString(R.string.save_changes)) { _, _ ->
                 match.nameTeam1 = view.edit_name_team1.text.toString()
                 match.nameTeam2 = view.edit_name_team2.text.toString()
                 scoresFragment.view.adapter?.notifyDataSetChanged()
             }
-            .setNegativeButton("Close") { _, _ -> }
+            .setNegativeButton(resources.getString(R.string.close)) { _, _ -> }
         val dialog = builder.create()
         dialog.show()
+
         val buttonPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        //val buttonNegative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
 
         buttonPositive.visibility = View.INVISIBLE
 
         fun updateButtons() {
-            if (view.edit_name_team1.text.toString() == match.nameTeam1
+            buttonPositive.visibility = if (
+                view.edit_name_team1.text.toString() == match.nameTeam1
                 && view.edit_name_team2.text.toString() == match.nameTeam2
-            ) {
-                buttonPositive.visibility = View.INVISIBLE
-            } else {
-                buttonPositive.visibility = View.VISIBLE
-            }
+            )
+                View.INVISIBLE
+            else
+                View.VISIBLE
         }
 
         view.edit_name_team1.addTextChangedListener(object : TextWatcher {

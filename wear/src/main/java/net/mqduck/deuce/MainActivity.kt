@@ -291,6 +291,14 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
             override fun getItemDrawable(pos: Int): Drawable? = getDrawable(items.list[pos].drawableId)
 
+            /*override fun getItemDrawable(pos: Int): Drawable? {
+                val icon = getDrawable(items.list[pos].drawableId)
+                if (icon != null && ambientMode) {
+                    icon.isFilterBitmap = false
+                }
+                return icon
+            }*/
+
             override fun getCount() = items.list.size
 
             fun enableMatch() {

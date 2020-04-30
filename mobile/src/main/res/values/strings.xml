@@ -21,4 +21,6 @@
     <string name="app_name">Deuce</string>
     <string name="start_time">Start Time:</string>
     <string name="end_time">End Time:</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="close">Close</string>
 </resources>

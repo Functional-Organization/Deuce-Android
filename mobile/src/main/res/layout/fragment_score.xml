@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            tools:text="@string/opponent" />
+            tools:text="@string/default_name_team2_singles" />
 
         <TextView
             android:id="@+id/text_team_1"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            tools:text="@string/myself" />
+            tools:text="@string/default_name_team1_singles" />
     </LinearLayout>
 
     <View
