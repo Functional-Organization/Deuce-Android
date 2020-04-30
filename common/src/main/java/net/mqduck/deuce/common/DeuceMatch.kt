@@ -27,8 +27,7 @@ class DeuceMatch(
     startingServer: Team,
     overtimeRule: OvertimeRule,
     matchType: MatchType,
-    startTime: Long,
-    endTime: Long,
+    playTimes: PlayTimes,
     scoreLog: ScoreStack,
     nameTeam1: String,
     nameTeam2: String
@@ -44,8 +43,7 @@ class DeuceMatch(
     startingServer,
     overtimeRule,
     matchType,
-    startTime,
-    endTime,
+    playTimes,
     scoreLog,
     nameTeam1,
     nameTeam2
@@ -55,10 +53,10 @@ class DeuceMatch(
         Team.TEAM1,
         OvertimeRule.TIEBREAK,
         MatchType.SINGLES,
-        0,
-        -1,
+        PlayTimes(),
         ScoreStack(),
-        DEFAULT_NAME_TEAM1, DEFAULT_NAME_TEAM2
+        DEFAULT_NAME_TEAM1,
+        DEFAULT_NAME_TEAM2
     )
 
     constructor(parcel: Parcel) : this(
@@ -66,8 +64,7 @@ class DeuceMatch(
         parcel.readSerializable() as Team,
         parcel.readSerializable() as OvertimeRule,
         parcel.readSerializable() as MatchType,
-        parcel.readLong(),
-        parcel.readLong(),
+        parcel.readParcelable<PlayTimes>(PlayTimes::class.java.classLoader)!!,
         parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!,
         parcel.readString()!!,
         parcel.readString()!!
@@ -78,8 +75,7 @@ class DeuceMatch(
         parcel.writeSerializable(startingServer)
         parcel.writeSerializable(overtimeRule)
         parcel.writeSerializable(matchType)
-        parcel.writeLong(startTime)
-        parcel.writeLong(endTime)
+        parcel.writeParcelable(playTimes, flags)
         parcel.writeParcelable(scoreLog, flags)
         parcel.writeString(nameTeam1)
         parcel.writeString(nameTeam2)

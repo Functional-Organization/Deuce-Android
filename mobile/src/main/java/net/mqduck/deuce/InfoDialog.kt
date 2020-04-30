@@ -37,10 +37,10 @@ class InfoDialog(val match: Match, val scoresFragment: ScoresFragment) : DialogF
         val builder = AlertDialog.Builder(activity)
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.info_dialog, scoresFragment.view, false)
-        view.start_time.text = timeFormat.format(Date(match.startTime))
-        if (match.endTime >= 0) {
+        view.start_time.text = timeFormat.format(Date(match.playTimes.startTime))
+        if (match.playTimes.endTime >= 0) {
             view.label_end_time.visibility = View.VISIBLE
-            view.end_time.text = timeFormat.format(Date(match.endTime))
+            view.end_time.text = timeFormat.format(Date(match.playTimes.endTime))
         } else {
             view.label_end_time.visibility = View.INVISIBLE
         }

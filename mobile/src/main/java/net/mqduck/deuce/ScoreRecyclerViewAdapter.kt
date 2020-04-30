@@ -137,7 +137,7 @@ class ScoreRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val match = matches[position]
 
-        holder.date.text = dateFormat.format(Date(match.startTime))
+        holder.date.text = dateFormat.format(Date(match.playTimes.startTime))
         holder.nameTeam1.text = match.nameTeam1
         holder.nameTeam2.text = match.nameTeam2
 

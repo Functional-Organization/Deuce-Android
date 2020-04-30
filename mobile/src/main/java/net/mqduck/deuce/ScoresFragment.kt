@@ -77,8 +77,7 @@ class ScoresFragment : Fragment() {
                         Team.TEAM1,
                         OvertimeRule.TIEBREAK,
                         MatchType.SINGLES,
-                        416846345451,
-                        416847346451,
+                        PlayTimes(416846345451, 416847346451),
                         scoreLog,
                         "Myself",
                         "Opponent"

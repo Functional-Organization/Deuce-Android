@@ -259,8 +259,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             preferences.startingServer,
             preferences.overtime,
             preferences.matchType,
-            System.currentTimeMillis(),
-            -1,
+            PlayTimes(),
             ScoreStack(),
             DEFAULT_NAME_TEAM1,
             DEFAULT_NAME_TEAM2
@@ -272,7 +271,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
             dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
             dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
-            dataMap.putLong(KEY_START_TIME, match.startTime)
+            dataMap.putLong(KEY_START_TIME, match.playTimes.startTime)
+            dataMap.putLong(KEY_END_TIME, match.playTimes.endTime)
             dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
             dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
             asPutDataRequest()
