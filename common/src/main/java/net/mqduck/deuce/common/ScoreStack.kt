@@ -46,6 +46,7 @@ class ScoreStack : List<Team>, Parcelable {
         this.bitSet = bitSet
     }
 
+    // TODO: Redundant?
     private inner class Itr : Iterator<Team> {
         internal var cursor = 0
 

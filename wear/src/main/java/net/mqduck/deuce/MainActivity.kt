@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
+import android.util.Log
 import android.view.GestureDetector
 import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
@@ -259,10 +260,17 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             preferences.startingServer,
             preferences.overtime,
             preferences.matchType,
-            PlayTimes(),
+            PlayTimesData(),
+            PlayTimesList(),
             ScoreStack(),
-            DEFAULT_NAME_TEAM1,
-            DEFAULT_NAME_TEAM2
+            when (preferences.matchType) {
+                MatchType.SINGLES -> resources.getString(R.string.default_name_team1_singles)
+                MatchType.DOUBLES -> resources.getString(R.string.default_name_team1_doubles)
+            },
+            when (preferences.matchType) {
+                MatchType.SINGLES -> resources.getString(R.string.default_name_team2_singles)
+                MatchType.DOUBLES -> resources.getString(R.string.default_name_team2_doubles)
+            }
         )
 
         // Create a data map and put data in it
@@ -271,8 +279,11 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
             dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
             dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
-            dataMap.putLong(KEY_START_TIME, match.playTimes.startTime)
-            dataMap.putLong(KEY_END_TIME, match.playTimes.endTime)
+            dataMap.putLong(KEY_MATCH_START_TIME, match.playTimes.startTime)
+            dataMap.putLong(KEY_MATCH_END_TIME, match.playTimes.endTime)
+            //dataMap.putLongArray(KEY_SETS_TIMES, match.setsTimesLog.toLongArray())
+            dataMap.putLongArray(KEY_SETS_START_TIMES, match.setsTimesLog.startTimes.toLongArray())
+            dataMap.putLongArray(KEY_SETS_END_TIMES, match.setsTimesLog.endTimes.toLongArray())
             dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
             dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
             asPutDataRequest()
@@ -352,6 +363,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     private fun switchFragment(fragment: FragmentEnum) {
+        Log.d("foo", match.setsTimesLog[0].startTime.toString())
+        Log.d("foo", match.setsTimesLog[0].endTime.toString())
         if (fragment != currentFragment) {
             currentFragment = fragment
             navigation_drawer.setCurrentItem(navigationAdapter.getEnumPos(fragment), false)

@@ -27,8 +27,8 @@ class DeuceMatch(
     startingServer: Team,
     overtimeRule: OvertimeRule,
     matchType: MatchType,
-    playTimes: PlayTimes,
-    setTimesLog: ArrayList<PlayTimes>,
+    playTimes: PlayTimesData,
+    setTimesLog: PlayTimesList,
     scoreLog: ScoreStack,
     nameTeam1: String,
     nameTeam2: String
@@ -55,11 +55,11 @@ class DeuceMatch(
         Team.TEAM1,
         OvertimeRule.TIEBREAK,
         MatchType.SINGLES,
-        PlayTimes(),
-        ArrayList<PlayTimes>(),
+        PlayTimesData(),
+        PlayTimesList(),
         ScoreStack(),
-        DEFAULT_NAME_TEAM1,
-        DEFAULT_NAME_TEAM2
+        DUMMY_NAME_TEAM1,
+        DUMMY_NAME_TEAM2
     )
 
     constructor(parcel: Parcel) : this(
@@ -67,8 +67,9 @@ class DeuceMatch(
         parcel.readSerializable() as Team,
         parcel.readSerializable() as OvertimeRule,
         parcel.readSerializable() as MatchType,
-        parcel.readParcelable<PlayTimes>(PlayTimes::class.java.classLoader)!!,
-        parcel.createTypedArrayList(PlayTimes.CREATOR)!!,
+        parcel.readParcelable<PlayTimesData>(PlayTimesData::class.java.classLoader)!!,
+        //parcel.createTypedArrayList(PlayTimes.CREATOR)!!,
+        PlayTimesList(parcel.createLongArray()!!, parcel.createLongArray()!!),
         parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!,
         parcel.readString()!!,
         parcel.readString()!!
@@ -80,15 +81,15 @@ class DeuceMatch(
         parcel.writeSerializable(overtimeRule)
         parcel.writeSerializable(matchType)
         parcel.writeParcelable(playTimes, flags)
-        parcel.writeTypedArray(setTimesLog.toArray() as Array<PlayTimes>, flags)
+        //parcel.writeTypedArray(setsTimesLog.toArray() as Array<PlayTimes>, flags)
+        parcel.writeLongArray(setsTimesLog.getStartTimesArray())
+        parcel.writeLongArray(setsTimesLog.getEndTimesArray())
         parcel.writeParcelable(scoreLog, flags)
         parcel.writeString(nameTeam1)
         parcel.writeString(nameTeam2)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents() = 0
 
     companion object CREATOR : Parcelable.Creator<DeuceMatch> {
         override fun createFromParcel(parcel: Parcel): DeuceMatch {

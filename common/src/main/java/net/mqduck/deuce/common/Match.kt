@@ -31,8 +31,8 @@ open class Match(
     val startingServer: Team,
     val overtimeRule: OvertimeRule,
     val matchType: MatchType,
-    val playTimes: PlayTimes,
-    val setTimesLog: ArrayList<PlayTimes>,
+    val playTimes: PlayTimesData,
+    val setsTimesLog: PlayTimesList,
     val scoreLog: ScoreStack,
     var nameTeam1: String,
     var nameTeam2: String
@@ -53,7 +53,7 @@ open class Match(
     private fun loadScoreLog() {
         mScore = Score(winMinimumMatch, winMarginMatch)
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
-        setTimesLog.add(PlayTimes())
+        setsTimesLog.add(PlayTimesData())
         sets = arrayListOf(
             Set(
                 winMinimumSet,
@@ -92,8 +92,8 @@ open class Match(
                 } else {
                     // Set is over, Match is not
                     if (updateLogs) {
-                        setTimesLog.last().endTime = System.currentTimeMillis()
-                        setTimesLog.add(PlayTimes())
+                        setsTimesLog.last().endTime = System.currentTimeMillis()
+                        setsTimesLog.add(PlayTimesData())
                     }
                     sets.add(
                         Set(

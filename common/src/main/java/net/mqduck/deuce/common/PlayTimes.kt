@@ -22,7 +22,15 @@ package net.mqduck.deuce.common
 import android.os.Parcel
 import android.os.Parcelable
 
-class PlayTimes(val startTime: Long = System.currentTimeMillis(), var endTime: Long = -1) : Parcelable {
+interface PlayTimes {
+    var startTime: Long
+    var endTime: Long
+}
+
+class PlayTimesData(
+    override var startTime: Long = System.currentTimeMillis(),
+    override var endTime: Long = -1
+) : PlayTimes, Parcelable {
     constructor(parcel: Parcel) : this(parcel.readLong(), parcel.readLong())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -34,12 +42,12 @@ class PlayTimes(val startTime: Long = System.currentTimeMillis(), var endTime: L
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<PlayTimes> {
-        override fun createFromParcel(parcel: Parcel): PlayTimes {
-            return PlayTimes(parcel)
+    companion object CREATOR : Parcelable.Creator<PlayTimesData> {
+        override fun createFromParcel(parcel: Parcel): PlayTimesData {
+            return PlayTimesData(parcel)
         }
 
-        override fun newArray(size: Int): Array<PlayTimes?> {
+        override fun newArray(size: Int): Array<PlayTimesData?> {
             return arrayOfNulls(size)
         }
     }
