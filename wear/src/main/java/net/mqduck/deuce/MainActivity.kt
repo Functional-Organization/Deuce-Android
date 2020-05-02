@@ -214,7 +214,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 ): Boolean {
                     if (currentFragment == FragmentEnum.SCORE && event1.x - event2.x >= 100 && velocityX <= -100) {
                         scoreFragment.undo()
-                        activity_main.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                         return true
                     }
                     return false
@@ -390,5 +389,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
             }
         }
+    }
+
+    fun performUndoHapticFeedback() {
+        activity_main.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
     }
 }
