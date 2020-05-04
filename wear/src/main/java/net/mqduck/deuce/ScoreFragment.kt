@@ -22,21 +22,18 @@ package net.mqduck.deuce
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.wearable.DataItem
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.PutDataRequest
 import kotlinx.android.synthetic.main.fragment_score.*
-import net.mqduck.deuce.common.*
+import net.mqduck.deuce.common.MatchType
+import net.mqduck.deuce.common.Serving
+import net.mqduck.deuce.common.Team
+import net.mqduck.deuce.common.Winner
 
 class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     companion object {
@@ -55,14 +52,17 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         net.mqduck.deuce.common.R.drawable.ball_ambient
     else
         net.mqduck.deuce.common.R.drawable.ball_green
+
     private val ballServingOrange = if (ambientMode)
         net.mqduck.deuce.common.R.drawable.ball_ambient
     else
         net.mqduck.deuce.common.R.drawable.ball_orange
+
     private val ballNotservingGreen = if (ambientMode)
         net.mqduck.deuce.common.R.drawable.ball_void
     else
         net.mqduck.deuce.common.R.drawable.ball_darkgreen
+
     private val ballNotservingOrange = if (ambientMode)
         net.mqduck.deuce.common.R.drawable.ball_void
     else
@@ -78,8 +78,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         posXBallLeftT1 = ball_notserving_t1.x
         posXBallRightT2 = posXBallLeftT1
 
-        image_undo.visibility = View.GONE
-
         if (mainActivity.ambientMode) {
             text_scores_match_p1.setTextColor(Color.WHITE)
             text_scores_match_p2.setTextColor(Color.WHITE)
@@ -94,8 +92,13 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
 
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
-        } else if (!mainActivity.preferences.clock) {
-            text_clock.visibility = View.INVISIBLE
+        } else {
+            if (!mainActivity.preferences.clock) {
+                text_clock.visibility = View.INVISIBLE
+            }
+
+            button_score_p1.setOnClickListener { score(Team.TEAM1) }
+            button_score_p2.setOnClickListener { score(Team.TEAM2) }
         }
 
         view.post {
@@ -105,12 +108,12 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    /*override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         button_score_p1.setOnClickListener { score(Team.TEAM1) }
         button_score_p2.setOnClickListener { score(Team.TEAM2) }
-    }
+    }*/
 
     private fun score(team: Team) {
         mainActivity.match.score(team)
@@ -124,7 +127,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             button_score_p2.isEnabled = false
         }
 
-        val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+        /*val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
             dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.match.scoreLogArray())
             dataMap.putInt(KEY_SCORE_SIZE, mainActivity.match.scoreLogSize())
             asPutDataRequest()
@@ -134,10 +137,10 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         Log.d("foo", "trying to send score")
         putDataTask.addOnSuccessListener {
             Log.d("foo", "score success")
-        }
+        }*/
     }
 
-    private fun updateDisplay(animate: Boolean) {
+    internal fun updateDisplay(animate: Boolean) {
         fun moveBall(ball: ImageView, xPos: Float) {
             if (animate) {
                 ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
@@ -275,17 +278,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         } else {
             changeover_arrow_down.visibility = View.INVISIBLE
             changeover_arrow_up.visibility = View.INVISIBLE
-        }
-    }
-
-    fun undo() {
-        if (mainActivity.match.undo()) {
-            image_undo.visibility = View.VISIBLE
-            val fadeout = AlphaAnimation(1F, 0F)
-            fadeout.duration = UNDO_ANIMATION_DURATION
-            image_undo.startAnimation(fadeout)
-            image_undo.postDelayed({ image_undo.visibility = View.GONE }, UNDO_ANIMATION_DURATION)
-            updateDisplay(false)
         }
     }
 }

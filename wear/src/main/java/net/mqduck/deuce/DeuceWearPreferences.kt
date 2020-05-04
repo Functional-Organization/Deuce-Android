@@ -40,6 +40,6 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
         set(overtime) = preferences.edit().putInt(KEY_OVERTIME_RULE, overtime.ordinal).apply()
 
     var clock
-        get() = preferences.getBoolean(KEY_CLOCK, DEFAULT_CLOCK)
+        get() = preferences.getBoolean(KEY_CLOCK, DEFAULT_SHOW_CLOCK)
         set(clock) = preferences.edit().putBoolean(KEY_CLOCK, clock).apply()
 }

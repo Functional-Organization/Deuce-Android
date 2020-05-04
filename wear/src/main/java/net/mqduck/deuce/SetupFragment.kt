@@ -55,14 +55,33 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
             radio_best_of_5.paint.isAntiAlias = false
         }
 
+        when (mainActivity.preferences.matchType) {
+            MatchType.SINGLES -> {
+                radio_server_me.text = resources.getString(R.string.default_name_team1_singles)
+                radio_server_opponent.text = resources.getString(R.string.default_name_team2_singles)
+                text_starting_server.text = resources.getString(R.string.starting_server)
+            }
+            MatchType.DOUBLES -> {
+                radio_server_me.text = resources.getString(R.string.default_name_team1_doubles)
+                radio_server_opponent.text = resources.getString(R.string.default_name_team2_doubles)
+                text_starting_server.text = resources.getString(R.string.starting_service_team)
+            }
+        }
+
         radio_singles.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 mainActivity.preferences.matchType = MatchType.SINGLES
+                radio_server_me.text = resources.getString(R.string.default_name_team1_singles)
+                radio_server_opponent.text = resources.getString(R.string.default_name_team2_singles)
+                text_starting_server.text = resources.getString(R.string.starting_server)
             }
         }
         radio_doubles.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 mainActivity.preferences.matchType = MatchType.DOUBLES
+                radio_server_me.text = resources.getString(R.string.default_name_team1_doubles)
+                radio_server_opponent.text = resources.getString(R.string.default_name_team2_doubles)
+                text_starting_server.text = resources.getString(R.string.starting_service_team)
             }
         }
 

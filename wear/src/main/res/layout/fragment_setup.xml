@@ -27,6 +27,7 @@
 
     <requestFocus />
 
+    <!-- Wrapping FrameLayout is used to extend the scrollable area at the bottom. -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -86,8 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Starting Server"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:text="@string/starting_server" />
 
             <RadioGroup
                 android:layout_width="match_parent"
@@ -102,7 +103,7 @@
                     android:button="@null"
                     android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
                     android:gravity="center_horizontal"
-                    android:text="@string/myself"
+                    tools:text="@string/default_name_team1_singles"
                     tools:checked="true" />
 
                 <Button
@@ -121,7 +122,7 @@
                     android:button="@null"
                     android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
                     android:gravity="center_horizontal"
-                    android:text="@string/opponent" />
+                    tools:text="@string/default_name_team1_singles" />
 
             </RadioGroup>
 

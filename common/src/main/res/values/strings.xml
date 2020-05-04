@@ -29,8 +29,8 @@
     <string name="ad_in">Ad-In</string>
     <string name="ad_out">Ad-Out</string>
     <string name="deuce">Deuce</string>
-    <string name="server">Server</string>
-    <string name="opponent">Opponent</string>
-    <string name="flip_coin">Flip coin</string>
-    <string name="myself">Myself</string>
+    <string name="default_name_team1_singles">Myself</string>
+    <string name="default_name_team2_singles">Opponent</string>
+    <string name="default_name_team1_doubles">Mine</string>
+    <string name="default_name_team2_doubles">Opposing</string>
 </resources>

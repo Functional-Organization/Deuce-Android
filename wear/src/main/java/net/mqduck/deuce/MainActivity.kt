@@ -24,10 +24,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
-import android.view.GestureDetector
-import android.view.HapticFeedbackConstants
-import android.view.KeyEvent
-import android.view.MotionEvent
+import android.view.*
+import android.view.animation.AlphaAnimation
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
@@ -37,8 +35,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
-
-//import android.util.Log
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
@@ -212,8 +208,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                     velocityY: Float
                 ): Boolean {
                     if (currentFragment == FragmentEnum.SCORE && event1.x - event2.x >= 100 && velocityX <= -100) {
-                        scoreFragment.undo()
-                        activity_main.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                        undo()
                         return true
                     }
                     return false
@@ -234,7 +229,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return if (keyCode == undoButton && currentFragment == FragmentEnum.SCORE) {
-            scoreFragment.undo()
+            undo()
             true
         } else {
             super.onKeyDown(keyCode, event)
@@ -259,11 +254,17 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             preferences.startingServer,
             preferences.overtime,
             preferences.matchType,
-            System.currentTimeMillis(),
-            -1,
+            PlayTimesData(),
+            PlayTimesList(),
             ScoreStack(),
-            DEFAULT_NAME_TEAM1,
-            DEFAULT_NAME_TEAM2
+            when (preferences.matchType) {
+                MatchType.SINGLES -> resources.getString(R.string.default_name_team1_singles)
+                MatchType.DOUBLES -> resources.getString(R.string.default_name_team1_doubles)
+            },
+            when (preferences.matchType) {
+                MatchType.SINGLES -> resources.getString(R.string.default_name_team2_singles)
+                MatchType.DOUBLES -> resources.getString(R.string.default_name_team2_doubles)
+            }
         )
 
         // Create a data map and put data in it
@@ -272,7 +273,11 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
             dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
             dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
-            dataMap.putLong(KEY_START_TIME, match.startTime)
+            dataMap.putLong(KEY_MATCH_START_TIME, match.playTimes.startTime)
+            dataMap.putLong(KEY_MATCH_END_TIME, match.playTimes.endTime)
+            //dataMap.putLongArray(KEY_SETS_TIMES, match.setsTimesLog.toLongArray())
+            dataMap.putLongArray(KEY_SETS_START_TIMES, match.setsTimesLog.startTimes.toLongArray())
+            dataMap.putLongArray(KEY_SETS_END_TIMES, match.setsTimesLog.endTimes.toLongArray())
             dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
             dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
             asPutDataRequest()
@@ -283,6 +288,22 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
     }
 
+    fun undo() {
+        // Because the ScoreFragment may no longer exist after the undo animation completes, undo must be performed
+        // in MainActivity.
+        if (match.undo()) {
+            image_undo.visibility = View.VISIBLE
+            val fadeout = AlphaAnimation(1F, 0F)
+            fadeout.duration = ScoreFragment.UNDO_ANIMATION_DURATION
+            image_undo.startAnimation(fadeout)
+            image_undo.postDelayed({
+                image_undo.visibility = View.GONE
+            }, ScoreFragment.UNDO_ANIMATION_DURATION)
+            scoreFragment.updateDisplay(false)
+            performUndoHapticFeedback()
+        }
+    }
+
     private val navigationAdapter =
         object : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
             private var items = NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH
@@ -290,6 +311,14 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             override fun getItemText(pos: Int) = items.list[pos].text
 
             override fun getItemDrawable(pos: Int): Drawable? = getDrawable(items.list[pos].drawableId)
+
+            /*override fun getItemDrawable(pos: Int): Drawable? {
+                val icon = getDrawable(items.list[pos].drawableId)
+                if (icon != null && ambientMode) {
+                    icon.isFilterBitmap = false
+                }
+                return icon
+            }*/
 
             override fun getCount() = items.list.size
 
@@ -369,5 +398,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
             }
         }
+    }
+
+    fun performUndoHapticFeedback() {
+        activity_main.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
     }
 }

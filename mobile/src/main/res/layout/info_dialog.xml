@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        tools:text="@string/opponent" />
+        tools:text="@string/default_name_team2_singles" />
 
     <EditText
         android:id="@+id/edit_name_team1"
@@ -73,6 +73,6 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        tools:text="@string/myself" />
+        tools:text="@string/default_name_team1_singles" />
 
 </LinearLayout>

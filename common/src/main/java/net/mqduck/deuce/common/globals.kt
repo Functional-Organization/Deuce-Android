@@ -24,18 +24,17 @@ const val DEFAULT_WIN_MINIMUM_SET = 6
 const val DEFAULT_WIN_MARGIN_SET = 2
 const val DEFAULT_WIN_MINIMUM_GAME = 4
 const val DEFAULT_WIN_MARGIN_GAME = 2
-
 const val DEFAULT_WIN_MINIMUM_GAME_TIEBREAK = 7
 const val DEFAULT_WIN_MARGIN_GAME_TIEBREAK = 2
-
 val DEFAULT_MATCH_TYPE = MatchType.SINGLES
 val DEFAULT_STARTING_SERVER = Team.TEAM1
 val DEFAULT_NUM_SETS = NumSets.THREE
 val DEFAULT_OVERTIME_RULE = OvertimeRule.TIEBREAK
-const val DEFAULT_CLOCK = false
+const val DEFAULT_SHOW_CLOCK = false
 
-const val DEFAULT_NAME_TEAM1 = "Myself"
-const val DEFAULT_NAME_TEAM2 = "Opponent"
+// TODO: Check if other should be called DUMMY_ too
+const val DUMMY_NAME_TEAM1 = "Myself"
+const val DUMMY_NAME_TEAM2 = "Opponent"
 
 const val KEY_NUM_SETS = "num_sets"
 const val KEY_SERVER = "server"
@@ -44,8 +43,10 @@ const val KEY_OVERTIME_RULE = "overtime"
 const val KEY_CLOCK = "clock"
 const val KEY_SCORE_ARRAY = "score_array"
 const val KEY_SCORE_SIZE = "score_size"
-const val KEY_START_TIME = "start_time"
-const val KEY_END_TIME = "end_time"
+const val KEY_MATCH_START_TIME = "match_start"
+const val KEY_MATCH_END_TIME = "match_end"
+const val KEY_SETS_START_TIMES = "sets_starts"
+const val KEY_SETS_END_TIMES = "sets_ends"
 const val KEY_CURRENT_FRAGMENT = "current_fragment"
 const val KEY_MATCH = "match"
 const val KEY_MATCH_ADDED = "match_added"

@@ -137,7 +137,7 @@ class ScoreRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val match = matches[position]
 
-        holder.date.text = dateFormat.format(Date(match.startTime))
+        holder.date.text = dateFormat.format(Date(match.playTimes.startTime))
         holder.nameTeam1.text = match.nameTeam1
         holder.nameTeam2.text = match.nameTeam2
 
@@ -147,6 +147,7 @@ class ScoreRecyclerViewAdapter(
             holder.nameTeam2.setTypeface(holder.nameTeam2.typeface, Typeface.BOLD)
         }
 
+        holder.setsContainer.removeAllViews()
         for (i in 0 until match.sets.size) {
             val set = LayoutInflater.from(context).inflate(R.layout.set, holder.setsContainer, false)
             set.set_number.text = (i + 1).toString()

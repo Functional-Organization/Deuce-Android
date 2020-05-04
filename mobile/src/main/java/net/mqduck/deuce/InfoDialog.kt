@@ -24,7 +24,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.info_dialog.view.*
@@ -35,68 +34,54 @@ class InfoDialog(val match: Match, val scoresFragment: ScoresFragment) : DialogF
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         //return super.onCreateDialog(savedInstanceState)
 
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater
-            val view = inflater.inflate(R.layout.info_dialog, null)
-            view.start_time.text = timeFormat.format(Date(match.startTime))
-            if (match.endTime >= 0) {
-                view.label_end_time.visibility = View.VISIBLE
-                view.end_time.text = timeFormat.format(Date(match.endTime))
-            } else {
-                view.label_end_time.visibility = View.INVISIBLE
-            }
-            view.edit_name_team1.setText(match.nameTeam1)
-            view.edit_name_team2.setText(match.nameTeam2)
+        val builder = AlertDialog.Builder(activity)
+        val inflater = requireActivity().layoutInflater
+        val view = inflater.inflate(R.layout.info_dialog, scoresFragment.view, false)
+        view.start_time.text = timeFormat.format(Date(match.playTimes.startTime))
+        if (match.playTimes.endTime >= 0) {
+            view.label_end_time.visibility = View.VISIBLE
+            view.end_time.text = timeFormat.format(Date(match.playTimes.endTime))
+        } else {
+            view.label_end_time.visibility = View.INVISIBLE
+        }
+        view.edit_name_team1.setText(match.nameTeam1)
+        view.edit_name_team2.setText(match.nameTeam2)
 
-            builder.setView(view)
-                .setPositiveButton("Positive") { dialog, id ->
-                    Log.d("foo", "positive")
-                }
-                .setNegativeButton("Negative") { dialog, which ->
-                    Log.d("foo", "negative")
-                }
-            val dialog = builder.create()
-            dialog.show()
-            val buttonPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            val buttonNegative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-
-//                buttonPositive.isEnabled = false
-//                buttonNegative.isEnabled = false
-            buttonPositive.visibility = View.GONE
-            buttonNegative.visibility = View.GONE
-
-            fun updateButtons() {
-                if (view.edit_name_team1.text.toString() == match.nameTeam1
-                    && view.edit_name_team2.text.toString() == match.nameTeam2
-                ) {
-                    buttonPositive.visibility = View.GONE
-                    buttonNegative.visibility = View.GONE
-                } else {
-                    buttonPositive.visibility = View.VISIBLE
-                    buttonNegative.visibility = View.VISIBLE
-                }
-            }
-
-            view.edit_name_team1.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) = updateButtons()
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
-            view.edit_name_team2.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) = updateButtons()
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
-
-            buttonPositive.setOnClickListener {
+        builder.setView(view)
+            .setPositiveButton(resources.getString(R.string.save_changes)) { _, _ ->
                 match.nameTeam1 = view.edit_name_team1.text.toString()
                 match.nameTeam2 = view.edit_name_team2.text.toString()
                 scoresFragment.view.adapter?.notifyDataSetChanged()
-                dismiss()
             }
+            .setNegativeButton(resources.getString(R.string.close)) { _, _ -> }
+        val dialog = builder.create()
+        dialog.show()
 
-            dialog
-        } ?: throw IllegalStateException("Activity cannot be null")
+        val buttonPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        buttonPositive.visibility = View.INVISIBLE
+
+        fun updateButtons() {
+            buttonPositive.visibility = if (
+                view.edit_name_team1.text.toString() == match.nameTeam1
+                && view.edit_name_team2.text.toString() == match.nameTeam2
+            )
+                View.INVISIBLE
+            else
+                View.VISIBLE
+        }
+
+        view.edit_name_team1.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) = updateButtons()
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        view.edit_name_team2.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) = updateButtons()
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        return dialog
     }
 }
