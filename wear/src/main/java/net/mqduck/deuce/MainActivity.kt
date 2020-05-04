@@ -24,11 +24,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
-import android.util.Log
-import android.view.GestureDetector
-import android.view.HapticFeedbackConstants
-import android.view.KeyEvent
-import android.view.MotionEvent
+import android.view.*
+import android.view.animation.AlphaAnimation
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
@@ -38,8 +35,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
-
-//import android.util.Log
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
@@ -213,7 +208,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                     velocityY: Float
                 ): Boolean {
                     if (currentFragment == FragmentEnum.SCORE && event1.x - event2.x >= 100 && velocityX <= -100) {
-                        scoreFragment.undo()
+                        undo()
                         return true
                     }
                     return false
@@ -234,7 +229,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return if (keyCode == undoButton && currentFragment == FragmentEnum.SCORE) {
-            scoreFragment.undo()
+            undo()
             true
         } else {
             super.onKeyDown(keyCode, event)
@@ -290,6 +285,22 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         putDataReq.setUrgent()
         val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataReq)
         putDataTask.addOnSuccessListener {
+        }
+    }
+
+    fun undo() {
+        // Because the ScoreFragment may no longer exist after the undo animation completes, undo must be performed
+        // in MainActivity.
+        if (match.undo()) {
+            image_undo.visibility = View.VISIBLE
+            val fadeout = AlphaAnimation(1F, 0F)
+            fadeout.duration = ScoreFragment.UNDO_ANIMATION_DURATION
+            image_undo.startAnimation(fadeout)
+            image_undo.postDelayed({
+                image_undo.visibility = View.GONE
+            }, ScoreFragment.UNDO_ANIMATION_DURATION)
+            scoreFragment.updateDisplay(false)
+            performUndoHapticFeedback()
         }
     }
 
@@ -362,8 +373,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     private fun switchFragment(fragment: FragmentEnum) {
-        Log.d("foo", match.setsTimesLog[0].startTime.toString())
-        Log.d("foo", match.setsTimesLog[0].endTime.toString())
         if (fragment != currentFragment) {
             currentFragment = fragment
             navigation_drawer.setCurrentItem(navigationAdapter.getEnumPos(fragment), false)

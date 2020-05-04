@@ -27,7 +27,6 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_score.*
@@ -141,7 +140,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         }*/
     }
 
-    private fun updateDisplay(animate: Boolean) {
+    internal fun updateDisplay(animate: Boolean) {
         fun moveBall(ball: ImageView, xPos: Float) {
             if (animate) {
                 ObjectAnimator.ofFloat(ball, "translationX", xPos).apply {
@@ -279,18 +278,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         } else {
             changeover_arrow_down.visibility = View.INVISIBLE
             changeover_arrow_up.visibility = View.INVISIBLE
-        }
-    }
-
-    fun undo() {
-        if (mainActivity.match.undo()) {
-            image_undo.visibility = View.VISIBLE
-            val fadeout = AlphaAnimation(1F, 0F)
-            fadeout.duration = UNDO_ANIMATION_DURATION
-            image_undo.startAnimation(fadeout)
-            image_undo.postDelayed({ image_undo.visibility = View.GONE }, UNDO_ANIMATION_DURATION)
-            updateDisplay(false)
-            mainActivity.performUndoHapticFeedback()
         }
     }
 }
