@@ -52,5 +52,6 @@ const val KEY_MATCH = "match"
 const val KEY_MATCH_ADDED = "match_added"
 const val KEY_NAME_TEAM1 = "name_team1"
 const val KEY_NAME_TEAM2 = "name_team2"
+const val KEY_NEW_GAME = "new_game"
 
 const val PATH_CURRENT_MATCH = "/current_match"

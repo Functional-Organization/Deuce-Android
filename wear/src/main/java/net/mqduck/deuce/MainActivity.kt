@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
+import android.util.Log
 import android.view.*
 import android.view.animation.AlphaAnimation
 import androidx.core.view.GestureDetectorCompat
@@ -269,6 +270,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         // Create a data map and put data in it
         val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+            dataMap.putBoolean(KEY_NEW_GAME, true)
             dataMap.putInt(KEY_NUM_SETS, match.winMinimumMatch)
             dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
             dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
@@ -278,13 +280,16 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             //dataMap.putLongArray(KEY_SETS_TIMES, match.setsTimesLog.toLongArray())
             dataMap.putLongArray(KEY_SETS_START_TIMES, match.setsTimesLog.startTimes.toLongArray())
             dataMap.putLongArray(KEY_SETS_END_TIMES, match.setsTimesLog.endTimes.toLongArray())
-            dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
             dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
+            dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
+            dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
+            dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
             asPutDataRequest()
         }
         putDataReq.setUrgent()
         val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataReq)
         putDataTask.addOnSuccessListener {
+            Log.d("foo", "new match success")
         }
     }
 

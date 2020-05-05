@@ -93,10 +93,10 @@ class ScoreRecyclerViewAdapter(
     private val context: Activity
 ) : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val date = view.text_date
+        /*val date = view.text_date
         val nameTeam1 = view.text_team_1
         val nameTeam2 = view.text_team_2
-        val setsContainer = view.sets_container as LinearLayout
+        val setsContainer = view.sets_container as LinearLayout*/
     }
 
     companion object {
@@ -137,19 +137,33 @@ class ScoreRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val match = matches[position]
 
-        holder.date.text = dateFormat.format(Date(match.playTimes.startTime))
-        holder.nameTeam1.text = match.nameTeam1
-        holder.nameTeam2.text = match.nameTeam2
+        holder.view.text_date.text = dateFormat.format(Date(match.playTimes.startTime))
+        holder.view.text_team_1.text = match.nameTeam1
+        holder.view.text_team_2.text = match.nameTeam2
 
-        if (match.winner == Winner.TEAM1) {
-            holder.nameTeam1.setTypeface(holder.nameTeam1.typeface, Typeface.BOLD)
+        /*if (match.winner == Winner.TEAM1) {
+            holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.BOLD)
         } else if (match.winner == Winner.TEAM2) {
-            holder.nameTeam2.setTypeface(holder.nameTeam2.typeface, Typeface.BOLD)
+            holder.view.text_team_2.setTypeface(holder.view.text_team_2.typeface, Typeface.BOLD)
+        }*/
+        when (match.winner) {
+            Winner.NONE -> {
+                holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.NORMAL)
+                holder.view.text_team_2.setTypeface(holder.view.text_team_2.typeface, Typeface.NORMAL)
+            }
+            Winner.TEAM1 -> {
+                holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.BOLD)
+                holder.view.text_team_2.setTypeface(holder.view.text_team_2.typeface, Typeface.NORMAL)
+            }
+            Winner.TEAM2 -> {
+                holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.NORMAL)
+                holder.view.text_team_2.setTypeface(holder.view.text_team_2.typeface, Typeface.BOLD)
+            }
         }
 
-        holder.setsContainer.removeAllViews()
+        holder.view.sets_container.removeAllViews()
         for (i in 0 until match.sets.size) {
-            val set = LayoutInflater.from(context).inflate(R.layout.set, holder.setsContainer, false)
+            val set = LayoutInflater.from(context).inflate(R.layout.set, holder.view.sets_container, false)
             set.set_number.text = (i + 1).toString()
             set.team1_set_score.text = match.sets[i].scoreP1.toString()
             set.team2_set_score.text = match.sets[i].scoreP2.toString()
@@ -160,7 +174,7 @@ class ScoreRecyclerViewAdapter(
                 set.team2_set_score.setTypeface(set.team2_set_score.typeface, Typeface.BOLD)
             }
 
-            holder.setsContainer.addView(set, setLayoutParams)
+            holder.view.sets_container.addView(set, setLayoutParams)
         }
 
         with(holder.view) {

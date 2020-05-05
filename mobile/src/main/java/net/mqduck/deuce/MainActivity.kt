@@ -69,17 +69,53 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                     if (item.uri.path?.compareTo(PATH_CURRENT_MATCH) == 0) {
                         DataMapItem.fromDataItem(item).dataMap.apply {
                             Log.d("foo", "inside")
-                            match = DeuceMatch(
-                                getInt(KEY_NUM_SETS),
-                                Team.fromOrdinal(getInt(KEY_SERVER)),
-                                OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE)),
-                                MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE)),
-                                PlayTimesData(getLong(KEY_MATCH_START_TIME), getLong(KEY_MATCH_END_TIME)),
-                                PlayTimesList(getLongArray(KEY_SETS_START_TIMES), getLongArray(KEY_SETS_END_TIMES)),
-                                ScoreStack(getInt(KEY_SCORE_SIZE), BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY))),
-                                getString(KEY_NAME_TEAM1),
-                                getString(KEY_NAME_TEAM2)
-                            )
+
+                            if (getBoolean(KEY_NEW_GAME)) {
+                                Log.d("foo", "adding new match")
+                                val newMatch = DeuceMatch(
+                                    getInt(KEY_NUM_SETS),
+                                    Team.fromOrdinal(getInt(KEY_SERVER)),
+                                    OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE)),
+                                    MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE)),
+                                    PlayTimesData(getLong(KEY_MATCH_START_TIME), getLong(KEY_MATCH_END_TIME)),
+                                    PlayTimesList(getLongArray(KEY_SETS_START_TIMES), getLongArray(KEY_SETS_END_TIMES)),
+                                    ScoreStack(getInt(KEY_SCORE_SIZE), BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY))),
+                                    getString(KEY_NAME_TEAM1),
+                                    getString(KEY_NAME_TEAM2)
+                                )
+
+                                when {
+                                    scoresFragment.matches.isEmpty() ->
+                                        scoresFragment.matches.add(newMatch)
+                                    scoresFragment.matches[0].winner == Winner.NONE ->
+                                        scoresFragment.matches[0] = newMatch
+                                    else ->
+                                        scoresFragment.matches.add(0, newMatch)
+                                }
+                            } else {
+                                Log.d("foo", "updating current match")
+                                if (scoresFragment.matches.isEmpty()) {
+                                    // TODO: request match information?
+                                    return
+                                }
+
+                                val currentMatch = scoresFragment.matches[0]
+                                currentMatch.playTimes.endTime = getLong(KEY_MATCH_END_TIME)
+                                currentMatch.setsTimesLog = PlayTimesList(
+                                    getLongArray(KEY_SETS_START_TIMES),
+                                    getLongArray(KEY_SETS_END_TIMES)
+                                )
+                                currentMatch.scoreLog = ScoreStack(
+                                    getInt(KEY_SCORE_SIZE),
+                                    BitSet.valueOf(getLongArray(KEY_SCORE_ARRAY))
+                                )
+                            }
+
+                            scoresFragment.view.adapter?.notifyDataSetChanged()
+                        }
+                    } else if (item.uri.path?.compareTo(PATH_CURRENT_MATCH) == 0) {
+                        DataMapItem.fromDataItem(item).dataMap.apply {
+
                         }
                     }
                 }

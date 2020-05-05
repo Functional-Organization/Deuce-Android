@@ -26,7 +26,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
     android:theme="@style/List"
+    app:layoutManager="LinearLayoutManager"
     tools:context=".ScoresFragment"
     tools:listitem="@layout/fragment_score" />

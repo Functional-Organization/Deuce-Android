@@ -25,8 +25,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.mqduck.deuce.common.*
 
@@ -42,6 +40,8 @@ class ScoresFragment : Fragment() {
     private var columnCount = 1
 
     private var listener: OnMatchInteractionListener? = null
+
+    internal val matches = ArrayList<DeuceMatch>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,18 +60,12 @@ class ScoresFragment : Fragment() {
         // Set the adapter
         if (view is RecyclerView) {
             with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                //adapter = ScoreRecyclerViewAdapter(DummyContent.ITEMS, listener)
-
                 val scoreLog = ScoreStack()
                 for (i in 0 until 72) {
                     scoreLog.push(Team.TEAM1)
                 }
-                val matches = arrayListOf(
-                    DeuceMatch(),
+                matches.add(DeuceMatch())
+                matches.add(
                     DeuceMatch(
                         3,
                         Team.TEAM1,

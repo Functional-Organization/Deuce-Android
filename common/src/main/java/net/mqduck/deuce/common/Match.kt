@@ -32,8 +32,8 @@ open class Match(
     val overtimeRule: OvertimeRule,
     val matchType: MatchType,
     val playTimes: PlayTimesData,
-    val setsTimesLog: PlayTimesList,
-    val scoreLog: ScoreStack,
+    var setsTimesLog: PlayTimesList,
+    scoreLog: ScoreStack,
     var nameTeam1: String,
     var nameTeam2: String
 ) {
@@ -46,8 +46,14 @@ open class Match(
     var serviceChanged = true
         private set
 
+    var scoreLog = ScoreStack()
+        set(value) {
+            field = value
+            loadScoreLog()
+        }
+
     init {
-        loadScoreLog()
+        this.scoreLog = scoreLog
     }
 
     private fun loadScoreLog() {
