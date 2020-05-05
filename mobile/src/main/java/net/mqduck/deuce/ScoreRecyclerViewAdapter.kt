@@ -148,16 +148,16 @@ class ScoreRecyclerViewAdapter(
         }*/
         when (match.winner) {
             Winner.NONE -> {
-                holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.NORMAL)
-                holder.view.text_team_2.setTypeface(holder.view.text_team_2.typeface, Typeface.NORMAL)
+                holder.view.text_team_1.setTypeface(null, Typeface.NORMAL)
+                holder.view.text_team_2.setTypeface(null, Typeface.NORMAL)
             }
             Winner.TEAM1 -> {
-                holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.BOLD)
-                holder.view.text_team_2.setTypeface(holder.view.text_team_2.typeface, Typeface.NORMAL)
+                holder.view.text_team_1.setTypeface(null, Typeface.BOLD)
+                holder.view.text_team_2.setTypeface(null, Typeface.NORMAL)
             }
             Winner.TEAM2 -> {
-                holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.NORMAL)
-                holder.view.text_team_2.setTypeface(holder.view.text_team_2.typeface, Typeface.BOLD)
+                holder.view.text_team_1.setTypeface(null, Typeface.NORMAL)
+                holder.view.text_team_2.setTypeface(null, Typeface.BOLD)
             }
         }
 
@@ -168,9 +168,9 @@ class ScoreRecyclerViewAdapter(
             set.team1_set_score.text = match.sets[i].scoreP1.toString()
             set.team2_set_score.text = match.sets[i].scoreP2.toString()
 
-            if (match.winner == Winner.TEAM1) {
+            if (match.sets[i].winner == Winner.TEAM1) {
                 set.team1_set_score.setTypeface(set.team1_set_score.typeface, Typeface.BOLD)
-            } else if (match.winner == Winner.TEAM2) {
+            } else if (match.sets[i].winner == Winner.TEAM2) {
                 set.team2_set_score.setTypeface(set.team2_set_score.typeface, Typeface.BOLD)
             }
 

@@ -48,4 +48,5 @@ class Set(
 
     val scoreP1 get() = mScore.scoreTeam1
     val scoreP2 get() = mScore.scoreTeam2
+    val winner get() = mScore.winner
 }

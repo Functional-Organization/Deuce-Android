@@ -33,8 +33,6 @@ lateinit var mainActivity: MainActivity
 
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresFragment.OnMatchInteractionListener {
-    internal var match = DeuceMatch()
-
     private lateinit var scoresFragment: ScoresFragment
 
     init {
@@ -84,13 +82,13 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                     getString(KEY_NAME_TEAM2)
                                 )
 
-                                when {
-                                    scoresFragment.matches.isEmpty() ->
-                                        scoresFragment.matches.add(newMatch)
-                                    scoresFragment.matches[0].winner == Winner.NONE ->
-                                        scoresFragment.matches[0] = newMatch
-                                    else ->
-                                        scoresFragment.matches.add(0, newMatch)
+                                if (
+                                    scoresFragment.matches.isNotEmpty() &&
+                                    scoresFragment.matches.last().winner == Winner.NONE
+                                ) {
+                                    scoresFragment.matches[scoresFragment.matches.size - 1] = newMatch
+                                } else {
+                                    scoresFragment.matches.add(newMatch)
                                 }
                             } else {
                                 Log.d("foo", "updating current match")
@@ -99,7 +97,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                     return
                                 }
 
-                                val currentMatch = scoresFragment.matches[0]
+                                val currentMatch = scoresFragment.matches.last()
                                 currentMatch.playTimes.endTime = getLong(KEY_MATCH_END_TIME)
                                 currentMatch.setsTimesLog = PlayTimesList(
                                     getLongArray(KEY_SETS_START_TIMES),

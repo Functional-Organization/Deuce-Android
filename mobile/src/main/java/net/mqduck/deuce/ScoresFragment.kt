@@ -64,7 +64,6 @@ class ScoresFragment : Fragment() {
                 for (i in 0 until 72) {
                     scoreLog.push(Team.TEAM1)
                 }
-                matches.add(DeuceMatch())
                 matches.add(
                     DeuceMatch(
                         3,
@@ -81,6 +80,7 @@ class ScoresFragment : Fragment() {
                         "Opponent"
                     )
                 )
+                matches.add(DeuceMatch())
                 adapter = ScoreRecyclerViewAdapter(
                     matches,
                     listener,
