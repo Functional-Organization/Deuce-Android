@@ -118,7 +118,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     }*/
 
     private fun score(team: Team) {
-        val winnerGame = mainActivity.match.score(team)
+        val winners = mainActivity.match.score(team)
         if (mainActivity.match.serviceChanged) {
             updateDisplay(false)
         } else {
@@ -129,7 +129,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             button_score_p2.isEnabled = false
         }
 
-        if (winnerGame != Winner.NONE) {
+        if (winners.game != Winner.NONE) {
             val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
                 dataMap.putBoolean(KEY_NEW_GAME, false)
                 dataMap.putLong(KEY_MATCH_END_TIME, mainActivity.match.playTimes.endTime)
@@ -145,18 +145,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                 Log.d("foo", "update match success")
             }
         }
-
-        /*val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
-            dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.match.scoreLogArray())
-            dataMap.putInt(KEY_SCORE_SIZE, mainActivity.match.scoreLogSize())
-            asPutDataRequest()
-        }
-        putDataReq.setUrgent()
-        val putDataTask: Task<DataItem> = mainActivity.dataClient.putDataItem(putDataReq)
-        Log.d("foo", "trying to send score")
-        putDataTask.addOnSuccessListener {
-            Log.d("foo", "score success")
-        }*/
     }
 
     internal fun updateDisplay(animate: Boolean) {

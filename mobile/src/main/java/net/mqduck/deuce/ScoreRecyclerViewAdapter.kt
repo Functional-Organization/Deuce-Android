@@ -30,7 +30,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
-import net.mqduck.deuce.ScoresFragment.OnMatchInteractionListener
+import net.mqduck.deuce.ScoresListFragment.OnMatchInteractionListener
 import net.mqduck.deuce.common.DeuceMatch
 import net.mqduck.deuce.common.Match
 import net.mqduck.deuce.common.Winner

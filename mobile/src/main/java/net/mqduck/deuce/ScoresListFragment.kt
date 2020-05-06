@@ -31,9 +31,9 @@ import net.mqduck.deuce.common.*
 /**
  * A fragment representing a list of Items.
  * Activities containing this fragment MUST implement the
- * [ScoresFragment.OnMatchInteractionListener] interface.
+ * [ScoresListFragment.OnMatchInteractionListener] interface.
  */
-class ScoresFragment : Fragment() {
+class ScoresListFragment : Fragment() {
     lateinit var view: RecyclerView
 
     // TODO: Customize parameters
@@ -58,36 +58,35 @@ class ScoresFragment : Fragment() {
         view = inflater.inflate(R.layout.fragment_scores_list, container, false) as RecyclerView
 
         // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                val scoreLog = ScoreStack()
-                for (i in 0 until 48) {
-                    scoreLog.push(Team.TEAM1)
-                }
-                matches.add(
-                    DeuceMatch(
-                        NumSets.THREE,
-                        Team.TEAM1,
-                        OvertimeRule.TIEBREAK,
-                        MatchType.SINGLES,
-                        PlayTimesData(416846345451, 416847346451),
-                        PlayTimesList(
-                            longArrayOf(0, 0, 0),
-                            longArrayOf(0, 0, 0)
-                        ),
-                        scoreLog,
-                        "Myself",
-                        "Opponent"
-                    )
-                )
-                matches.add(DeuceMatch())
-                adapter = ScoreRecyclerViewAdapter(
-                    matches,
-                    listener,
-                    mainActivity
-                )
+        with(view) {
+            val scoreLog = ScoreStack()
+            for (i in 0 until 48) {
+                scoreLog.push(Team.TEAM1)
             }
+            matches.add(
+                DeuceMatch(
+                    NumSets.THREE,
+                    Team.TEAM1,
+                    OvertimeRule.TIEBREAK,
+                    MatchType.SINGLES,
+                    PlayTimesData(416846345451, 416847346451),
+                    PlayTimesList(
+                        longArrayOf(0, 0, 0),
+                        longArrayOf(0, 0, 0)
+                    ),
+                    scoreLog,
+                    "Myself",
+                    "Opponent"
+                )
+            )
+            matches.add(DeuceMatch())
+            adapter = ScoreRecyclerViewAdapter(
+                matches,
+                listener,
+                mainActivity
+            )
         }
+
         return view
     }
 
@@ -127,7 +126,7 @@ class ScoresFragment : Fragment() {
         // TODO: Customize parameter initialization
         @JvmStatic
         fun newInstance(columnCount: Int) =
-            ScoresFragment().apply {
+            ScoresListFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }

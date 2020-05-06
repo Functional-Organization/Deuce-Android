@@ -30,13 +30,13 @@ import kotlinx.android.synthetic.main.info_dialog.view.*
 import net.mqduck.deuce.common.Match
 import java.util.*
 
-class InfoDialog(val match: Match, val scoresFragment: ScoresFragment) : DialogFragment() {
+class InfoDialog(val match: Match, val scoresListFragment: ScoresListFragment) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         //return super.onCreateDialog(savedInstanceState)
 
         val builder = AlertDialog.Builder(activity)
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.info_dialog, scoresFragment.view, false)
+        val view = inflater.inflate(R.layout.info_dialog, scoresListFragment.view, false)
         view.start_time.text = timeFormat.format(Date(match.playTimes.startTime))
         if (match.playTimes.endTime >= 0) {
             view.label_end_time.visibility = View.VISIBLE
@@ -51,7 +51,7 @@ class InfoDialog(val match: Match, val scoresFragment: ScoresFragment) : DialogF
             .setPositiveButton(resources.getString(R.string.save_changes)) { _, _ ->
                 match.nameTeam1 = view.edit_name_team1.text.toString()
                 match.nameTeam2 = view.edit_name_team2.text.toString()
-                scoresFragment.view.adapter?.notifyDataSetChanged()
+                scoresListFragment.view.adapter?.notifyDataSetChanged()
             }
             .setNegativeButton(resources.getString(R.string.close)) { _, _ -> }
         val dialog = builder.create()

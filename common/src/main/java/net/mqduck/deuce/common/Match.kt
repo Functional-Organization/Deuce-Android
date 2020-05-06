@@ -83,14 +83,17 @@ open class Match(
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
 
-    private fun score(team: Team, updateLogs: Boolean): Winner {
+    private fun score(team: Team, updateLogs: Boolean): Winners {
         changeover = false
         serviceChanged = false
+        var winnerMatch = Winner.NONE
+        var winnerSet = Winner.NONE
         val winnerGame = currentGame.score(team)
+
         if (winnerGame != Winner.NONE) {
-            val winnerSet = currentSet.score(team)
+            winnerSet = currentSet.score(team)
             if (winnerSet != Winner.NONE) {
-                val winnerMatch = mScore.score(team)
+                winnerMatch = mScore.score(team)
                 if (winnerMatch != Winner.NONE) {
                     if (playTimes.endTime < 0) {
                         playTimes.endTime = System.currentTimeMillis()
@@ -202,7 +205,7 @@ open class Match(
             changeover = true
         }
 
-        return winnerGame
+        return Winners(winnerGame, winnerSet, winnerMatch)
     }
 
     fun score(team: Team) = score(team, true)

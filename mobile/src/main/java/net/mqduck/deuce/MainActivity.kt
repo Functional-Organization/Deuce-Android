@@ -32,8 +32,8 @@ import java.util.*
 lateinit var mainActivity: MainActivity
 
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
-    ScoresFragment.OnMatchInteractionListener {
-    private lateinit var scoresFragment: ScoresFragment
+    ScoresListFragment.OnMatchInteractionListener {
+    private lateinit var scoresListFragment: ScoresListFragment
 
     init {
         mainActivity = this
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
 
         Game.init(this)
 
-        scoresFragment = fragment_scores as ScoresFragment
+        scoresListFragment = fragment_scores as ScoresListFragment
     }
 
     override fun onResume() {
@@ -83,21 +83,21 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                 )
 
                                 if (
-                                    scoresFragment.matches.isNotEmpty() &&
-                                    scoresFragment.matches.last().winner == Winner.NONE
+                                    scoresListFragment.matches.isNotEmpty() &&
+                                    scoresListFragment.matches.last().winner == Winner.NONE
                                 ) {
-                                    scoresFragment.matches[scoresFragment.matches.size - 1] = newMatch
+                                    scoresListFragment.matches[scoresListFragment.matches.size - 1] = newMatch
                                 } else {
-                                    scoresFragment.matches.add(newMatch)
+                                    scoresListFragment.matches.add(newMatch)
                                 }
                             } else {
                                 Log.d("foo", "updating current match")
-                                if (scoresFragment.matches.isEmpty()) {
+                                if (scoresListFragment.matches.isEmpty()) {
                                     // TODO: request match information?
                                     return
                                 }
 
-                                val currentMatch = scoresFragment.matches.last()
+                                val currentMatch = scoresListFragment.matches.last()
                                 currentMatch.playTimes.endTime = getLong(KEY_MATCH_END_TIME)
                                 currentMatch.setsTimesLog = PlayTimesList(
                                     getLongArray(KEY_SETS_START_TIMES),
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                 )
                             }
 
-                            scoresFragment.view.adapter?.notifyDataSetChanged()
+                            scoresListFragment.view.adapter?.notifyDataSetChanged()
                         }
                     } else if (item.uri.path?.compareTo(PATH_CURRENT_MATCH) == 0) {
                         DataMapItem.fromDataItem(item).dataMap.apply {
@@ -126,8 +126,8 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     override fun onMatchInteraction(item: Match?) {
         // TODO: Make less ugly
         item?.let {
-            scoresFragment.fragmentManager?.let {
-                val infoDialog = InfoDialog(item, scoresFragment)
+            scoresListFragment.fragmentManager?.let {
+                val infoDialog = InfoDialog(item, scoresListFragment)
                 infoDialog.show(it, "info")
             }
         }

@@ -23,7 +23,7 @@
     android:layout_height="match_parent">
 
     <fragment
-        android:name="net.mqduck.deuce.ScoresFragment"
+        android:name="net.mqduck.deuce.ScoresListFragment"
         android:id="@+id/fragment_scores"
         android:layout_weight="1"
         android:layout_width="match_parent"
