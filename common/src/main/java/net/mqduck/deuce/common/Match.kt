@@ -83,7 +83,7 @@ open class Match(
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
 
-    private fun score(team: Team, updateLogs: Boolean) {
+    private fun score(team: Team, updateLogs: Boolean): Winner {
         changeover = false
         serviceChanged = false
         val winnerGame = currentGame.score(team)
@@ -201,6 +201,8 @@ open class Match(
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 6 == 0) {
             changeover = true
         }
+
+        return winnerGame
     }
 
     fun score(team: Team) = score(team, true)

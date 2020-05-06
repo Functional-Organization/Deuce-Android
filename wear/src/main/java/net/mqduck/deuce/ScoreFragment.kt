@@ -118,7 +118,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     }*/
 
     private fun score(team: Team) {
-        mainActivity.match.score(team)
+        val winnerGame = mainActivity.match.score(team)
         if (mainActivity.match.serviceChanged) {
             updateDisplay(false)
         } else {
@@ -129,19 +129,21 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             button_score_p2.isEnabled = false
         }
 
-        val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
-            dataMap.putBoolean(KEY_NEW_GAME, false)
-            dataMap.putLong(KEY_MATCH_END_TIME, mainActivity.match.playTimes.endTime)
-            dataMap.putLongArray(KEY_SETS_START_TIMES, mainActivity.match.setsTimesLog.startTimes.toLongArray())
-            dataMap.putLongArray(KEY_SETS_END_TIMES, mainActivity.match.setsTimesLog.endTimes.toLongArray())
-            dataMap.putInt(KEY_SCORE_SIZE, mainActivity.match.scoreLogSize())
-            dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.match.scoreLogArray())
-            asPutDataRequest()
-        }
-        putDataReq.setUrgent()
-        val putDataTask: Task<DataItem> = mainActivity.dataClient.putDataItem(putDataReq)
-        putDataTask.addOnSuccessListener {
-            Log.d("foo", "update match success")
+        if (winnerGame != Winner.NONE) {
+            val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+                dataMap.putBoolean(KEY_NEW_GAME, false)
+                dataMap.putLong(KEY_MATCH_END_TIME, mainActivity.match.playTimes.endTime)
+                dataMap.putLongArray(KEY_SETS_START_TIMES, mainActivity.match.setsTimesLog.startTimes.toLongArray())
+                dataMap.putLongArray(KEY_SETS_END_TIMES, mainActivity.match.setsTimesLog.endTimes.toLongArray())
+                dataMap.putInt(KEY_SCORE_SIZE, mainActivity.match.scoreLogSize())
+                dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.match.scoreLogArray())
+                asPutDataRequest()
+            }
+            putDataReq.setUrgent()
+            val putDataTask: Task<DataItem> = mainActivity.dataClient.putDataItem(putDataReq)
+            putDataTask.addOnSuccessListener {
+                Log.d("foo", "update match success")
+            }
         }
 
         /*val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
