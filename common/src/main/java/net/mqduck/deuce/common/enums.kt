@@ -59,8 +59,11 @@ enum class MatchType {
     }
 }
 
-enum class NumSets(val value: Int) {
-    ONE(1), THREE(2), FIVE(3), INFINITE(Int.MAX_VALUE);
+enum class NumSets(val winMinimum: Int, val winMaximum: Int) {
+    ONE(1, 1),
+    THREE(2, 3),
+    FIVE(3, 5),
+    INFINITE(Int.MAX_VALUE, Int.MAX_VALUE);
 
     companion object {
         fun fromOrdinal(ordinal: Int) = when (ordinal) {

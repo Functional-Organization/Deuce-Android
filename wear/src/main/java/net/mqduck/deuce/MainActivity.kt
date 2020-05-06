@@ -251,7 +251,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         switchFragment(FragmentEnum.SCORE)
 
         match = DeuceMatch(
-            preferences.numSets.value,
+            preferences.numSets,
             preferences.startingServer,
             preferences.overtime,
             preferences.matchType,
@@ -271,13 +271,12 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         // Create a data map and put data in it
         val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
             dataMap.putBoolean(KEY_NEW_GAME, true)
-            dataMap.putInt(KEY_NUM_SETS, match.winMinimumMatch)
+            dataMap.putInt(KEY_NUM_SETS, match.numSets.ordinal)
             dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
             dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
             dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
             dataMap.putLong(KEY_MATCH_START_TIME, match.playTimes.startTime)
             dataMap.putLong(KEY_MATCH_END_TIME, match.playTimes.endTime)
-            //dataMap.putLongArray(KEY_SETS_TIMES, match.setsTimesLog.toLongArray())
             dataMap.putLongArray(KEY_SETS_START_TIMES, match.setsTimesLog.startTimes.toLongArray())
             dataMap.putLongArray(KEY_SETS_END_TIMES, match.setsTimesLog.endTimes.toLongArray())
             dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())

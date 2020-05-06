@@ -23,7 +23,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class DeuceMatch(
-    numSets: Int,
+    val numSets: NumSets,
     startingServer: Team,
     overtimeRule: OvertimeRule,
     matchType: MatchType,
@@ -33,7 +33,7 @@ class DeuceMatch(
     nameTeam1: String,
     nameTeam2: String
 ) : Match(
-    numSets,
+    numSets.winMinimum,
     DEFAULT_WIN_MARGIN_MATCH,
     DEFAULT_WIN_MINIMUM_SET,
     DEFAULT_WIN_MARGIN_SET,
@@ -51,7 +51,7 @@ class DeuceMatch(
     nameTeam2
 ), Parcelable {
     constructor() : this(
-        0,
+        NumSets.ONE,
         Team.TEAM1,
         OvertimeRule.TIEBREAK,
         MatchType.SINGLES,
@@ -63,7 +63,7 @@ class DeuceMatch(
     )
 
     constructor(parcel: Parcel) : this(
-        parcel.readInt(),
+        parcel.readSerializable() as NumSets,
         parcel.readSerializable() as Team,
         parcel.readSerializable() as OvertimeRule,
         parcel.readSerializable() as MatchType,
@@ -76,7 +76,7 @@ class DeuceMatch(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(winMinimumMatch)
+        parcel.writeSerializable(numSets)
         parcel.writeSerializable(startingServer)
         parcel.writeSerializable(overtimeRule)
         parcel.writeSerializable(matchType)

@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                             if (getBoolean(KEY_NEW_GAME)) {
                                 Log.d("foo", "adding new match")
                                 val newMatch = DeuceMatch(
-                                    getInt(KEY_NUM_SETS),
+                                    NumSets.fromOrdinal(getInt(KEY_NUM_SETS)),
                                     Team.fromOrdinal(getInt(KEY_SERVER)),
                                     OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE)),
                                     MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE)),

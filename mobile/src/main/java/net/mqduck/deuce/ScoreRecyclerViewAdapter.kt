@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
 import net.mqduck.deuce.ScoresFragment.OnMatchInteractionListener
+import net.mqduck.deuce.common.DeuceMatch
 import net.mqduck.deuce.common.Match
 import net.mqduck.deuce.common.Winner
 import java.util.*
@@ -88,7 +89,7 @@ import kotlin.math.roundToInt
 }*/
 
 class ScoreRecyclerViewAdapter(
-    private val matches: List<Match>,
+    private val matches: List<DeuceMatch>,
     private val listener: OnMatchInteractionListener?,
     private val context: Activity
 ) : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
@@ -161,20 +162,55 @@ class ScoreRecyclerViewAdapter(
             }
         }
 
-        holder.view.sets_container.removeAllViews()
-        for (i in 0 until match.sets.size) {
+        fun addSetScore(setNum: Int, setNumColor: Int, scoreP1: String, scoreP2: String, winner: Winner) {
             val set = LayoutInflater.from(context).inflate(R.layout.set, holder.view.sets_container, false)
-            set.set_number.text = (i + 1).toString()
-            set.team1_set_score.text = match.sets[i].scoreP1.toString()
-            set.team2_set_score.text = match.sets[i].scoreP2.toString()
+            set.set_number.text = setNum.toString()
+            set.set_number.setTextColor(setNumColor)
+            set.team1_set_score.text = scoreP1
+            set.team2_set_score.text = scoreP2
 
-            if (match.sets[i].winner == Winner.TEAM1) {
+            if (winner == Winner.TEAM1) {
                 set.team1_set_score.setTypeface(set.team1_set_score.typeface, Typeface.BOLD)
-            } else if (match.sets[i].winner == Winner.TEAM2) {
+            } else if (winner == Winner.TEAM2) {
                 set.team2_set_score.setTypeface(set.team2_set_score.typeface, Typeface.BOLD)
             }
 
             holder.view.sets_container.addView(set, setLayoutParams)
+        }
+
+        holder.view.sets_container.removeAllViews()
+        if (match.winner == Winner.NONE) {
+            var i = 0
+            while (i < match.sets.size) {
+                addSetScore(
+                    i + 1,
+                    context.resources.getColor(R.color.secondary_text),
+                    match.sets[i].scoreP1.toString(),
+                    match.sets[i].scoreP2.toString(),
+                    match.sets[i].winner
+                )
+                ++i
+            }
+            while (i < match.numSets.winMaximum) {
+                addSetScore(
+                    i + 1,
+                    context.resources.getColor(R.color.tertiary_text),
+                    "",
+                    "",
+                    Winner.NONE
+                )
+                ++i
+            }
+        } else {
+            for (i in 0 until match.sets.size) {
+                addSetScore(
+                    i + 1,
+                    context.resources.getColor(R.color.secondary_text),
+                    match.sets[i].scoreP1.toString(),
+                    match.sets[i].scoreP2.toString(),
+                    match.sets[i].winner
+                )
+            }
         }
 
         with(holder.view) {

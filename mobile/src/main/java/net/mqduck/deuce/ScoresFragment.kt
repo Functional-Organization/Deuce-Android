@@ -61,12 +61,12 @@ class ScoresFragment : Fragment() {
         if (view is RecyclerView) {
             with(view) {
                 val scoreLog = ScoreStack()
-                for (i in 0 until 72) {
+                for (i in 0 until 20) {
                     scoreLog.push(Team.TEAM1)
                 }
                 matches.add(
                     DeuceMatch(
-                        3,
+                        NumSets.THREE,
                         Team.TEAM1,
                         OvertimeRule.TIEBREAK,
                         MatchType.SINGLES,
@@ -80,7 +80,7 @@ class ScoresFragment : Fragment() {
                         "Opponent"
                     )
                 )
-                matches.add(DeuceMatch())
+                //matches.add(DeuceMatch())
                 adapter = ScoreRecyclerViewAdapter(
                     matches,
                     listener,
