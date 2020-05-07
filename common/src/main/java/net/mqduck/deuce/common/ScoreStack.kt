@@ -27,7 +27,7 @@ import java.util.*
  * A stack of Teams. This can be used a record of points scored.
  */
 class ScoreStack : List<Team>, Parcelable {
-    private val bitSet: BitSet
+    internal val bitSet: BitSet
     override var size: Int
         private set
 

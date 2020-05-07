@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
+import java.io.File
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
@@ -133,6 +134,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     internal var match = DeuceMatch()
     internal lateinit var preferences: DeuceWearPreferences
+    internal lateinit var storage: File
+    lateinit var dataClient: DataClient
 
     private var setupFragment = SetupFragment(this)
     private var advancedSetupFragment = AdvancedSetupFragment(this)
@@ -150,7 +153,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     lateinit var navigationDrawer: WearableNavigationDrawerView
 
-    lateinit var dataClient: DataClient
 
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback()
 
@@ -166,7 +168,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationDrawer = navigation_drawer
 
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
-
+        //storage = File(getExternalFilesDir(null), filename)
         dataClient = Wearable.getDataClient(this)
 
         var fragment = FragmentEnum.SETUP
