@@ -28,7 +28,41 @@ import java.io.FileWriter
 import java.util.*
 
 class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
-    private val matches = JSONParser().parse(FileReader(file)) as JSONArray
+    inner class ListItr(private var cursor: Int) : MutableListIterator<DeuceMatch> {
+        override fun hasPrevious() = cursor != 0
+
+        override fun nextIndex() = cursor
+
+        override fun previous(): DeuceMatch {
+            --cursor
+            return get(cursor)
+        }
+
+        override fun previousIndex() = cursor - 1
+
+        override fun add(element: DeuceMatch) = add(cursor, element)
+
+        override fun hasNext() = cursor < size
+
+        override fun next(): DeuceMatch {
+            val element = get(cursor)
+            ++cursor
+            return element
+        }
+
+        override fun remove() {
+            removeAt(cursor)
+        }
+
+        override fun set(element: DeuceMatch) {
+            set(cursor, element)
+        }
+    }
+
+    private val matches = if (file.exists())
+        JSONParser().parse(FileReader(file)) as JSONArray
+    else
+        JSONArray()
 
     private fun jsonObjectToMatch(json: JSONObject): DeuceMatch {
         val setsStartTimesList = ArrayList<Long>()
@@ -45,13 +79,13 @@ class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
         }
 
         return DeuceMatch(
-            NumSets.fromOrdinal(json[KEY_NUM_SETS] as Int),
-            Team.fromOrdinal(json[KEY_SERVER] as Int),
-            OvertimeRule.fromOrdinal(json[KEY_OVERTIME_RULE] as Int),
-            MatchType.fromOrdinal(json[KEY_MATCH_TYPE] as Int),
+            NumSets.fromOrdinal((json[KEY_NUM_SETS] as Long).toInt()),
+            Team.fromOrdinal((json[KEY_SERVER] as Long).toInt()),
+            OvertimeRule.fromOrdinal((json[KEY_OVERTIME_RULE] as Long).toInt()),
+            MatchType.fromOrdinal((json[KEY_MATCH_TYPE] as Long).toInt()),
             PlayTimesData(json[KEY_MATCH_START_TIME] as Long, json[KEY_MATCH_END_TIME] as Long),
             PlayTimesList(setsStartTimesList, setsEndTimesList),
-            ScoreStack(json[KEY_SCORE_SIZE] as Int, BitSet.valueOf(scoreStackLongArray.toLongArray())),
+            ScoreStack((json[KEY_SCORE_SIZE] as Long).toInt(), BitSet.valueOf(scoreStackLongArray.toLongArray())),
             json[KEY_NAME_TEAM1] as String,
             json[KEY_NAME_TEAM2] as String
         )
@@ -61,6 +95,7 @@ class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
         val json = JSONObject()
 
         json[KEY_NUM_SETS] = match.numSets.ordinal
+        json[KEY_SERVER] = match.startingServer.ordinal
         json[KEY_OVERTIME_RULE] = match.overtimeRule.ordinal
         json[KEY_MATCH_TYPE] = match.matchType.ordinal
         json[KEY_MATCH_START_TIME] = match.playTimes.startTime
@@ -74,6 +109,7 @@ class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
         json[KEY_SCORE_SIZE] = match.scoreLog.size
         val scoreLogArrayJSON = JSONArray()
         scoreLogArrayJSON.addAll(match.scoreLog.bitSetToLongArray().toList())
+        json[KEY_SCORE_ARRAY] = scoreLogArrayJSON
         json[KEY_NAME_TEAM1] = match.nameTeam1
         json[KEY_NAME_TEAM2] = match.nameTeam2
 
@@ -100,9 +136,7 @@ class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
 
     override fun isEmpty() = matches.isEmpty()
 
-    override fun iterator(): MutableIterator<DeuceMatch> {
-        TODO("Not yet implemented")
-    }
+    override fun iterator() = ListItr(0)
 
     override fun lastIndexOf(element: DeuceMatch) = matches.lastIndexOf(matchToJSONObject(element))
 
@@ -134,13 +168,9 @@ class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
         writeToFile()
     }
 
-    override fun listIterator(): MutableListIterator<DeuceMatch> {
-        TODO("Not yet implemented")
-    }
+    override fun listIterator() = ListItr(0)
 
-    override fun listIterator(index: Int): MutableListIterator<DeuceMatch> {
-        TODO("Not yet implemented")
-    }
+    override fun listIterator(index: Int) = ListItr(index)
 
     override fun remove(element: DeuceMatch): Boolean {
         val ret = matches.remove(matchToJSONObject(element))

@@ -87,3 +87,15 @@ enum class OvertimeRule {
         }
     }
 }
+
+enum class MatchState {
+    NEW, ONGOING, OVER;
+
+    companion object {
+        fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            NEW.ordinal -> NEW
+            ONGOING.ordinal -> ONGOING
+            else -> OVER
+        }
+    }
+}

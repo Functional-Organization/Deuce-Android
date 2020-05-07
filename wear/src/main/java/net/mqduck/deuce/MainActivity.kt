@@ -136,6 +136,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     internal lateinit var preferences: DeuceWearPreferences
     internal lateinit var storage: File
     lateinit var dataClient: DataClient
+    internal lateinit var matchList: JSONMatchList
 
     private var setupFragment = SetupFragment(this)
     private var advancedSetupFragment = AdvancedSetupFragment(this)
@@ -170,6 +171,9 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
         //storage = File(getExternalFilesDir(null), filename)
         dataClient = Wearable.getDataClient(this)
+        matchList = JSONMatchList(File(filesDir, MATCH_LIST_FILE_NAME))
+
+        syncMatchList()
 
         var fragment = FragmentEnum.SETUP
 
@@ -271,8 +275,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         )
 
         // Create a data map and put data in it
-        val putDataReq: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
-            dataMap.putBoolean(KEY_NEW_GAME, true)
+        val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+            /*dataMap.putInt(KEY_MATCH_STATE, MatchState.NEW.ordinal)
             dataMap.putInt(KEY_NUM_SETS, match.numSets.ordinal)
             dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
             dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
@@ -284,14 +288,31 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
             dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
             dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
-            dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
+            dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)*/
+            writeMatchToDataMap(match, dataMap)
             asPutDataRequest()
         }
-        putDataReq.setUrgent()
-        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataReq)
+        putDataRequest.setUrgent()
+        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
         putDataTask.addOnSuccessListener {
             Log.d("foo", "new match success")
         }
+    }
+
+    private fun writeMatchToDataMap(match: DeuceMatch, dataMap: DataMap) {
+        dataMap.putInt(KEY_MATCH_STATE, MatchState.NEW.ordinal)
+        dataMap.putInt(KEY_NUM_SETS, match.numSets.ordinal)
+        dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
+        dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
+        dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
+        dataMap.putLong(KEY_MATCH_START_TIME, match.playTimes.startTime)
+        dataMap.putLong(KEY_MATCH_END_TIME, match.playTimes.endTime)
+        dataMap.putLongArray(KEY_SETS_START_TIMES, match.setsTimesLog.startTimes.toLongArray())
+        dataMap.putLongArray(KEY_SETS_END_TIMES, match.setsTimesLog.endTimes.toLongArray())
+        dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
+        dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
+        dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
+        dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
     }
 
     fun undo() {
@@ -306,7 +327,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 image_undo.visibility = View.GONE
             }, ScoreFragment.UNDO_ANIMATION_DURATION)
             scoreFragment.updateDisplay(false)
-            performUndoHapticFeedback()
+            activity_main.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
         }
     }
 
@@ -406,7 +427,53 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
     }
 
-    fun performUndoHapticFeedback() {
-        activity_main.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+    internal fun syncMatchList() {
+        val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_MATCH_LIST).run {
+            dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
+                val dataMap = DataMap()
+                writeMatchToDataMap(it, dataMap)
+                dataMap
+            }))
+            asPutDataRequest()
+        }
+        putDataRequest.setUrgent()
+        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
+        putDataTask.addOnSuccessListener {
+            Log.d("foo", "sync matches success")
+        }
+
+        /*val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_MATCH_LIST).run {
+            val matches = matchList.toList()
+
+            dataMap.putInt(KEY_NUM_MATCHES, matches.size)
+            dataMap.putIntegerArrayList(KEY_NUM_SETS, ArrayList(matches.map { it.numSets.ordinal }))
+            dataMap.putIntegerArrayList(KEY_SERVER, ArrayList(matches.map { it.startingServer.ordinal }))
+            dataMap.putIntegerArrayList(KEY_OVERTIME_RULE, ArrayList(matches.map { it.overtimeRule.ordinal }))
+            dataMap.putIntegerArrayList(KEY_MATCH_TYPE, ArrayList(matches.map { it.matchType.ordinal }))
+            dataMap.putLongArray(KEY_MATCH_START_TIME, matches.map { it.playTimes.startTime }.toLongArray())
+            dataMap.putLongArray(KEY_MATCH_END_TIME, matches.map { it.playTimes.endTime }.toLongArray())
+            *//*for (i in matches.indices) {
+                dataMap.putLongArray(
+                    "${KEY_SETS_START_TIMES}_${i}",
+                    matches[i].setsTimesLog.map { it.startTime }.toLongArray()
+                )
+                dataMap.putLongArray(
+                    "${KEY_SETS_END_TIMES}_${i}",
+                    matches[i].setsTimesLog.map { it.endTime }.toLongArray()
+                )
+                dataMap.putLongArray("${KEY_SCORE_ARRAY}_${i}", matches[i].scoreLog.bitSetToLongArray())
+            }*//*
+            val setsPlayTimesList = ArrayList<DataMap>()
+            val scoreLogList = ArrayList<DataMap>
+            dataMap.putIntegerArrayList(KEY_SCORE_SIZE, ArrayList(matches.map { it.scoreLog.size }))
+            dataMap.putStringArray(KEY_NAME_TEAM1, matches.map { it.nameTeam1 }.toTypedArray())
+            dataMap.putStringArray(KEY_NAME_TEAM2, matches.map { it.nameTeam2 }.toTypedArray())
+            asPutDataRequest()
+        }
+        putDataRequest.setUrgent()
+        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
+        putDataTask.addOnSuccessListener {
+            Log.d("foo", "sync matches success")
+        }*/
     }
 }

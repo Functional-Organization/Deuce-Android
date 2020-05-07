@@ -57,3 +57,9 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+
+// TODO: Figure out why this is necessary
+configurations {
+    compile.exclude group: "junit", module: "junit"
+}

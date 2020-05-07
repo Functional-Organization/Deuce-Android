@@ -26,7 +26,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import net.mqduck.deuce.common.*
+import net.mqduck.deuce.common.Match
+import net.mqduck.deuce.common.ScoreStack
+import net.mqduck.deuce.common.Team
 
 /**
  * A fragment representing a list of Items.
@@ -41,7 +43,7 @@ class ScoresListFragment : Fragment() {
 
     private var listener: OnMatchInteractionListener? = null
 
-    internal val matches = ArrayList<DeuceMatch>()
+    //internal val matches = ArrayList<DeuceMatch>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +65,7 @@ class ScoresListFragment : Fragment() {
             for (i in 0 until 48) {
                 scoreLog.push(Team.TEAM1)
             }
-            matches.add(
+            /*matches.add(
                 DeuceMatch(
                     NumSets.THREE,
                     Team.TEAM1,
@@ -79,9 +81,9 @@ class ScoresListFragment : Fragment() {
                     "Opponent"
                 )
             )
-            matches.add(DeuceMatch())
+            matches.add(DeuceMatch())*/
             adapter = ScoreRecyclerViewAdapter(
-                matches,
+                mainActivity.matchList,
                 listener,
                 mainActivity
             )

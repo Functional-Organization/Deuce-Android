@@ -52,6 +52,13 @@ const val KEY_MATCH = "match"
 const val KEY_MATCH_ADDED = "match_added"
 const val KEY_NAME_TEAM1 = "name_team1"
 const val KEY_NAME_TEAM2 = "name_team2"
-const val KEY_NEW_GAME = "new_game"
+const val KEY_MATCH_LIST = "match_list"
+
+//const val KEY_NEW_GAME = "new_game"
+const val KEY_MATCH_STATE = "game_state"
+const val KEY_NUM_MATCHES = "num_matches"
 
 const val PATH_CURRENT_MATCH = "/current_match"
+const val PATH_MATCH_LIST = "/matches"
+
+const val MATCH_LIST_FILE_NAME = "deuce_matches"
