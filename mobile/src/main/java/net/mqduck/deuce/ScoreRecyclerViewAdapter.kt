@@ -32,7 +32,6 @@ import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
 import net.mqduck.deuce.ScoresListFragment.OnMatchInteractionListener
 import net.mqduck.deuce.common.DeuceMatch
-import net.mqduck.deuce.common.Match
 import net.mqduck.deuce.common.Winner
 import java.util.*
 import kotlin.math.roundToInt
@@ -115,20 +114,20 @@ class ScoreRecyclerViewAdapter(
         }
     }
 
-    private val onClickListener: View.OnClickListener
+    //private val onClickListener: View.OnClickListener
 
-    init {
-        /*mOnClickListener = View.OnClickListener { v ->
+    /*init {
+        *//*mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as DummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
             mListener?.onListFragmentInteraction(item)
-        }*/
+        }*//*
         onClickListener = View.OnClickListener { view ->
             val match = view.tag as Match
             listener?.onMatchInteraction(match)
         }
-    }
+    }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_score, parent, false)
@@ -213,10 +212,7 @@ class ScoreRecyclerViewAdapter(
             }
         }
 
-        with(holder.view) {
-            tag = match
-            setOnClickListener(onClickListener)
-        }
+        holder.view.setOnClickListener { listener?.onMatchInteraction(match, position) }
     }
 
     override fun getItemCount() = matches.size

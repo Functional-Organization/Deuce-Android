@@ -26,8 +26,78 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 import java.util.*
+import kotlin.collections.ArrayList
 
-class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
+class MatchList(val file: File) : ArrayList<DeuceMatch>() {
+    init {
+        if (file.exists()) {
+            addAll((JSONParser().parse(FileReader(file)) as JSONArray).map { jsonObjectToMatch(it as JSONObject) })
+        }
+    }
+
+    private fun jsonObjectToMatch(json: JSONObject): DeuceMatch {
+        val setsStartTimesList = ArrayList<Long>()
+        for (startTime in json[KEY_SETS_START_TIMES] as JSONArray) {
+            setsStartTimesList.add(startTime as Long)
+        }
+        val setsEndTimesList = ArrayList<Long>()
+        for (endTime in json[KEY_SETS_END_TIMES] as JSONArray) {
+            setsEndTimesList.add(endTime as Long)
+        }
+        val scoreStackLongArray = ArrayList<Long>()
+        for (long in json[KEY_SCORE_ARRAY] as JSONArray) {
+            scoreStackLongArray.add(long as Long)
+        }
+
+        return DeuceMatch(
+            NumSets.fromOrdinal((json[KEY_NUM_SETS] as Long).toInt()),
+            Team.fromOrdinal((json[KEY_SERVER] as Long).toInt()),
+            OvertimeRule.fromOrdinal((json[KEY_OVERTIME_RULE] as Long).toInt()),
+            MatchType.fromOrdinal((json[KEY_MATCH_TYPE] as Long).toInt()),
+            PlayTimesData(json[KEY_MATCH_START_TIME] as Long, json[KEY_MATCH_END_TIME] as Long),
+            PlayTimesList(setsStartTimesList, setsEndTimesList),
+            ScoreStack((json[KEY_SCORE_SIZE] as Long).toInt(), BitSet.valueOf(scoreStackLongArray.toLongArray())),
+            json[KEY_NAME_TEAM1] as String,
+            json[KEY_NAME_TEAM2] as String
+        )
+    }
+
+    private fun matchToJSONObject(match: DeuceMatch): JSONObject {
+        val json = JSONObject()
+
+        json[KEY_NUM_SETS] = match.numSets.ordinal
+        json[KEY_SERVER] = match.startingServer.ordinal
+        json[KEY_OVERTIME_RULE] = match.overtimeRule.ordinal
+        json[KEY_MATCH_TYPE] = match.matchType.ordinal
+        json[KEY_MATCH_START_TIME] = match.playTimes.startTime
+        json[KEY_MATCH_END_TIME] = match.playTimes.endTime
+        val setsStartTimesJSON = JSONArray()
+        setsStartTimesJSON.addAll(match.setsTimesLog.getStartTimesArray().toList())
+        json[KEY_SETS_START_TIMES] = setsStartTimesJSON
+        val setsEndTimesJSON = JSONArray()
+        setsEndTimesJSON.addAll(match.setsTimesLog.getEndTimesArray().toList())
+        json[KEY_SETS_END_TIMES] = setsEndTimesJSON
+        json[KEY_SCORE_SIZE] = match.scoreLog.size
+        val scoreLogArrayJSON = JSONArray()
+        scoreLogArrayJSON.addAll(match.scoreLog.bitSetToLongArray().toList())
+        json[KEY_SCORE_ARRAY] = scoreLogArrayJSON
+        json[KEY_NAME_TEAM1] = match.nameTeam1
+        json[KEY_NAME_TEAM2] = match.nameTeam2
+
+        return json
+    }
+
+    fun writeToFile() {
+        val fileWriter = FileWriter(file)
+        val json = JSONArray()
+        json.addAll(map { matchToJSONObject(it) })
+        fileWriter.write(json.toString())
+        fileWriter.flush()
+        fileWriter.close()
+    }
+}
+
+/*class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
     inner class ListItr(private var cursor: Int) : MutableListIterator<DeuceMatch> {
         override fun hasPrevious() = cursor != 0
 
@@ -210,4 +280,4 @@ class JSONMatchList(val file: File) : MutableList<DeuceMatch> {
     override fun subList(fromIndex: Int, toIndex: Int): MutableList<DeuceMatch> {
         TODO("Not yet implemented")
     }
-}
+}*/

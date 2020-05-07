@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.info_dialog.view.*
 import net.mqduck.deuce.common.Match
 import java.util.*
 
-class InfoDialog(val match: Match, val scoresListFragment: ScoresListFragment) : DialogFragment() {
+class InfoDialog(val match: Match, val position: Int, val scoresListFragment: ScoresListFragment) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         //return super.onCreateDialog(savedInstanceState)
 
@@ -51,7 +51,8 @@ class InfoDialog(val match: Match, val scoresListFragment: ScoresListFragment) :
             .setPositiveButton(resources.getString(R.string.save_changes)) { _, _ ->
                 match.nameTeam1 = view.edit_name_team1.text.toString()
                 match.nameTeam2 = view.edit_name_team2.text.toString()
-                scoresListFragment.view.adapter?.notifyDataSetChanged()
+                scoresListFragment.view.adapter?.notifyItemChanged(position)
+                mainActivity.matchList.writeToFile()
             }
             .setNegativeButton(resources.getString(R.string.close)) { _, _ -> }
         val dialog = builder.create()

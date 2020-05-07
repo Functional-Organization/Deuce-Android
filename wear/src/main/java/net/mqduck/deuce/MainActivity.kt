@@ -136,7 +136,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     internal lateinit var preferences: DeuceWearPreferences
     internal lateinit var storage: File
     lateinit var dataClient: DataClient
-    internal lateinit var matchList: JSONMatchList
+    internal lateinit var matchList: MatchList
 
     private var setupFragment = SetupFragment(this)
     private var advancedSetupFragment = AdvancedSetupFragment(this)
@@ -171,7 +171,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
         //storage = File(getExternalFilesDir(null), filename)
         dataClient = Wearable.getDataClient(this)
-        matchList = JSONMatchList(File(filesDir, MATCH_LIST_FILE_NAME))
+        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
 
         syncMatchList()
 

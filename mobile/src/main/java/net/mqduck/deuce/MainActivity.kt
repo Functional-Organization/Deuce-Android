@@ -35,18 +35,14 @@ lateinit var mainActivity: MainActivity
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresListFragment.OnMatchInteractionListener {
     private lateinit var scoresListFragment: ScoresListFragment
-    internal lateinit var matchList: JSONMatchList
+    internal lateinit var matchList: MatchList
 
     init {
         mainActivity = this
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        matchList = JSONMatchList(File(filesDir, MATCH_LIST_FILE_NAME))
-
-        for (match in matchList) {
-            Log.d("foo", "foo")
-        }
+        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
 
         // TODO: Remove after testing
         if (matchList.isEmpty()) {
@@ -228,11 +224,11 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         }
     }
 
-    override fun onMatchInteraction(item: Match?) {
+    override fun onMatchInteraction(item: Match?, position: Int) {
         // TODO: Make less ugly
         item?.let {
             scoresListFragment.fragmentManager?.let {
-                val infoDialog = InfoDialog(item, scoresListFragment)
+                val infoDialog = InfoDialog(item, position, scoresListFragment)
                 infoDialog.show(it, "info")
             }
         }

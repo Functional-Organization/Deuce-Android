@@ -132,6 +132,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         if (winners.game != Winner.NONE) {
             if (winners.set != Winner.NONE) {
                 mainActivity.matchList.add(mainActivity.match)
+                mainActivity.matchList.writeToFile()
                 mainActivity.syncMatchList()
             } else {
                 val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {

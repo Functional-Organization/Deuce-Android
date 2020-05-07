@@ -118,7 +118,7 @@ class ScoresListFragment : Fragment() {
      * for more information.
      */
     interface OnMatchInteractionListener {
-        fun onMatchInteraction(item: Match?)
+        fun onMatchInteraction(item: Match?, position: Int)
     }
 
     companion object {
