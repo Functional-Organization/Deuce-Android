@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 import java.io.File
 
-class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
+class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider, DataClient.OnDataChangedListener {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
     //TODO: Find a way to disable anti-aliasing on ambient images
@@ -169,11 +169,10 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationDrawer = navigation_drawer
 
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
-        //storage = File(getExternalFilesDir(null), filename)
         dataClient = Wearable.getDataClient(this)
         matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
 
-        syncMatchList()
+        syncMatchList(false)
 
         var fragment = FragmentEnum.SETUP
 
@@ -226,6 +225,16 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         switchFragment(fragment)
     }
 
+    override fun onResume() {
+        super.onResume()
+        Wearable.getDataClient(this).addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Wearable.getDataClient(this).removeListener(this)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
@@ -276,19 +285,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         // Create a data map and put data in it
         val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
-            /*dataMap.putInt(KEY_MATCH_STATE, MatchState.NEW.ordinal)
-            dataMap.putInt(KEY_NUM_SETS, match.numSets.ordinal)
-            dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
-            dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
-            dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
-            dataMap.putLong(KEY_MATCH_START_TIME, match.playTimes.startTime)
-            dataMap.putLong(KEY_MATCH_END_TIME, match.playTimes.endTime)
-            dataMap.putLongArray(KEY_SETS_START_TIMES, match.setsTimesLog.startTimes.toLongArray())
-            dataMap.putLongArray(KEY_SETS_END_TIMES, match.setsTimesLog.endTimes.toLongArray())
-            dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
-            dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
-            dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
-            dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)*/
             writeMatchToDataMap(match, dataMap)
             asPutDataRequest()
         }
@@ -338,14 +334,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             override fun getItemText(pos: Int) = items.list[pos].text
 
             override fun getItemDrawable(pos: Int): Drawable? = getDrawable(items.list[pos].drawableId)
-
-            /*override fun getItemDrawable(pos: Int): Drawable? {
-                val icon = getDrawable(items.list[pos].drawableId)
-                if (icon != null && ambientMode) {
-                    icon.isFilterBitmap = false
-                }
-                return icon
-            }*/
 
             override fun getCount() = items.list.size
 
@@ -427,13 +415,16 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
     }
 
-    internal fun syncMatchList() {
+    internal fun syncMatchList(deleteCurrentMatch: Boolean) {
         val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_MATCH_LIST).run {
             dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
                 val dataMap = DataMap()
                 writeMatchToDataMap(it, dataMap)
                 dataMap
             }))
+            //dataMap.putInt(KEY_MATCH_LIST_STATE, MatchListState.PENDING.ordinal)
+            dataMap.putBoolean(KEY_MATCH_LIST_STATE, true)
+            dataMap.putBoolean(KEY_DELETE_CURRENT_MATCH, deleteCurrentMatch)
             asPutDataRequest()
         }
         putDataRequest.setUrgent()
@@ -441,39 +432,21 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         putDataTask.addOnSuccessListener {
             Log.d("foo", "sync matches success")
         }
+    }
 
-        /*val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_MATCH_LIST).run {
-            val matches = matchList.toList()
-
-            dataMap.putInt(KEY_NUM_MATCHES, matches.size)
-            dataMap.putIntegerArrayList(KEY_NUM_SETS, ArrayList(matches.map { it.numSets.ordinal }))
-            dataMap.putIntegerArrayList(KEY_SERVER, ArrayList(matches.map { it.startingServer.ordinal }))
-            dataMap.putIntegerArrayList(KEY_OVERTIME_RULE, ArrayList(matches.map { it.overtimeRule.ordinal }))
-            dataMap.putIntegerArrayList(KEY_MATCH_TYPE, ArrayList(matches.map { it.matchType.ordinal }))
-            dataMap.putLongArray(KEY_MATCH_START_TIME, matches.map { it.playTimes.startTime }.toLongArray())
-            dataMap.putLongArray(KEY_MATCH_END_TIME, matches.map { it.playTimes.endTime }.toLongArray())
-            *//*for (i in matches.indices) {
-                dataMap.putLongArray(
-                    "${KEY_SETS_START_TIMES}_${i}",
-                    matches[i].setsTimesLog.map { it.startTime }.toLongArray()
-                )
-                dataMap.putLongArray(
-                    "${KEY_SETS_END_TIMES}_${i}",
-                    matches[i].setsTimesLog.map { it.endTime }.toLongArray()
-                )
-                dataMap.putLongArray("${KEY_SCORE_ARRAY}_${i}", matches[i].scoreLog.bitSetToLongArray())
-            }*//*
-            val setsPlayTimesList = ArrayList<DataMap>()
-            val scoreLogList = ArrayList<DataMap>
-            dataMap.putIntegerArrayList(KEY_SCORE_SIZE, ArrayList(matches.map { it.scoreLog.size }))
-            dataMap.putStringArray(KEY_NAME_TEAM1, matches.map { it.nameTeam1 }.toTypedArray())
-            dataMap.putStringArray(KEY_NAME_TEAM2, matches.map { it.nameTeam2 }.toTypedArray())
-            asPutDataRequest()
+    override fun onDataChanged(dataEvents: DataEventBuffer) {
+        dataEvents.forEach { event ->
+            if (event.type == DataEvent.TYPE_CHANGED) {
+                event.dataItem.also { item ->
+                    if (item.uri.path?.compareTo(PATH_TRANSMISSION_SIGNAL) == 0) {
+                        DataMapItem.fromDataItem(item).dataMap.apply {
+                            Log.d("foo", "clearing match list")
+                            matchList.clear()
+                            matchList.writeToFile()
+                        }
+                    }
+                }
+            }
         }
-        putDataRequest.setUrgent()
-        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
-        putDataTask.addOnSuccessListener {
-            Log.d("foo", "sync matches success")
-        }*/
     }
 }

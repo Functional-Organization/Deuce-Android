@@ -22,7 +22,6 @@ package net.mqduck.deuce
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -130,10 +129,10 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         }
 
         if (winners.game != Winner.NONE) {
-            if (winners.set != Winner.NONE) {
+            if (winners.match != Winner.NONE) {
                 mainActivity.matchList.add(mainActivity.match)
                 mainActivity.matchList.writeToFile()
-                mainActivity.syncMatchList()
+                mainActivity.syncMatchList(true)
             } else {
                 val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)
@@ -147,7 +146,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                 putDataRequest.setUrgent()
                 val putDataTask: Task<DataItem> = mainActivity.dataClient.putDataItem(putDataRequest)
                 putDataTask.addOnSuccessListener {
-                    Log.d("foo", "update match success")
+                    //Log.d("foo", "update match success")
                 }
             }
         }

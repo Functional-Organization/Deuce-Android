@@ -99,3 +99,15 @@ enum class MatchState {
         }
     }
 }
+
+enum class MatchListState {
+    PENDING, RECEIVED, CLEAR;
+
+    companion object {
+        fun fromOrdinal(ordinal: Int) = when (ordinal) {
+            PENDING.ordinal -> PENDING
+            RECEIVED.ordinal -> RECEIVED
+            else -> CLEAR
+        }
+    }
+}

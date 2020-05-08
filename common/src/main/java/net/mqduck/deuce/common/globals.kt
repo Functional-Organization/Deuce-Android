@@ -19,6 +19,13 @@
 
 package net.mqduck.deuce.common
 
+import android.util.Log
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.DataItem
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.PutDataRequest
+
 const val DEFAULT_WIN_MARGIN_MATCH = 1
 const val DEFAULT_WIN_MINIMUM_SET = 6
 const val DEFAULT_WIN_MARGIN_SET = 2
@@ -53,12 +60,26 @@ const val KEY_MATCH_ADDED = "match_added"
 const val KEY_NAME_TEAM1 = "name_team1"
 const val KEY_NAME_TEAM2 = "name_team2"
 const val KEY_MATCH_LIST = "match_list"
-
-//const val KEY_NEW_GAME = "new_game"
+const val KEY_MATCH_LIST_STATE = "match_list_state"
+const val KEY_DELETE_CURRENT_MATCH = "delete_match"
 const val KEY_MATCH_STATE = "game_state"
-const val KEY_NUM_MATCHES = "num_matches"
 
 const val PATH_CURRENT_MATCH = "/current_match"
 const val PATH_MATCH_LIST = "/matches"
+const val PATH_TRANSMISSION_SIGNAL = "/trans_signal"
+const val PATH_REQUEST_MATCH_SIGNAL = "/match_signal"
 
 const val MATCH_LIST_FILE_NAME = "deuce_matches"
+
+fun sendSignal(dataClient: DataClient, path: String) {
+    val putDataRequest: PutDataRequest =
+        PutDataMapRequest.create(path).run {
+            dataMap.putLong("dummy", System.currentTimeMillis())
+            asPutDataRequest()
+        }
+    putDataRequest.setUrgent()
+    val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
+    putDataTask.addOnSuccessListener {
+        Log.d("foo", "sent signal on $path")
+    }
+}

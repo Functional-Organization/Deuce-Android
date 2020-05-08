@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresListFragment.OnMatchInteractionListener {
     private lateinit var scoresListFragment: ScoresListFragment
     internal lateinit var matchList: MatchList
+    private lateinit var dataClient: DataClient
 
     init {
         mainActivity = this
@@ -75,6 +76,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         Game.init(this)
 
         scoresListFragment = fragment_scores as ScoresListFragment
+        dataClient = Wearable.getDataClient(this)
     }
 
     override fun onResume() {
@@ -124,6 +126,8 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                     } else {
                                         matchList.add(newMatch)
                                     }
+
+                                    scoresListFragment.view.adapter?.notifyDataSetChanged()
                                 }
                                 MatchState.ONGOING -> {
                                     Log.d("foo", "updating current match")
@@ -153,69 +157,45 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                         }
                     } else if (item.uri.path?.compareTo(PATH_MATCH_LIST) == 0) {
                         DataMapItem.fromDataItem(item).dataMap.apply {
-                            matchList.addAll(getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
-                                DeuceMatch(
-                                    NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
-                                    Team.fromOrdinal(matchDataMap.getInt(KEY_SERVER)),
-                                    OvertimeRule.fromOrdinal(matchDataMap.getInt(KEY_OVERTIME_RULE)),
-                                    MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
-                                    PlayTimesData(
-                                        matchDataMap.getLong(KEY_MATCH_START_TIME),
-                                        matchDataMap.getLong(KEY_MATCH_END_TIME)
-                                    ),
-                                    PlayTimesList(
-                                        matchDataMap.getLongArray(KEY_SETS_START_TIMES),
-                                        matchDataMap.getLongArray(KEY_SETS_END_TIMES)
-                                    ),
-                                    ScoreStack(
-                                        matchDataMap.getInt(KEY_SCORE_SIZE),
-                                        BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))
-                                    ),
-                                    matchDataMap.getString(KEY_NAME_TEAM1),
-                                    matchDataMap.getString(KEY_NAME_TEAM2)
-                                )
-                            })
-                        }
+                            if (getBoolean(KEY_MATCH_LIST_STATE, false)) {
+                                if (getBoolean(KEY_DELETE_CURRENT_MATCH) && matchList.last().winner == Winner.NONE) {
+                                    matchList.removeAt(matchList.size - 1)
+                                }
 
-                        /*DataMapItem.fromDataItem(item).dataMap.apply {
-                            val numMatches = getInt(KEY_NUM_MATCHES)
-                            val numSetsList = getIntegerArrayList(KEY_NUM_SETS)
-                            val startingServerList = getIntegerArrayList(KEY_SERVER)
-                            val overtimeRuleList = getIntegerArrayList(KEY_OVERTIME_RULE)
-                            val matchTypeList = getIntegerArrayList(KEY_MATCH_TYPE)
-                            val matchStartTimeList = getLongArray(KEY_MATCH_START_TIME)
-                            val matchEndTimeList = getLongArray(KEY_MATCH_END_TIME)
-                            val setsStartTimesList = ArrayList<LongArray>()
-                            val setsEndTimesList = ArrayList<LongArray>()
-                            val scoreLogBitsetLongArrayList = ArrayList<LongArray>()
-                            for (i in 0 until numMatches) {
-                                setsStartTimesList.add(getLongArray("${KEY_SETS_START_TIMES}_${i}"))
-                                setsEndTimesList.add(getLongArray("${KEY_SETS_END_TIMES}_${i}"))
-                                scoreLogBitsetLongArrayList.add(getLongArray("${KEY_SCORE_ARRAY}_${i}"))
-                            }
-                            val scoreLogSizeList = getIntegerArrayList(KEY_SCORE_SIZE)
-                            val nameTeam1List = getStringArray(KEY_NAME_TEAM1)
-                            val nameTeam2List = getStringArray(KEY_NAME_TEAM2)
+                                val dataMapArray = getDataMapArrayList(KEY_MATCH_LIST)
+                                if (dataMapArray != null) {
+                                    matchList.addAll(getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
+                                        DeuceMatch(
+                                            NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
+                                            Team.fromOrdinal(matchDataMap.getInt(KEY_SERVER)),
+                                            OvertimeRule.fromOrdinal(matchDataMap.getInt(KEY_OVERTIME_RULE)),
+                                            MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
+                                            PlayTimesData(
+                                                matchDataMap.getLong(KEY_MATCH_START_TIME),
+                                                matchDataMap.getLong(KEY_MATCH_END_TIME)
+                                            ),
+                                            PlayTimesList(
+                                                matchDataMap.getLongArray(KEY_SETS_START_TIMES),
+                                                matchDataMap.getLongArray(KEY_SETS_END_TIMES)
+                                            ),
+                                            ScoreStack(
+                                                matchDataMap.getInt(KEY_SCORE_SIZE),
+                                                BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))
+                                            ),
+                                            matchDataMap.getString(KEY_NAME_TEAM1),
+                                            matchDataMap.getString(KEY_NAME_TEAM2)
+                                        )
+                                    })
+                                    matchList.writeToFile()
 
-                            val matches = ArrayList<DeuceMatch>()
-                            for (i in 0 until numMatches) {
-                                matches.add(
-                                    DeuceMatch(
-                                        NumSets.fromOrdinal(numSetsList[i]),
-                                        Team.fromOrdinal(startingServerList[i]),
-                                        OvertimeRule.fromOrdinal(overtimeRuleList[i]),
-                                        MatchType.fromOrdinal(matchTypeList[i]),
-                                        PlayTimesData(matchStartTimeList[i], matchEndTimeList[i]),
-                                        PlayTimesList(setsStartTimesList[i], setsEndTimesList[i]),
-                                        ScoreStack(scoreLogSizeList[i], BitSet.valueOf(scoreLogBitsetLongArrayList[i])),
-                                        nameTeam1List[i],
-                                        nameTeam2List[i]
-                                    )
-                                )
+                                    scoresListFragment.view.adapter?.notifyDataSetChanged()
+
+                                    sendSignal(dataClient, PATH_TRANSMISSION_SIGNAL)
+                                } else {
+                                    Log.d("foo", "dataMapArray is null for some reason")
+                                }
                             }
-                            matchList.addAll(matches)
                         }
-                        DataMapItem.fromDataItem(item).dataMap.put*/
                     }
                 }
             } else if (event.type == DataEvent.TYPE_DELETED) {
