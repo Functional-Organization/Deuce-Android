@@ -117,30 +117,36 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     }*/
 
     private fun score(team: Team) {
-        val winners = mainActivity.match.score(team)
-        if (mainActivity.match.serviceChanged) {
+        val winners = mainActivity.currentMatch.score(team)
+        if (mainActivity.currentMatch.serviceChanged) {
             updateDisplay(false)
         } else {
             updateDisplay(true)
         }
-        if (mainActivity.match.winner != Winner.NONE) {
+        if (mainActivity.currentMatch.winner != Winner.NONE) {
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
         }
 
         if (winners.game != Winner.NONE) {
             if (winners.match != Winner.NONE) {
-                mainActivity.matchList.add(mainActivity.match)
+                mainActivity.matchList.add(mainActivity.currentMatch)
                 mainActivity.matchList.writeToFile()
                 mainActivity.syncMatchList(true)
             } else {
                 val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)
-                    dataMap.putLong(KEY_MATCH_END_TIME, mainActivity.match.playTimes.endTime)
-                    dataMap.putLongArray(KEY_SETS_START_TIMES, mainActivity.match.setsTimesLog.startTimes.toLongArray())
-                    dataMap.putLongArray(KEY_SETS_END_TIMES, mainActivity.match.setsTimesLog.endTimes.toLongArray())
-                    dataMap.putInt(KEY_SCORE_SIZE, mainActivity.match.scoreLogSize())
-                    dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.match.scoreLogArray())
+                    dataMap.putLong(KEY_MATCH_END_TIME, mainActivity.currentMatch.playTimes.endTime)
+                    dataMap.putLongArray(
+                        KEY_SETS_START_TIMES,
+                        mainActivity.currentMatch.setsTimesLog.startTimes.toLongArray()
+                    )
+                    dataMap.putLongArray(
+                        KEY_SETS_END_TIMES,
+                        mainActivity.currentMatch.setsTimesLog.endTimes.toLongArray()
+                    )
+                    dataMap.putInt(KEY_SCORE_SIZE, mainActivity.currentMatch.scoreLogSize())
+                    dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLogArray())
                     asPutDataRequest()
                 }
                 putDataRequest.setUrgent()
@@ -164,19 +170,19 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             }
         }
 
-        val scores = mainActivity.match.currentGame.getScoreStrings()
+        val scores = mainActivity.currentMatch.currentGame.getScoreStrings()
         button_score_p1.text = scores.player1
         button_score_p2.text = scores.player2
 
-        if (mainActivity.match.winner == Winner.NONE) {
-            when (mainActivity.match.serving) {
+        if (mainActivity.currentMatch.winner == Winner.NONE) {
+            when (mainActivity.currentMatch.serving) {
                 Serving.PLAYER1_LEFT -> {
                     ball_serving_t1.setImageResource(ballServingGreen)
                     moveBall(ball_serving_t1, posXBallLeftT1)
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.currentMatch.matchType == MatchType.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallRightT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -189,7 +195,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t1.visibility = View.VISIBLE
                     ball_serving_t2.visibility = View.INVISIBLE
 
-                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.currentMatch.matchType == MatchType.DOUBLES) {
                         ball_notserving_t1.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t1, posXBallLeftT1)
                         ball_notserving_t1.visibility = View.VISIBLE
@@ -202,7 +208,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.currentMatch.matchType == MatchType.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallRightT2)
                         ball_notserving_t2.visibility = View.VISIBLE
@@ -215,7 +221,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     ball_serving_t2.visibility = View.VISIBLE
                     ball_serving_t1.visibility = View.INVISIBLE
 
-                    if (mainActivity.match.matchType == MatchType.DOUBLES) {
+                    if (mainActivity.currentMatch.matchType == MatchType.DOUBLES) {
                         ball_notserving_t2.setImageResource(ballNotservingOrange)
                         moveBall(ball_notserving_t2, posXBallLeftT2)
                         ball_notserving_t2.visibility = View.VISIBLE
@@ -276,14 +282,14 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
 
         var textScoresMatchP1 = ""
         var textScoresMatchP2 = ""
-        for (set in mainActivity.match.sets) {
+        for (set in mainActivity.currentMatch.sets) {
             textScoresMatchP1 += set.scoreP1.toString() + "  "
             textScoresMatchP2 += set.scoreP2.toString() + "  "
         }
         text_scores_match_p1.text = textScoresMatchP1.trim()
         text_scores_match_p2.text = textScoresMatchP2.trim()
 
-        if (mainActivity.match.changeover) {
+        if (mainActivity.currentMatch.changeover) {
             changeover_arrow_down.visibility = View.VISIBLE
             changeover_arrow_up.visibility = View.VISIBLE
             fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)

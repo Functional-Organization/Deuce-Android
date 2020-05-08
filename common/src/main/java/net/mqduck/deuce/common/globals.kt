@@ -71,13 +71,15 @@ const val PATH_REQUEST_MATCH_SIGNAL = "/match_signal"
 
 const val MATCH_LIST_FILE_NAME = "deuce_matches"
 
-fun sendSignal(dataClient: DataClient, path: String) {
+fun sendSignal(dataClient: DataClient, path: String, urgent: Boolean) {
     val putDataRequest: PutDataRequest =
         PutDataMapRequest.create(path).run {
             dataMap.putLong("dummy", System.currentTimeMillis())
             asPutDataRequest()
         }
-    putDataRequest.setUrgent()
+    if (urgent) {
+        putDataRequest.setUrgent()
+    }
     val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
     putDataTask.addOnSuccessListener {
         Log.d("foo", "sent signal on $path")

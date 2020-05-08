@@ -77,6 +77,8 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
 
         scoresListFragment = fragment_scores as ScoresListFragment
         dataClient = Wearable.getDataClient(this)
+
+        sendSignal(dataClient, PATH_REQUEST_MATCH_SIGNAL, true)
     }
 
     override fun onResume() {
@@ -190,7 +192,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
 
                                     scoresListFragment.view.adapter?.notifyDataSetChanged()
 
-                                    sendSignal(dataClient, PATH_TRANSMISSION_SIGNAL)
+                                    sendSignal(dataClient, PATH_TRANSMISSION_SIGNAL, true)
                                 } else {
                                     Log.d("foo", "dataMapArray is null for some reason")
                                 }

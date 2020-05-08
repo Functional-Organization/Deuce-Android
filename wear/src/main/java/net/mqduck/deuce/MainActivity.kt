@@ -132,7 +132,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         override fun onUpdateAmbient() {}
     }
 
-    internal var match = DeuceMatch()
+    internal var currentMatch = DeuceMatch()
     internal lateinit var preferences: DeuceWearPreferences
     internal lateinit var storage: File
     lateinit var dataClient: DataClient
@@ -187,7 +187,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 fragment = savedInstanceState.getSerializable(KEY_CURRENT_FRAGMENT) as FragmentEnum
             }
             if (savedInstanceState.containsKey(KEY_MATCH)) {
-                match = savedInstanceState.getParcelable(KEY_MATCH)!!
+                currentMatch = savedInstanceState.getParcelable(KEY_MATCH)!!
             }
             if (savedInstanceState.containsKey(KEY_MATCH_ADDED)) {
                 matchAdded = savedInstanceState.getBoolean(KEY_MATCH_ADDED)
@@ -238,7 +238,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putParcelable(KEY_MATCH, match)
+        outState.putParcelable(KEY_MATCH, currentMatch)
         outState.putSerializable(KEY_CURRENT_FRAGMENT, currentFragment)
         outState.putBoolean(KEY_MATCH_ADDED, matchAdded)
     }
@@ -265,7 +265,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         navigationAdapter.enableMatch()
         switchFragment(FragmentEnum.SCORE)
 
-        match = DeuceMatch(
+        currentMatch = DeuceMatch(
             preferences.numSets,
             preferences.startingServer,
             preferences.overtime,
@@ -285,7 +285,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         // Create a data map and put data in it
         val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
-            writeMatchToDataMap(match, dataMap)
+            writeMatchToDataMap(currentMatch, dataMap)
             asPutDataRequest()
         }
         putDataRequest.setUrgent()
@@ -314,7 +314,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     fun undo() {
         // Because the ScoreFragment may no longer exist after the undo animation completes, undo must be performed
         // in MainActivity.
-        if (match.undo()) {
+        if (currentMatch.undo()) {
             image_undo.visibility = View.VISIBLE
             val fadeout = AlphaAnimation(1F, 0F)
             fadeout.duration = ScoreFragment.UNDO_ANIMATION_DURATION
@@ -439,10 +439,18 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             if (event.type == DataEvent.TYPE_CHANGED) {
                 event.dataItem.also { item ->
                     if (item.uri.path?.compareTo(PATH_TRANSMISSION_SIGNAL) == 0) {
-                        DataMapItem.fromDataItem(item).dataMap.apply {
-                            Log.d("foo", "clearing match list")
-                            matchList.clear()
-                            matchList.writeToFile()
+                        Log.d("foo", "clearing match list")
+                        matchList.clear()
+                        matchList.writeToFile()
+                    } else if (item.uri.path?.compareTo(PATH_REQUEST_MATCH_SIGNAL) == 0) {
+                        val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+                            writeMatchToDataMap(currentMatch, dataMap)
+                            asPutDataRequest()
+                        }
+                        putDataRequest.setUrgent()
+                        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
+                        putDataTask.addOnSuccessListener {
+                            Log.d("foo", "send match success")
                         }
                     }
                 }
