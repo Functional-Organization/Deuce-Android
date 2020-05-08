@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresListFragment.OnMatchInteractionListener {
     private lateinit var scoresListFragment: ScoresListFragment
     internal lateinit var matchList: MatchList
-    private lateinit var dataClient: DataClient
+    internal lateinit var dataClient: DataClient
 
     init {
         mainActivity = this

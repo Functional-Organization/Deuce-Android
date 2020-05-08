@@ -32,7 +32,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
@@ -283,15 +282,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             }
         )
 
-        // Create a data map and put data in it
-        val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+        syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
             writeMatchToDataMap(currentMatch, dataMap)
-            asPutDataRequest()
-        }
-        putDataRequest.setUrgent()
-        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
-        putDataTask.addOnSuccessListener {
-            Log.d("foo", "new match success")
         }
     }
 
@@ -416,21 +408,14 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     internal fun syncMatchList(deleteCurrentMatch: Boolean) {
-        val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_MATCH_LIST).run {
+        syncData(dataClient, PATH_MATCH_LIST, true) { dataMap ->
             dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
-                val dataMap = DataMap()
-                writeMatchToDataMap(it, dataMap)
-                dataMap
+                val matchDataMap = DataMap()
+                writeMatchToDataMap(it, matchDataMap)
+                matchDataMap
             }))
-            //dataMap.putInt(KEY_MATCH_LIST_STATE, MatchListState.PENDING.ordinal)
             dataMap.putBoolean(KEY_MATCH_LIST_STATE, true)
             dataMap.putBoolean(KEY_DELETE_CURRENT_MATCH, deleteCurrentMatch)
-            asPutDataRequest()
-        }
-        putDataRequest.setUrgent()
-        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
-        putDataTask.addOnSuccessListener {
-            Log.d("foo", "sync matches success")
         }
     }
 
@@ -443,14 +428,10 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                         matchList.clear()
                         matchList.writeToFile()
                     } else if (item.uri.path?.compareTo(PATH_REQUEST_MATCH_SIGNAL) == 0) {
-                        val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
-                            writeMatchToDataMap(currentMatch, dataMap)
-                            asPutDataRequest()
-                        }
-                        putDataRequest.setUrgent()
-                        val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
-                        putDataTask.addOnSuccessListener {
-                            Log.d("foo", "send match success")
+                        if (matchAdded) {
+                            syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
+                                writeMatchToDataMap(currentMatch, dataMap)
+                            }
                         }
                     }
                 }

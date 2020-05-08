@@ -21,10 +21,7 @@ package net.mqduck.deuce.common
 
 import android.util.Log
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.DataItem
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.PutDataRequest
+import com.google.android.gms.wearable.*
 
 const val DEFAULT_WIN_MARGIN_MATCH = 1
 const val DEFAULT_WIN_MINIMUM_SET = 6
@@ -68,6 +65,7 @@ const val PATH_CURRENT_MATCH = "/current_match"
 const val PATH_MATCH_LIST = "/matches"
 const val PATH_TRANSMISSION_SIGNAL = "/trans_signal"
 const val PATH_REQUEST_MATCH_SIGNAL = "/match_signal"
+const val PATH_UPDATE_NAMES = "/names"
 
 const val MATCH_LIST_FILE_NAME = "deuce_matches"
 
@@ -83,5 +81,19 @@ fun sendSignal(dataClient: DataClient, path: String, urgent: Boolean) {
     val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
     putDataTask.addOnSuccessListener {
         Log.d("foo", "sent signal on $path")
+    }
+}
+
+fun syncData(dataClient: DataClient, path: String, urgent: Boolean, dataFunction: (DataMap) -> Unit) {
+    val putDataRequest: PutDataRequest = PutDataMapRequest.create(path).run {
+        dataFunction(dataMap)
+        asPutDataRequest()
+    }
+    if (urgent) {
+        putDataRequest.setUrgent()
+    }
+    val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataRequest)
+    putDataTask.addOnSuccessListener {
+        Log.d("foo", "update successful on $path")
     }
 }

@@ -29,10 +29,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.wearable.DataItem
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.PutDataRequest
 import kotlinx.android.synthetic.main.fragment_score.*
 import net.mqduck.deuce.common.*
 
@@ -134,7 +130,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                 mainActivity.matchList.writeToFile()
                 mainActivity.syncMatchList(true)
             } else {
-                val putDataRequest: PutDataRequest = PutDataMapRequest.create(PATH_CURRENT_MATCH).run {
+                syncData(mainActivity.dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)
                     dataMap.putLong(KEY_MATCH_END_TIME, mainActivity.currentMatch.playTimes.endTime)
                     dataMap.putLongArray(
@@ -147,12 +143,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
                     )
                     dataMap.putInt(KEY_SCORE_SIZE, mainActivity.currentMatch.scoreLogSize())
                     dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLogArray())
-                    asPutDataRequest()
-                }
-                putDataRequest.setUrgent()
-                val putDataTask: Task<DataItem> = mainActivity.dataClient.putDataItem(putDataRequest)
-                putDataTask.addOnSuccessListener {
-                    //Log.d("foo", "update match success")
                 }
             }
         }

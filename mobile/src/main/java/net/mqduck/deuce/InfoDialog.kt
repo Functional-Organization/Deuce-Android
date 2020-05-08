@@ -27,7 +27,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.info_dialog.view.*
-import net.mqduck.deuce.common.Match
+import net.mqduck.deuce.common.*
 import java.util.*
 
 class InfoDialog(val match: Match, val position: Int, val scoresListFragment: ScoresListFragment) : DialogFragment() {
@@ -53,6 +53,12 @@ class InfoDialog(val match: Match, val position: Int, val scoresListFragment: Sc
                 match.nameTeam2 = view.edit_name_team2.text.toString()
                 scoresListFragment.view.adapter?.notifyItemChanged(position)
                 mainActivity.matchList.writeToFile()
+                if (match.winner == Winner.NONE) {
+                    syncData(mainActivity.dataClient, PATH_UPDATE_NAMES, true) { dataMap ->
+                        dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
+                        dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
+                    }
+                }
             }
             .setNegativeButton(resources.getString(R.string.close)) { _, _ -> }
         val dialog = builder.create()
