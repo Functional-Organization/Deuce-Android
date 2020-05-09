@@ -26,7 +26,7 @@
     <color name="secondary_text">#8a8a8a</color>
     <color name="secondary_text_red">#FF7575</color>
     <color name="tertiary_text">#707070</color>
-    <color name="icons">#222b2f</color>
-    <color name="divider">#424242</color>
+    <!--<color name="icons">#222b2f</color>
+    <color name="divider">#424242</color>-->
     <color name="list_item">#222b2f</color>
 </resources>

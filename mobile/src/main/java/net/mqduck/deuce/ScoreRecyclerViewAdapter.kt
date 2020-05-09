@@ -20,9 +20,7 @@
 package net.mqduck.deuce
 
 
-import android.app.Activity
 import android.graphics.Typeface
-import android.os.Build
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -31,13 +29,12 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
-import net.mqduck.deuce.ScoresListFragment.OnMatchInteractionListener
 import net.mqduck.deuce.common.Winner
 import java.util.*
 import kotlin.math.roundToInt
 
-class ScoreRecyclerViewAdapter() : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {}
+class ScoreRecyclerViewAdapter : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     companion object {
         val setLayoutParams = LinearLayout.LayoutParams(

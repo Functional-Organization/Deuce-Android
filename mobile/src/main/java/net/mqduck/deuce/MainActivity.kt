@@ -224,9 +224,9 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                         syncFinishedMatches(DataMapItem.fromDataItem(item).dataMap)
                     }
                 }
-            } else if (event.type == DataEvent.TYPE_DELETED) {
+            } /*else if (event.type == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
-            }
+            }*/
         }
     }
 
