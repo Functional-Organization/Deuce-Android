@@ -27,9 +27,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 import java.io.File
 import java.util.*
+import kotlin.random.Random
 
 
-lateinit var mainActivity: MainActivity
+internal lateinit var mainActivity: MainActivity
 
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresListFragment.OnMatchInteractionListener {
@@ -42,6 +43,8 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //val startTime = System.currentTimeMillis()
+
         matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME))
 
         // TODO: Remove after testing
@@ -69,15 +72,18 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
             )
             matchList.add(DeuceMatch())*/
 
-            val rd = Random()
+            val now = System.currentTimeMillis()
             for (i in 0..1000) {
                 val dm = DeuceMatch()
                 while (dm.winner == Winner.NONE) {
-                    dm.score(if (rd.nextBoolean()) Team.TEAM1 else Team.TEAM2)
+                    dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
                 }
+                dm.playTimes.startTime = Random.nextLong(0, now)
+                dm.playTimes.endTime = Random.nextLong(0, now)
                 matchList.add(dm)
-                matchList.writeToFile()
             }
+            matchList = MatchList(matchList.file, matchList.backupFile, matchList.toSet().sorted())
+            matchList.writeToFile()
         }
 
         super.onCreate(savedInstanceState)
@@ -87,6 +93,8 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
 
         scoresListFragment = fragment_scores as ScoresListFragment
         dataClient = Wearable.getDataClient(this)
+
+        //Log.d("foo", "elapsed: ${System.currentTimeMillis() - startTime}")
     }
 
     override fun onResume() {
@@ -101,8 +109,6 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
-        Log.d("foo", "outside")
-
         // TODO: Change to local inline function when support is added to Kotlin
         fun syncCurrentMatch(dataMap: DataMap) {
             when (MatchState.fromOrdinal(dataMap.getInt(KEY_MATCH_STATE))) {
@@ -139,6 +145,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                     }
 
                     scoresListFragment.view.adapter?.notifyDataSetChanged()
+                    scoresListFragment.view.scrollToPosition(matchList.lastIndex)
                 }
                 MatchState.ONGOING -> {
                     Log.d("foo", "updating current match")
@@ -218,7 +225,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
 
                     scoresListFragment.view.adapter?.notifyDataSetChanged()
 
-                    sendSignal(dataClient, PATH_TRANSMISSION_SIGNAL, true)
+                    sendSignal(dataClient, PATH_TRANSMISSION_SIGNAL, false)
                 } else {
                     Log.d("foo", "dataMapArray is null for some reason")
                 }
