@@ -23,4 +23,5 @@
     <string name="end_time">End Time:</string>
     <string name="save_changes">Save Changes</string>
     <string name="close">Close</string>
+    <string name="live">LIVE</string>
 </resources>

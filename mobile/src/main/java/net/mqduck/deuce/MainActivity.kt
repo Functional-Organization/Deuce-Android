@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
 
         // TODO: Remove after testing
-        /*if (matchList.isEmpty()) {
+        if (BuildConfig.DEBUG && matchList.isEmpty()) {
             val scoreLog = ScoreStack()
             for (i in 0 until 48) {
                 scoreLog.push(Team.TEAM1)
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                 )
             )
             matchList.add(DeuceMatch())
-        }*/
+        }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -106,7 +106,10 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                         Team.fromOrdinal(getInt(KEY_SERVER)),
                                         OvertimeRule.fromOrdinal(getInt(KEY_OVERTIME_RULE)),
                                         MatchType.fromOrdinal(getInt(KEY_MATCH_TYPE)),
-                                        PlayTimesData(getLong(KEY_MATCH_START_TIME), getLong(KEY_MATCH_END_TIME)),
+                                            PlayTimesData(
+                                                    getLong(KEY_MATCH_START_TIME),
+                                                    getLong(KEY_MATCH_END_TIME)
+                                            ),
                                         PlayTimesList(
                                             getLongArray(KEY_SETS_START_TIMES),
                                             getLongArray(KEY_SETS_END_TIMES)

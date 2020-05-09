@@ -22,6 +22,7 @@ package net.mqduck.deuce
 
 import android.app.Activity
 import android.graphics.Typeface
+import android.os.Build
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -137,9 +138,43 @@ class ScoreRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val match = mainActivity.matchList[position]
 
-        holder.view.text_date.text = dateFormat.format(Date(match.playTimes.startTime))
+        //holder.view.text_date.text = dateFormat.format(Date(match.playTimes.startTime))
         holder.view.text_team_1.text = match.nameTeam1
         holder.view.text_team_2.text = match.nameTeam2
+
+        if (match.winner == Winner.NONE) {
+            holder.view.text_date.text = context.getString(R.string.live)
+            holder.view.text_date.setTextColor(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        context.resources.getColor(R.color.secondary_text_red, context.theme)
+                    else
+                        context.resources.getColor(R.color.secondary_text_red)
+            )
+            holder.view.text_date.setTypeface(null, Typeface.BOLD)
+        } else {
+            holder.view.text_date.text = dateFormat.format(Date(match.playTimes.startTime))
+            holder.view.text_date.setTextColor(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        context.resources.getColor(R.color.secondary_text, context.theme)
+                    else
+                        context.resources.getColor(R.color.secondary_text)
+            )
+            holder.view.text_date.setTypeface(null, Typeface.NORMAL)
+        }
+
+        /*holder.view.text_date.setTextColor(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (match.winner == Winner.NONE)
+                    context.resources.getColor(R.color.secondary_text_red, context.theme)
+                else
+                    context.resources.getColor(R.color.secondary_text, context.theme)
+            } else {
+                if (match.winner == Winner.NONE)
+                    context.resources.getColor(R.color.secondary_text_red)
+                else
+                    context.resources.getColor(R.color.secondary_text)
+            }
+        )*/
 
         /*if (match.winner == Winner.TEAM1) {
             holder.view.text_team_1.setTypeface(holder.view.text_team_1.typeface, Typeface.BOLD)
