@@ -128,7 +128,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             if (winners.match != Winner.NONE) {
                 mainActivity.matchList.add(mainActivity.currentMatch)
                 mainActivity.matchList.writeToFile()
-                mainActivity.syncMatchList(true)
+                //mainActivity.syncMatchList(true)
+                mainActivity.syncMatches()
             } else {
                 syncData(mainActivity.dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)

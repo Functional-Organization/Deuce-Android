@@ -28,11 +28,18 @@ import java.io.FileWriter
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MatchList(val file: File) : ArrayList<DeuceMatch>() {
-    init {
+class MatchList : ArrayList<DeuceMatch> {
+    val file: File
+
+    constructor(file: File) : super() {
+        this.file = file
         if (file.exists()) {
             addAll((JSONParser().parse(FileReader(file)) as JSONArray).map { jsonObjectToMatch(it as JSONObject) })
         }
+    }
+
+    constructor(file: File, list: List<DeuceMatch>) : super(list) {
+        this.file = file
     }
 
     private fun jsonObjectToMatch(json: JSONObject): DeuceMatch {

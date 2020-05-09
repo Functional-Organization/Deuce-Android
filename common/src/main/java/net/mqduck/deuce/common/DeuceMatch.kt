@@ -21,6 +21,7 @@ package net.mqduck.deuce.common
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.Log
 
 class DeuceMatch(
     val numSets: NumSets,
@@ -49,7 +50,7 @@ class DeuceMatch(
     scoreLog,
     nameTeam1,
     nameTeam2
-), Parcelable {
+), Parcelable, Comparable<DeuceMatch> {
     constructor() : this(
         NumSets.ONE,
         Team.TEAM1,
@@ -99,5 +100,20 @@ class DeuceMatch(
         override fun newArray(size: Int): Array<DeuceMatch?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun compareTo(other: DeuceMatch)/* = playTimes.startTime.compareTo(other.playTimes.startTime)*/: Int {
+        Log.d("foo", "comparing")
+        return playTimes.startTime.compareTo(other.playTimes.startTime)
+    }
+
+    override fun equals(other: Any?)/* = other is DeuceMatch && playTimes.startTime == other.playTimes.startTime*/: Boolean {
+        Log.d("foo", "checking equality")
+        return other is DeuceMatch && playTimes.startTime == other.playTimes.startTime
+    }
+
+    override fun hashCode()/* = playTimes.startTime.hashCode()*/: Int {
+        Log.d("foo", "getting hash code")
+        return playTimes.startTime.hashCode()
     }
 }

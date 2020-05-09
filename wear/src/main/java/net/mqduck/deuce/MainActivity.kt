@@ -171,8 +171,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataClient = Wearable.getDataClient(this)
         matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
 
-        syncMatchList(false)
-
         var fragment = FragmentEnum.SETUP
 
         savedInstanceState?.let {
@@ -227,6 +225,15 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onResume() {
         super.onResume()
         Wearable.getDataClient(this).addListener(this)
+        /*if (matchAdded) {
+            syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
+                writeMatchToDataMap(currentMatch, dataMap)
+            }
+        }
+        if (matchList.isNotEmpty()) {
+            syncMatchList(false)
+        }*/
+        syncMatches()
     }
 
     override fun onPause() {
@@ -407,7 +414,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
     }
 
-    internal fun syncMatchList(deleteCurrentMatch: Boolean) {
+    /*internal fun syncMatchList(deleteCurrentMatch: Boolean) {
         syncData(dataClient, PATH_MATCH_LIST, true) { dataMap ->
             dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
                 val matchDataMap = DataMap()
@@ -416,6 +423,29 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             }))
             dataMap.putBoolean(KEY_MATCH_LIST_STATE, true)
             dataMap.putBoolean(KEY_DELETE_CURRENT_MATCH, deleteCurrentMatch)
+        }
+    }*/
+
+    internal fun syncMatches() {
+        var deleteCurrentMatch = true
+
+        if (matchAdded && currentMatch.winner == Winner.NONE) {
+            deleteCurrentMatch = false
+            syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
+                writeMatchToDataMap(currentMatch, dataMap)
+            }
+        }
+
+        if (matchList.isNotEmpty()) {
+            syncData(dataClient, PATH_MATCH_LIST, true) { dataMap ->
+                dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
+                    val matchDataMap = DataMap()
+                    writeMatchToDataMap(it, matchDataMap)
+                    matchDataMap
+                }))
+                dataMap.putBoolean(KEY_MATCH_LIST_STATE, true)
+                dataMap.putBoolean(KEY_DELETE_CURRENT_MATCH, deleteCurrentMatch)
+            }
         }
     }
 
@@ -427,12 +457,18 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                         Log.d("foo", "clearing match list")
                         matchList.clear()
                         matchList.writeToFile()
-                    } else if (item.uri.path?.compareTo(PATH_REQUEST_MATCH_SIGNAL) == 0) {
-                        if (matchAdded) {
+                    } else if (item.uri.path?.compareTo(PATH_REQUEST_MATCHES_SIGNAL) == 0) {
+                        /*if (matchAdded) {
                             syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                                 writeMatchToDataMap(currentMatch, dataMap)
                             }
-                        }
+                            if (matchList.isNotEmpty()) {
+                                syncMatchList(false)
+                            }
+                        } else if (matchList.isNotEmpty()) {
+                            syncMatchList(true)
+                        }*/
+                        syncMatches()
                     }
                 }
             }

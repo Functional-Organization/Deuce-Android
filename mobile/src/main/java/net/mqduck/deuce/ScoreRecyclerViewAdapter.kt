@@ -31,7 +31,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
 import net.mqduck.deuce.ScoresListFragment.OnMatchInteractionListener
-import net.mqduck.deuce.common.DeuceMatch
 import net.mqduck.deuce.common.Winner
 import java.util.*
 import kotlin.math.roundToInt
@@ -88,7 +87,8 @@ import kotlin.math.roundToInt
 }*/
 
 class ScoreRecyclerViewAdapter(
-    private val matches: List<DeuceMatch>,
+    //private val matches: List<DeuceMatch>,
+    private val mainActivity: MainActivity,
     private val listener: OnMatchInteractionListener?,
     private val context: Activity
 ) : RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder>() {
@@ -135,7 +135,7 @@ class ScoreRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val match = matches[position]
+        val match = mainActivity.matchList[position]
 
         holder.view.text_date.text = dateFormat.format(Date(match.playTimes.startTime))
         holder.view.text_team_1.text = match.nameTeam1
@@ -215,5 +215,5 @@ class ScoreRecyclerViewAdapter(
         holder.view.setOnClickListener { listener?.onMatchInteraction(match, position) }
     }
 
-    override fun getItemCount() = matches.size
+    override fun getItemCount() = mainActivity.matchList.size
 }

@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
 
         // TODO: Remove after testing
-        if (matchList.isEmpty()) {
+        /*if (matchList.isEmpty()) {
             val scoreLog = ScoreStack()
             for (i in 0 until 48) {
                 scoreLog.push(Team.TEAM1)
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                 )
             )
             matchList.add(DeuceMatch())
-        }
+        }*/
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -77,13 +77,12 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
 
         scoresListFragment = fragment_scores as ScoresListFragment
         dataClient = Wearable.getDataClient(this)
-
-        sendSignal(dataClient, PATH_REQUEST_MATCH_SIGNAL, true)
     }
 
     override fun onResume() {
         super.onResume()
         Wearable.getDataClient(this).addListener(this)
+        sendSignal(dataClient, PATH_REQUEST_MATCHES_SIGNAL, true)
     }
 
     override fun onPause() {
@@ -124,7 +123,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                         matchList.isNotEmpty() &&
                                         matchList.last().winner == Winner.NONE
                                     ) {
-                                        matchList[matchList.size - 1] = newMatch
+                                        matchList[matchList.lastIndex] = newMatch
                                     } else {
                                         matchList.add(newMatch)
                                     }
@@ -160,13 +159,30 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                     } else if (item.uri.path?.compareTo(PATH_MATCH_LIST) == 0) {
                         DataMapItem.fromDataItem(item).dataMap.apply {
                             if (getBoolean(KEY_MATCH_LIST_STATE, false)) {
-                                if (getBoolean(KEY_DELETE_CURRENT_MATCH) && matchList.last().winner == Winner.NONE) {
+                                /*if (getBoolean(KEY_DELETE_CURRENT_MATCH) && matchList.last().winner == Winner.NONE) {
                                     matchList.removeAt(matchList.size - 1)
-                                }
+                                }*/
 
                                 val dataMapArray = getDataMapArrayList(KEY_MATCH_LIST)
                                 if (dataMapArray != null) {
-                                    matchList.addAll(getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
+                                    /*val currentMatch = if (matchList.isEmpty())
+                                        null
+                                    else
+                                        matchList.removeAt(matchList.lastIndex)*/
+                                    val currentMatch = if (getBoolean(KEY_DELETE_CURRENT_MATCH)) {
+                                        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE) {
+                                            matchList.removeAt(matchList.lastIndex)
+                                        }
+                                        null
+                                    } else {
+                                        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE)
+                                            matchList.removeAt(matchList.lastIndex)
+                                        else
+                                            null
+                                    }
+
+                                    val matchSet = matchList.toMutableSet()
+                                    matchSet.addAll(getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
                                         DeuceMatch(
                                             NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
                                             Team.fromOrdinal(matchDataMap.getInt(KEY_SERVER)),
@@ -188,6 +204,12 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                                             matchDataMap.getString(KEY_NAME_TEAM2)
                                         )
                                     })
+                                    matchList = MatchList(matchList.file, matchSet.sorted())
+
+                                    if (currentMatch != null) {
+                                        matchList.add(currentMatch)
+                                    }
+
                                     matchList.writeToFile()
 
                                     scoresListFragment.view.adapter?.notifyDataSetChanged()
