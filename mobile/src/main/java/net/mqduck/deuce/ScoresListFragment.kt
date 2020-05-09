@@ -41,10 +41,6 @@ class ScoresListFragment : Fragment() {
     // TODO: Customize parameters
     private var columnCount = 1
 
-    private var listener: OnMatchInteractionListener? = null
-
-    //internal val matches = ArrayList<DeuceMatch>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,45 +61,10 @@ class ScoresListFragment : Fragment() {
             for (i in 0 until 48) {
                 scoreLog.push(Team.TEAM1)
             }
-            /*matches.add(
-                DeuceMatch(
-                    NumSets.THREE,
-                    Team.TEAM1,
-                    OvertimeRule.TIEBREAK,
-                    MatchType.SINGLES,
-                    PlayTimesData(416846345451, 416847346451),
-                    PlayTimesList(
-                        longArrayOf(0, 0, 0),
-                        longArrayOf(0, 0, 0)
-                    ),
-                    scoreLog,
-                    "Myself",
-                    "Opponent"
-                )
-            )
-            matches.add(DeuceMatch())*/
-            adapter = ScoreRecyclerViewAdapter(
-                mainActivity,
-                listener,
-                mainActivity
-            )
+            adapter = ScoreRecyclerViewAdapter()
         }
 
         return view
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnMatchInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnListFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     /**
@@ -118,7 +79,7 @@ class ScoresListFragment : Fragment() {
      * for more information.
      */
     interface OnMatchInteractionListener {
-        fun onMatchInteraction(item: Match?, position: Int)
+        fun onMatchInteraction(item: Match, position: Int)
     }
 
     companion object {

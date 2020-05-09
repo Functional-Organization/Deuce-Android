@@ -28,7 +28,6 @@ import net.mqduck.deuce.common.*
 import java.io.File
 import java.util.*
 
-//import android.util.Log
 
 lateinit var mainActivity: MainActivity
 
@@ -231,13 +230,11 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         }
     }
 
-    override fun onMatchInteraction(item: Match?, position: Int) {
-        // TODO: Make less ugly
-        item?.let {
-            scoresListFragment.fragmentManager?.let {
-                val infoDialog = InfoDialog(item, position, scoresListFragment)
-                infoDialog.show(it, "info")
-            }
+    override fun onMatchInteraction(item: Match, position: Int) {
+        scoresListFragment.fragmentManager?.let { fragmentManager ->
+            val infoDialog = InfoDialog(item, position, scoresListFragment)
+            infoDialog.show(fragmentManager, "info")
         }
+
     }
 }

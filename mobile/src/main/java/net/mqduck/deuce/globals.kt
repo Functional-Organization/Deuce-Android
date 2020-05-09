@@ -19,7 +19,15 @@
 
 package net.mqduck.deuce
 
+import android.os.Build
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-val dateFormat = SimpleDateFormat.getDateInstance()
-val timeFormat = SimpleDateFormat.getTimeInstance()
+val dateFormat: DateFormat = SimpleDateFormat.getDateInstance()
+val timeFormat: DateFormat = SimpleDateFormat.getTimeInstance()
+
+fun getColorCompatibly(id: Int) =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        mainActivity.resources.getColor(id, mainActivity.theme)
+    else
+        mainActivity.resources.getColor(id)
