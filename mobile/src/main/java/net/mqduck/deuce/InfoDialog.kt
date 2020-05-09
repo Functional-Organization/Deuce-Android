@@ -30,7 +30,11 @@ import kotlinx.android.synthetic.main.info_dialog.view.*
 import net.mqduck.deuce.common.*
 import java.util.*
 
-class InfoDialog(val match: Match, val position: Int, val scoresListFragment: ScoresListFragment) : DialogFragment() {
+class InfoDialog(
+    private val match: Match,
+    private val position: Int,
+    private val scoresListFragment: ScoresListFragment
+) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         //return super.onCreateDialog(savedInstanceState)
 

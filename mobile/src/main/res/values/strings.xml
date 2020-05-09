@@ -24,4 +24,6 @@
     <string name="save_changes">Save Changes</string>
     <string name="close">Close</string>
     <string name="live">LIVE</string>
+    <string name="hint_opposing_name_edit_field">Opposing player or team name</string>
+    <string name="hint_your_name_edit_field">Your name or team name</string>
 </resources>

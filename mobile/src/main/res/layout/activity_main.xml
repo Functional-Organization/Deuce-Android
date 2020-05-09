@@ -18,14 +18,10 @@
   ~ along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
     <fragment
         android:name="net.mqduck.deuce.ScoresListFragment"
         android:id="@+id/fragment_scores"
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</FrameLayout>
+</merge>
