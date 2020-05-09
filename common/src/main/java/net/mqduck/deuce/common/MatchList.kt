@@ -22,26 +22,25 @@ package net.mqduck.deuce.common
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
+import java.io.BufferedWriter
 import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class MatchList : ArrayList<DeuceMatch> {
-    val fileWriter: FileWriter
-    var writerThread: Thread? = null
+    val fileWriter: BufferedWriter
+    private var writerThread: Thread? = null
 
     constructor(file: File) : super() {
         if (file.exists()) {
-            addAll((JSONParser().parse(FileReader(file)) as JSONArray).map { jsonObjectToMatch(it as JSONObject) })
+            addAll((JSONParser().parse(file.reader()) as JSONArray).map { jsonObjectToMatch(it as JSONObject) })
         }
-        fileWriter = FileWriter(file)
+        fileWriter = file.bufferedWriter()
     }
 
-    constructor(file: File, list: List<DeuceMatch>) : super(list) {
-        fileWriter = FileWriter(file)
+    constructor(fileWriter: BufferedWriter, list: List<DeuceMatch>) : super(list) {
+        this.fileWriter = fileWriter
     }
 
     private fun jsonObjectToMatch(json: JSONObject): DeuceMatch {

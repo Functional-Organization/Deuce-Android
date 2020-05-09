@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                             matchDataMap.getString(KEY_NAME_TEAM2)
                         )
                     })
-                    matchList = MatchList(matchList.file, matchSet.sorted())
+                    matchList = MatchList(matchList.fileWriter, matchSet.sorted())
 
                     if (currentMatch != null) {
                         matchList.add(currentMatch)
