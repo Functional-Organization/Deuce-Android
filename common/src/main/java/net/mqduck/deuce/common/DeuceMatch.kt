@@ -52,10 +52,10 @@ class DeuceMatch(
     nameTeam2
 ), Parcelable, Comparable<DeuceMatch> {
     constructor() : this(
-        NumSets.ONE,
-        Team.TEAM1,
-        OvertimeRule.TIEBREAK,
-        MatchType.SINGLES,
+        DEFAULT_NUM_SETS,
+        DEFAULT_STARTING_SERVER,
+        DEFAULT_OVERTIME_RULE,
+        DEFAULT_MATCH_TYPE,
         PlayTimesData(),
         PlayTimesList(),
         ScoreStack(),

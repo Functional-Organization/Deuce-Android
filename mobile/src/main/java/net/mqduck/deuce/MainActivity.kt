@@ -42,11 +42,12 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
+        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME))
 
         // TODO: Remove after testing
+        //matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
-            val scoreLog = ScoreStack()
+            /*val scoreLog = ScoreStack()
             for (i in 0 until 48) {
                 scoreLog.push(Team.TEAM1)
             }
@@ -66,7 +67,17 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                     "Opponent"
                 )
             )
-            matchList.add(DeuceMatch())
+            matchList.add(DeuceMatch())*/
+
+            val rd = Random()
+            for (i in 0..1000) {
+                val dm = DeuceMatch()
+                while (dm.winner == Winner.NONE) {
+                    dm.score(if (rd.nextBoolean()) Team.TEAM1 else Team.TEAM2)
+                }
+                matchList.add(dm)
+                matchList.writeToFile()
+            }
         }
 
         super.onCreate(savedInstanceState)
@@ -197,7 +208,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                             matchDataMap.getString(KEY_NAME_TEAM2)
                         )
                     })
-                    matchList = MatchList(matchList.file, matchSet.sorted())
+                    matchList = MatchList(matchList.file, matchList.backupFile, matchSet.sorted())
 
                     if (currentMatch != null) {
                         matchList.add(currentMatch)

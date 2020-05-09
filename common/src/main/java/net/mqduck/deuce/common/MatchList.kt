@@ -19,31 +19,51 @@
 
 package net.mqduck.deuce.common
 
+import android.util.Log
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
+import java.io.BufferedWriter
 import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class MatchList : ArrayList<DeuceMatch> {
     val file: File
+    val backupFile: File
+    private var writerThread: Thread? = null
 
-    constructor(file: File) : super() {
+    constructor(file: File, backupFile: File) : super() {
         this.file = file
+        this.backupFile = backupFile
+
         if (file.exists()) {
-            addAll((JSONParser().parse(FileReader(file)) as JSONArray).map { jsonObjectToMatch(it as JSONObject) })
+            try {
+                addAll((JSONParser().parse(file.reader()) as JSONArray).map { jsonObjectToMatch(it as JSONObject) })
+            } catch (e: Exception) {
+                Log.d("foo", "Error loading scoreList file: $e")
+                if (backupFile.exists()) {
+                    try {
+                        addAll((JSONParser().parse(backupFile.reader()) as JSONArray)
+                            .map { jsonObjectToMatch(it as JSONObject) })
+                        backupFile.copyTo(file, true)
+                    } catch (f: Exception) {
+                        Log.d("foo", "Error loading or copying backup scoreList file: $f")
+                    }
+                }
+            }
         }
     }
 
-    constructor(file: File, list: List<DeuceMatch>) : super(list) {
+    constructor(file: File, backupFile: File, list: List<DeuceMatch>) : super(list) {
         this.file = file
+        this.backupFile = backupFile
     }
 
     private fun jsonObjectToMatch(json: JSONObject): DeuceMatch {
-        val setsStartTimesList = ArrayList<Long>()
+        /*val setsStartTimesList = ArrayList<Long>()
         for (startTime in json[KEY_SETS_START_TIMES] as JSONArray) {
             setsStartTimesList.add(startTime as Long)
         }
@@ -54,7 +74,7 @@ class MatchList : ArrayList<DeuceMatch> {
         val scoreStackLongArray = ArrayList<Long>()
         for (long in json[KEY_SCORE_ARRAY] as JSONArray) {
             scoreStackLongArray.add(long as Long)
-        }
+        }*/
 
         return DeuceMatch(
             NumSets.fromOrdinal((json[KEY_NUM_SETS] as Long).toInt()),
@@ -62,8 +82,14 @@ class MatchList : ArrayList<DeuceMatch> {
             OvertimeRule.fromOrdinal((json[KEY_OVERTIME_RULE] as Long).toInt()),
             MatchType.fromOrdinal((json[KEY_MATCH_TYPE] as Long).toInt()),
             PlayTimesData(json[KEY_MATCH_START_TIME] as Long, json[KEY_MATCH_END_TIME] as Long),
-            PlayTimesList(setsStartTimesList, setsEndTimesList),
-            ScoreStack((json[KEY_SCORE_SIZE] as Long).toInt(), BitSet.valueOf(scoreStackLongArray.toLongArray())),
+            PlayTimesList(
+                ArrayList((json[KEY_SETS_START_TIMES] as JSONArray).map { it as Long }),
+                ArrayList((json[KEY_SETS_END_TIMES] as JSONArray).map { it as Long })
+            ),
+            ScoreStack(
+                (json[KEY_SCORE_SIZE] as Long).toInt(),
+                BitSet.valueOf((json[KEY_SCORE_ARRAY] as JSONArray).map { it as Long }.toLongArray())
+            ),
             json[KEY_NAME_TEAM1] as String,
             json[KEY_NAME_TEAM2] as String
         )
@@ -95,11 +121,20 @@ class MatchList : ArrayList<DeuceMatch> {
     }
 
     fun writeToFile() {
-        val fileWriter = FileWriter(file)
-        val json = JSONArray()
-        json.addAll(map { matchToJSONObject(it) })
-        fileWriter.write(json.toString())
-        fileWriter.flush()
-        fileWriter.close()
+        val matchJSONObjectList = map { matchToJSONObject(it) }
+        writerThread?.join()
+        writerThread = thread {
+            val fileWriter = file.bufferedWriter()
+            val json = JSONArray()
+            json.addAll(matchJSONObjectList)
+            fileWriter.write(json.toString())
+            fileWriter.flush()
+            fileWriter.close()
+            file.copyTo(backupFile, true)
+        }
+    }
+
+    fun waitForWrite() {
+        writerThread?.join()
     }
 }

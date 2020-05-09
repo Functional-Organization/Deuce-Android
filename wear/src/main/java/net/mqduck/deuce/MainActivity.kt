@@ -169,7 +169,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
         dataClient = Wearable.getDataClient(this)
-        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME))
+        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME))
 
         var fragment = FragmentEnum.SETUP
 

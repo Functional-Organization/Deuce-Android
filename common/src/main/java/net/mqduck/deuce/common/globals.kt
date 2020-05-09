@@ -68,6 +68,7 @@ const val PATH_REQUEST_MATCHES_SIGNAL = "/match_signal"
 const val PATH_UPDATE_NAMES = "/names"
 
 const val MATCH_LIST_FILE_NAME = "deuce_matches"
+const val MATCH_LIST_FILE_BACKUP_NAME = "deuce_matches_backup"
 
 fun sendSignal(dataClient: DataClient, path: String, urgent: Boolean) {
     val putDataRequest: PutDataRequest =
