@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME))
 
         // TODO: Remove after testing
-        //matchList.clear()
+        matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
             /*val scoreLog = ScoreStack()
             for (i in 0 until 48) {
@@ -73,13 +73,15 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
             matchList.add(DeuceMatch())*/
 
             val now = System.currentTimeMillis()
-            for (i in 0..1000) {
+            for (i in 0..10000) {
                 val dm = DeuceMatch()
                 while (dm.winner == Winner.NONE) {
                     dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
                 }
                 dm.playTimes.startTime = Random.nextLong(0, now)
                 dm.playTimes.endTime = Random.nextLong(0, now)
+                dm.nameTeam1 = "eilruyhf8o li4ufyh dlkfv hdslkdzx flkj"
+                dm.nameTeam2 = "lkjh ilyp9y9p34t vvce4wf dcdcdcdcdc"
                 matchList.add(dm)
             }
             matchList = MatchList(matchList.file, matchList.backupFile, matchList.toSet().sorted())
@@ -90,6 +92,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         setContentView(R.layout.activity_main)
 
         Game.init(this)
+        DeuceMatch.init(this)
 
         scoresListFragment = fragment_scores as ScoresListFragment
         dataClient = Wearable.getDataClient(this)
@@ -248,7 +251,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         }
     }
 
-    override fun onMatchInteraction(item: Match, position: Int) {
+    override fun onMatchInteraction(item: DeuceMatch, position: Int) {
         scoresListFragment.fragmentManager?.let { fragmentManager ->
             val infoDialog = InfoDialog(item, position, scoresListFragment)
             infoDialog.show(fragmentManager, "info")

@@ -19,6 +19,7 @@
 
 package net.mqduck.deuce.common
 
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
@@ -51,6 +52,30 @@ class DeuceMatch(
     nameTeam1,
     nameTeam2
 ), Parcelable, Comparable<DeuceMatch> {
+    companion object {
+        private var defaultNameTeam1Singles = ""
+        private var defaultNameTeam2Singles = ""
+        private var defaultNameTeam1Doubles = ""
+        private var defaultNameTeam2Doubles = ""
+
+        val CREATOR = object : Parcelable.Creator<DeuceMatch> {
+            override fun createFromParcel(parcel: Parcel): DeuceMatch {
+                return DeuceMatch(parcel)
+            }
+
+            override fun newArray(size: Int): Array<DeuceMatch?> {
+                return arrayOfNulls(size)
+            }
+        }
+
+        fun init(context: Context) {
+            defaultNameTeam1Singles = context.resources.getString(R.string.default_name_team1_singles)
+            defaultNameTeam2Singles = context.resources.getString(R.string.default_name_team2_singles)
+            defaultNameTeam1Doubles = context.resources.getString(R.string.default_name_team1_doubles)
+            defaultNameTeam2Doubles = context.resources.getString(R.string.default_name_team2_doubles)
+        }
+    }
+
     constructor() : this(
         DEFAULT_NUM_SETS,
         DEFAULT_STARTING_SERVER,
@@ -59,8 +84,8 @@ class DeuceMatch(
         PlayTimesData(),
         PlayTimesList(),
         ScoreStack(),
-        DUMMY_NAME_TEAM1,
-        DUMMY_NAME_TEAM2
+        "",
+        ""
     )
 
     constructor(parcel: Parcel) : this(
@@ -92,16 +117,6 @@ class DeuceMatch(
 
     override fun describeContents() = 0
 
-    companion object CREATOR : Parcelable.Creator<DeuceMatch> {
-        override fun createFromParcel(parcel: Parcel): DeuceMatch {
-            return DeuceMatch(parcel)
-        }
-
-        override fun newArray(size: Int): Array<DeuceMatch?> {
-            return arrayOfNulls(size)
-        }
-    }
-
     override fun compareTo(other: DeuceMatch)/* = playTimes.startTime.compareTo(other.playTimes.startTime)*/: Int {
         Log.d("foo", "comparing")
         return playTimes.startTime.compareTo(other.playTimes.startTime)
@@ -116,4 +131,42 @@ class DeuceMatch(
         Log.d("foo", "getting hash code")
         return playTimes.startTime.hashCode()
     }
+
+    override var nameTeam1 = nameTeam1
+        set(value) {
+            field = when {
+                value == defaultNameTeam1Singles && matchType == MatchType.SINGLES -> ""
+                value == defaultNameTeam1Doubles && matchType == MatchType.DOUBLES -> ""
+                else -> value
+            }
+        }
+
+    override var nameTeam2 = nameTeam2
+        set(value) {
+            field = when {
+                value == defaultNameTeam2Singles && matchType == MatchType.SINGLES -> ""
+                value == defaultNameTeam2Doubles && matchType == MatchType.DOUBLES -> ""
+                else -> value
+            }
+        }
+
+    val displayNameTeam1
+        get() = if (nameTeam1.isEmpty()) {
+            when (matchType) {
+                MatchType.SINGLES -> defaultNameTeam1Singles
+                MatchType.DOUBLES -> defaultNameTeam1Doubles
+            }
+        } else {
+            nameTeam1
+        }
+
+    val displayNameTeam2
+        get() = if (nameTeam2.isEmpty()) {
+            when (matchType) {
+                MatchType.SINGLES -> defaultNameTeam2Singles
+                MatchType.DOUBLES -> defaultNameTeam2Doubles
+            }
+        } else {
+            nameTeam2
+        }
 }

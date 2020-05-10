@@ -133,7 +133,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     internal var currentMatch = DeuceMatch()
     internal lateinit var preferences: DeuceWearPreferences
-    internal lateinit var storage: File
     lateinit var dataClient: DataClient
     internal lateinit var matchList: MatchList
 
@@ -157,13 +156,14 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // https://github.com/Subhipster-Collective/Deuce-Android/issues/21
+        // https://github.com/Functional-Organization/Deuce-Android/issues/21
         savedInstanceState?.remove("android:support:fragments")
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Game.init(this)
+        DeuceMatch.init(this)
 
         navigationDrawer = navigation_drawer
 
@@ -279,14 +279,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             PlayTimesData(),
             PlayTimesList(),
             ScoreStack(),
-            when (preferences.matchType) {
-                MatchType.SINGLES -> resources.getString(R.string.default_name_team1_singles)
-                MatchType.DOUBLES -> resources.getString(R.string.default_name_team1_doubles)
-            },
-            when (preferences.matchType) {
-                MatchType.SINGLES -> resources.getString(R.string.default_name_team2_singles)
-                MatchType.DOUBLES -> resources.getString(R.string.default_name_team2_doubles)
-            }
+            "",
+            ""
         )
 
         syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
