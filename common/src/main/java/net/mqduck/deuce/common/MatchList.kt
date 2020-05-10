@@ -23,9 +23,7 @@ import android.util.Log
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
-import java.io.BufferedWriter
 import java.io.File
-import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
@@ -35,22 +33,56 @@ class MatchList : ArrayList<DeuceMatch> {
     val backupFile: File
     private var writerThread: Thread? = null
 
-    constructor(file: File, backupFile: File) : super() {
+    constructor(file: File, backupFile: File, partialLoadSize: Int, partialLoaderCallback: () -> Unit) : super() {
+        fun loadFile(file: File) {
+            val list = ArrayList<DeuceMatch>()
+            val parser = JSONParser()
+            val reader = file.bufferedReader()
+            val size = reader.readLine().toInt()
+
+            fun readRest() {
+                var line = reader.readLine()
+                while (line != null) {
+                    list.add(jsonObjectToMatch(parser.parse(line) as JSONObject))
+                    line = reader.readLine()
+                }
+            }
+
+            if (size > partialLoadSize) {
+                for (i in 0 until partialLoadSize) {
+                    list.add(jsonObjectToMatch(parser.parse(reader.readLine()) as JSONObject))
+                }
+                addAll(list.reversed())
+                thread {
+                    readRest()
+                    clear()
+                    addAll(list.reversed())
+                    partialLoaderCallback()
+                }
+            } else {
+                readRest()
+                addAll(list.reversed())
+            }
+//            file.bufferedReader().forEachLine { add(jsonObjectToMatch(parser.parse(it) as JSONObject)) }
+//            addAll(file.bufferedReader().readLines().map { jsonObjectToMatch(parser.parse(it) as JSONObject) })
+        }
+
         this.file = file
         this.backupFile = backupFile
 
         if (file.exists()) {
             try {
-                addAll((JSONParser().parse(file.reader()) as JSONArray).map { jsonObjectToMatch(it as JSONObject) })
+                loadFile(file)
             } catch (e: Exception) {
                 Log.d("foo", "Error loading scoreList file: $e")
+                clear()
                 if (backupFile.exists()) {
                     try {
-                        addAll((JSONParser().parse(backupFile.reader()) as JSONArray)
-                            .map { jsonObjectToMatch(it as JSONObject) })
+                        loadFile(backupFile)
                         backupFile.copyTo(file, true)
                     } catch (f: Exception) {
                         Log.d("foo", "Error loading or copying backup scoreList file: $f")
+                        clear()
                     }
                 }
             }
@@ -121,13 +153,23 @@ class MatchList : ArrayList<DeuceMatch> {
     }
 
     fun writeToFile() {
-        val matchJSONObjectList = map { matchToJSONObject(it) }
+        /*val matchJSONObjectList = map { matchToJSONObject(it) }
         writerThread?.join()
         writerThread = thread {
             val fileWriter = file.bufferedWriter()
             val json = JSONArray()
             json.addAll(matchJSONObjectList)
             fileWriter.write(json.toString())
+            fileWriter.flush()
+            fileWriter.close()
+            file.copyTo(backupFile, true)
+        }*/
+        val matchJSONObjectList = map { matchToJSONObject(it) }
+        writerThread?.join()
+        writerThread = thread {
+            val fileWriter = file.bufferedWriter()
+            fileWriter.write("${matchJSONObjectList.size}\n")
+            matchJSONObjectList.reversed().forEach { fileWriter.write("${it}\n") }
             fileWriter.flush()
             fileWriter.close()
             file.copyTo(backupFile, true)

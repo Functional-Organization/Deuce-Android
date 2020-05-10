@@ -43,13 +43,20 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //val startTime = System.currentTimeMillis()
+        val startTime = System.currentTimeMillis()
 
-        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME))
+        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME), 20) {
+            runOnUiThread {
+                scoresListFragment.view.adapter?.notifyDataSetChanged()
+                scoresListFragment.view.scrollToPosition(matchList.lastIndex)
+            }
+        }
 
         // TODO: Remove after testing
-        matchList.clear()
+        //matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
+            Log.d("foo", "matchList is empty. Filling with random matches.")
+
             /*val scoreLog = ScoreStack()
             for (i in 0 until 48) {
                 scoreLog.push(Team.TEAM1)
@@ -97,7 +104,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         scoresListFragment = fragment_scores as ScoresListFragment
         dataClient = Wearable.getDataClient(this)
 
-        //Log.d("foo", "elapsed: ${System.currentTimeMillis() - startTime}")
+        Log.d("foo", "elapsed: ${System.currentTimeMillis() - startTime}")
     }
 
     override fun onResume() {
