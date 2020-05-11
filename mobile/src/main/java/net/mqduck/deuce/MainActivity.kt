@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
             matchList.add(DeuceMatch())*/
 
             val now = System.currentTimeMillis()
-            for (i in 0..10000) {
+            for (i in 0 until 10000) {
                 val dm = DeuceMatch()
                 while (dm.winner == Winner.NONE) {
                     dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
@@ -242,6 +242,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
             }
         }
 
+        Log.d("foo", "data changed")
         dataEvents.forEach { event ->
             // DataItem changed
             if (event.type == DataEvent.TYPE_CHANGED) {

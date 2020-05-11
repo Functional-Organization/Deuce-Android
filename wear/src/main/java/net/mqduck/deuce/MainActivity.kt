@@ -172,7 +172,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         matchList = MatchList(
             File(filesDir, MATCH_LIST_FILE_NAME),
             File(filesDir, MATCH_LIST_FILE_BACKUP_NAME),
-            Int.MAX_VALUE
+            0
         ) {}
 
         var fragment = FragmentEnum.SETUP
@@ -306,6 +306,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
         dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
+        dataMap.putLong("dummy", System.currentTimeMillis())
     }
 
     fun undo() {
@@ -448,6 +449,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
+        Log.d("foo", "data changed")
         dataEvents.forEach { event ->
             if (event.type == DataEvent.TYPE_CHANGED) {
                 event.dataItem.also { item ->
@@ -456,16 +458,10 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                         matchList.clear()
                         matchList.writeToFile()
                     } else if (item.uri.path?.compareTo(PATH_REQUEST_MATCHES_SIGNAL) == 0) {
-                        /*if (matchAdded) {
-                            syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
-                                writeMatchToDataMap(currentMatch, dataMap)
-                            }
-                            if (matchList.isNotEmpty()) {
-                                syncMatchList(false)
-                            }
-                        } else if (matchList.isNotEmpty()) {
-                            syncMatchList(true)
-                        }*/
+                        Log.d("foo", "received match request")
+                        syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
+                            writeMatchToDataMap(currentMatch, dataMap)
+                        }
                         syncMatches()
                     }
                 }

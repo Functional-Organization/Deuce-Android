@@ -28,17 +28,23 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
-class MatchList : ArrayList<DeuceMatch> {
+class MatchList : MutableList<DeuceMatch> {
+    private val data: ArrayList<DeuceMatch>
     val file: File
     val backupFile: File
     private var writerThread: Thread? = null
+    private var readerThread: Thread? = null
 
-    constructor(file: File, backupFile: File, partialLoadSize: Int, partialLoaderCallback: () -> Unit) : super() {
+    constructor(file: File, backupFile: File, partialLoadSize: Int, partialLoaderCallback: () -> Unit) {
+        data = ArrayList()
+        this.file = file
+        this.backupFile = backupFile
+
         fun loadFile(file: File) {
-            val list = ArrayList<DeuceMatch>()
             val parser = JSONParser()
             val reader = file.bufferedReader()
             val size = reader.readLine().toInt()
+            val list = ArrayList<DeuceMatch>(size)
 
             fun readRest() {
                 var line = reader.readLine()
@@ -52,62 +58,44 @@ class MatchList : ArrayList<DeuceMatch> {
                 for (i in 0 until partialLoadSize) {
                     list.add(jsonObjectToMatch(parser.parse(reader.readLine()) as JSONObject))
                 }
-                addAll(list.reversed())
-                thread {
+                data.addAll(list.asReversed())
+                readerThread = thread {
                     readRest()
-                    clear()
-                    addAll(list.reversed())
+                    data.clear()
+                    data.addAll(list.asReversed())
                     partialLoaderCallback()
                 }
             } else {
                 readRest()
-                addAll(list.reversed())
+                data.addAll(list.asReversed())
             }
-//            file.bufferedReader().forEachLine { add(jsonObjectToMatch(parser.parse(it) as JSONObject)) }
-//            addAll(file.bufferedReader().readLines().map { jsonObjectToMatch(parser.parse(it) as JSONObject) })
         }
-
-        this.file = file
-        this.backupFile = backupFile
 
         if (file.exists()) {
             try {
                 loadFile(file)
             } catch (e: Exception) {
                 Log.d("foo", "Error loading scoreList file: $e")
-                clear()
+                data.clear()
                 if (backupFile.exists()) {
                     try {
                         loadFile(backupFile)
                         backupFile.copyTo(file, true)
-                    } catch (f: Exception) {
+                    } catch (f: java.lang.Exception) {
                         Log.d("foo", "Error loading or copying backup scoreList file: $f")
-                        clear()
                     }
                 }
             }
         }
     }
 
-    constructor(file: File, backupFile: File, list: List<DeuceMatch>) : super(list) {
+    constructor(file: File, backupFile: File, list: List<DeuceMatch>) {
+        data = ArrayList(list)
         this.file = file
         this.backupFile = backupFile
     }
 
     private fun jsonObjectToMatch(json: JSONObject): DeuceMatch {
-        /*val setsStartTimesList = ArrayList<Long>()
-        for (startTime in json[KEY_SETS_START_TIMES] as JSONArray) {
-            setsStartTimesList.add(startTime as Long)
-        }
-        val setsEndTimesList = ArrayList<Long>()
-        for (endTime in json[KEY_SETS_END_TIMES] as JSONArray) {
-            setsEndTimesList.add(endTime as Long)
-        }
-        val scoreStackLongArray = ArrayList<Long>()
-        for (long in json[KEY_SCORE_ARRAY] as JSONArray) {
-            scoreStackLongArray.add(long as Long)
-        }*/
-
         return DeuceMatch(
             NumSets.fromOrdinal((json[KEY_NUM_SETS] as Long).toInt()),
             Team.fromOrdinal((json[KEY_SERVER] as Long).toInt()),
@@ -153,30 +141,99 @@ class MatchList : ArrayList<DeuceMatch> {
     }
 
     fun writeToFile() {
-        /*val matchJSONObjectList = map { matchToJSONObject(it) }
-        writerThread?.join()
-        writerThread = thread {
-            val fileWriter = file.bufferedWriter()
-            val json = JSONArray()
-            json.addAll(matchJSONObjectList)
-            fileWriter.write(json.toString())
-            fileWriter.flush()
-            fileWriter.close()
-            file.copyTo(backupFile, true)
-        }*/
-        val matchJSONObjectList = map { matchToJSONObject(it) }
+        val matchJSONObjectList = data.map { matchToJSONObject(it) }
         writerThread?.join()
         writerThread = thread {
             val fileWriter = file.bufferedWriter()
             fileWriter.write("${matchJSONObjectList.size}\n")
-            matchJSONObjectList.reversed().forEach { fileWriter.write("${it}\n") }
+            matchJSONObjectList.asReversed().forEach { fileWriter.write("${it}\n") }
             fileWriter.flush()
             fileWriter.close()
             file.copyTo(backupFile, true)
         }
     }
 
-    fun waitForWrite() {
-        writerThread?.join()
+    override val size get() = data.size
+
+    override fun contains(element: DeuceMatch) = data.contains(element)
+
+    override fun containsAll(elements: Collection<DeuceMatch>) = data.containsAll(elements)
+
+    override fun get(index: Int) = data[index]
+
+    override fun indexOf(element: DeuceMatch) = data.lastIndexOf(element)
+
+    override fun isEmpty() = data.isEmpty()
+
+    override fun iterator(): MutableIterator<DeuceMatch> {
+        readerThread?.join()
+        return data.iterator()
+    }
+
+    override fun lastIndexOf(element: DeuceMatch) = data.lastIndexOf(element)
+
+    override fun add(element: DeuceMatch): Boolean {
+        readerThread?.join()
+        return data.add(element)
+    }
+
+    override fun add(index: Int, element: DeuceMatch) {
+        readerThread?.join()
+        data.add(index, element)
+    }
+
+    override fun addAll(index: Int, elements: Collection<DeuceMatch>): Boolean {
+        readerThread?.join()
+        return data.addAll(index, elements)
+    }
+
+    override fun addAll(elements: Collection<DeuceMatch>): Boolean {
+        readerThread?.join()
+        return data.addAll(elements)
+    }
+
+    override fun clear() {
+        readerThread?.join()
+        data.clear()
+    }
+
+    override fun listIterator(): MutableListIterator<DeuceMatch> {
+        readerThread?.join()
+        return data.listIterator()
+    }
+
+    override fun listIterator(index: Int): MutableListIterator<DeuceMatch> {
+        readerThread?.join()
+        return data.listIterator(index)
+    }
+
+    override fun remove(element: DeuceMatch): Boolean {
+        readerThread?.join()
+        return data.remove(element)
+    }
+
+    override fun removeAll(elements: Collection<DeuceMatch>): Boolean {
+        readerThread?.join()
+        return data.removeAll(elements)
+    }
+
+    override fun removeAt(index: Int): DeuceMatch {
+        readerThread?.join()
+        return data.removeAt(index)
+    }
+
+    override fun retainAll(elements: Collection<DeuceMatch>): Boolean {
+        readerThread?.join()
+        return data.retainAll(elements)
+    }
+
+    override fun set(index: Int, element: DeuceMatch): DeuceMatch {
+        readerThread?.join()
+        return data.set(index, element)
+    }
+
+    override fun subList(fromIndex: Int, toIndex: Int): MutableList<DeuceMatch> {
+        readerThread?.join()
+        return data.subList(fromIndex, toIndex)
     }
 }
