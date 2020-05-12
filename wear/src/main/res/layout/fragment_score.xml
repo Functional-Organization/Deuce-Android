@@ -95,7 +95,32 @@
                 android:layout_marginBottom="-2dp"
                 android:textSize="36dp"
                 tools:ignore="SpUsage"
-                tools:text="Love" />
+                tools:text="" />
+
+            <TextView
+                android:id="@+id/text_score_game_p2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:gravity="center_horizontal"
+                android:textSize="36dp"
+                android:translationY="10dp"
+                android:translationZ="10dp"
+                android:textStyle="bold"
+                tools:ignore="SpUsage"
+                tools:text="LOVE" />
+
+            <TextView
+                android:id="@+id/text_name_p2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:translationY="-30dp"
+                android:translationZ="10dp"
+                tools:ignore="SpUsage"
+                tools:text="Austin" />
 
             <TextView
                 android:id="@+id/text_scores_match_p2"
@@ -125,7 +150,32 @@
                 android:layout_marginBottom="-7dp"
                 android:textSize="36dp"
                 tools:ignore="SpUsage"
-                tools:text="Love" />
+                tools:text="" />
+
+            <TextView
+                android:id="@+id/text_score_game_p1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:gravity="center_horizontal"
+                android:textSize="36dp"
+                android:translationY="-10dp"
+                android:translationZ="10dp"
+                android:textStyle="bold"
+                tools:ignore="SpUsage"
+                tools:text="LOVE" />
+
+            <TextView
+                android:id="@+id/text_name_p1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:translationY="30dp"
+                android:translationZ="10dp"
+                tools:ignore="SpUsage"
+                tools:text="Jeffrey" />
 
             <TextView
                 android:id="@+id/text_scores_match_p1"

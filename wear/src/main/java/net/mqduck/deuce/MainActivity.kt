@@ -464,6 +464,11 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                             writeMatchToDataMap(currentMatch, dataMap)
                         }
                         syncMatches()
+                    } else if (item.uri.path?.compareTo(PATH_UPDATE_NAMES) == 0) {
+                        val dataMap = DataMapItem.fromDataItem(item).dataMap
+                        currentMatch.nameTeam1 = dataMap.getString(KEY_NAME_TEAM1)
+                        currentMatch.nameTeam2 = dataMap.getString(KEY_NAME_TEAM2)
+                        scoreFragment.updateTeamNames()
                     }
                 }
             }

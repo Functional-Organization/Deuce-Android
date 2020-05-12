@@ -57,6 +57,8 @@ class DeuceMatch(
         private var defaultNameTeam2Singles = ""
         private var defaultNameTeam1Doubles = ""
         private var defaultNameTeam2Doubles = ""
+        private var defaultNameLongTeam1Doubles = ""
+        private var defaultNameLongTeam2Doubles = ""
 
         val CREATOR = object : Parcelable.Creator<DeuceMatch> {
             override fun createFromParcel(parcel: Parcel): DeuceMatch {
@@ -73,6 +75,8 @@ class DeuceMatch(
             defaultNameTeam2Singles = context.resources.getString(R.string.default_name_team2_singles)
             defaultNameTeam1Doubles = context.resources.getString(R.string.default_name_team1_doubles)
             defaultNameTeam2Doubles = context.resources.getString(R.string.default_name_team2_doubles)
+            defaultNameLongTeam1Doubles = context.resources.getString(R.string.default_name_long_team1_doubles)
+            defaultNameLongTeam2Doubles = context.resources.getString(R.string.default_name_long_team2_doubles)
         }
     }
 
@@ -160,11 +164,31 @@ class DeuceMatch(
             nameTeam1
         }
 
+    val displayNameTeam1Long
+        get() = if (nameTeam1.isEmpty()) {
+            when (matchType) {
+                MatchType.SINGLES -> defaultNameTeam1Singles
+                MatchType.DOUBLES -> defaultNameLongTeam1Doubles
+            }
+        } else {
+            nameTeam1
+        }
+
     val displayNameTeam2
         get() = if (nameTeam2.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam2Singles
                 MatchType.DOUBLES -> defaultNameTeam2Doubles
+            }
+        } else {
+            nameTeam2
+        }
+
+    val displayNameTeam2Long
+        get() = if (nameTeam1.isEmpty()) {
+            when (matchType) {
+                MatchType.SINGLES -> defaultNameTeam2Singles
+                MatchType.DOUBLES -> defaultNameLongTeam2Doubles
             }
         } else {
             nameTeam2

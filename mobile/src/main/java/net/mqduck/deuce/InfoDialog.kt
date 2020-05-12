@@ -48,8 +48,8 @@ class InfoDialog(
         } else {
             view.label_end_time.visibility = View.INVISIBLE
         }
-        view.edit_name_team1.setText(match.displayNameTeam1)
-        view.edit_name_team2.setText(match.displayNameTeam2)
+        view.edit_name_team1.setText(match.displayNameTeam1Long)
+        view.edit_name_team2.setText(match.displayNameTeam2Long)
 
         builder.setView(view)
             .setPositiveButton(resources.getString(R.string.save_changes)) { _, _ ->
@@ -74,8 +74,8 @@ class InfoDialog(
 
         fun updateButtons() {
             buttonPositive.visibility = if (
-                view.edit_name_team1.text.toString() == match.displayNameTeam1
-                && view.edit_name_team2.text.toString() == match.displayNameTeam2
+                view.edit_name_team1.text.toString() == match.displayNameTeam1Long
+                && view.edit_name_team2.text.toString() == match.displayNameTeam2Long
             )
                 View.INVISIBLE
             else

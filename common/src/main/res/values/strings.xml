@@ -33,4 +33,6 @@
     <string name="default_name_team2_singles">Opponent</string>
     <string name="default_name_team1_doubles">Mine</string>
     <string name="default_name_team2_doubles">Opposing</string>
+    <string name="default_name_long_team1_doubles">My Team</string>
+    <string name="default_name_long_team2_doubles">Opposing Team</string>
 </resources>
