@@ -35,7 +35,13 @@ class MatchList : MutableList<DeuceMatch> {
     private var writerThread: Thread? = null
     private var readerThread: Thread? = null
 
-    constructor(file: File, backupFile: File, partialLoadSize: Int, partialLoaderCallback: () -> Unit) {
+    constructor(
+        file: File,
+        backupFile: File,
+        partialLoadThreshold: Int,
+        partialLoadSize: Int,
+        partialLoaderCallback: () -> Unit
+    ) {
         data = ArrayList()
         this.file = file
         this.backupFile = backupFile
@@ -54,16 +60,20 @@ class MatchList : MutableList<DeuceMatch> {
                 }
             }
 
-            if (size > partialLoadSize) {
-                for (i in 0 until partialLoadSize) {
+            if (size > partialLoadThreshold) {
+                for (i in 0 until minOf(partialLoadSize, size)) {
                     list.add(jsonObjectToMatch(parser.parse(reader.readLine()) as JSONObject))
                 }
                 data.addAll(list.asReversed())
                 readerThread = thread {
-                    readRest()
-                    data.clear()
-                    data.addAll(list.asReversed())
-                    partialLoaderCallback()
+                    try {
+                        readRest()
+                        data.clear()
+                        data.addAll(list.asReversed())
+                        partialLoaderCallback()
+                    } catch (e: Exception) {
+                        Log.d("foo", "Error loading the rest of score list file $file: $e")
+                    }
                 }
             } else {
                 readRest()

@@ -20,6 +20,7 @@
 package net.mqduck.deuce
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.wearable.*
@@ -45,7 +46,12 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         val startTime = System.currentTimeMillis()
 
-        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME), 20) {
+        matchList = MatchList(
+            File(filesDir, MATCH_LIST_FILE_NAME),
+            File(filesDir, MATCH_LIST_FILE_BACKUP_NAME),
+            200,
+            20
+        ) {
             runOnUiThread {
                 scoresListFragment.view.adapter?.notifyDataSetChanged()
                 scoresListFragment.view.scrollToPosition(matchList.lastIndex)
@@ -56,29 +62,6 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         //matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
             Log.d("foo", "matchList is empty. Filling with random matches.")
-
-            /*val scoreLog = ScoreStack()
-            for (i in 0 until 48) {
-                scoreLog.push(Team.TEAM1)
-            }
-            matchList.add(
-                DeuceMatch(
-                    NumSets.THREE,
-                    Team.TEAM1,
-                    OvertimeRule.TIEBREAK,
-                    MatchType.SINGLES,
-                    PlayTimesData(416846345451, 416847346451),
-                    PlayTimesList(
-                        longArrayOf(0, 0, 0),
-                        longArrayOf(0, 0, 0)
-                    ),
-                    scoreLog,
-                    "Myself",
-                    "Opponent"
-                )
-            )
-            matchList.add(DeuceMatch())*/
-
             val now = System.currentTimeMillis()
             for (i in 0 until 10000) {
                 val dm = DeuceMatch()

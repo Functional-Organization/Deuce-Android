@@ -172,6 +172,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         matchList = MatchList(
             File(filesDir, MATCH_LIST_FILE_NAME),
             File(filesDir, MATCH_LIST_FILE_BACKUP_NAME),
+            0,
             0
         ) {}
 
@@ -187,8 +188,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             if (savedInstanceState.containsKey(KEY_CURRENT_FRAGMENT)) {
                 fragment = savedInstanceState.getSerializable(KEY_CURRENT_FRAGMENT) as FragmentEnum
             }
-            if (savedInstanceState.containsKey(KEY_MATCH)) {
-                currentMatch = savedInstanceState.getParcelable(KEY_MATCH)!!
+            if (savedInstanceState.containsKey(KEY_CURRENT_MATCH)) {
+                currentMatch = savedInstanceState.getParcelable(KEY_CURRENT_MATCH)!!
             }
             if (savedInstanceState.containsKey(KEY_MATCH_ADDED)) {
                 matchAdded = savedInstanceState.getBoolean(KEY_MATCH_ADDED)
@@ -248,7 +249,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putParcelable(KEY_MATCH, currentMatch)
+        outState.putParcelable(KEY_CURRENT_MATCH, currentMatch)
         outState.putSerializable(KEY_CURRENT_FRAGMENT, currentFragment)
         outState.putBoolean(KEY_MATCH_ADDED, matchAdded)
     }
