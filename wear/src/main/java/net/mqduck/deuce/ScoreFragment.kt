@@ -92,9 +92,6 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             text_score_game_p1.paint.isAntiAlias = false
             text_score_game_p2.paint.isAntiAlias = false
 
-            text_name_p1.visibility = View.GONE
-            text_name_p2.visibility = View.GONE
-
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
         } else {
@@ -105,6 +102,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             button_score_p1.setOnClickListener { score(Team.TEAM1) }
             button_score_p2.setOnClickListener { score(Team.TEAM2) }
         }
+
+        updateTeamNames()
 
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
@@ -304,15 +303,25 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             text_name_p2.text = mainActivity.currentMatch.displayNameTeam2
             text_score_game_p1.translationY = GAME_SCORE_Y_TRANSLATION_WITH_NAME
             text_score_game_p2.translationY = -GAME_SCORE_Y_TRANSLATION_WITH_NAME
-            text_scores_match_p1.translationY = SETS_SCORES_Y_TRANSLATION_WITH_NAME
-            text_scores_match_p2.translationY = -SETS_SCORES_Y_TRANSLATION_WITH_NAME
+            if (ambientMode) {
+                text_name_p1.visibility = View.GONE
+                text_name_p2.visibility = View.GONE
+            } else {
+                text_scores_match_p1.translationY = SETS_SCORES_Y_TRANSLATION_WITH_NAME
+                text_scores_match_p2.translationY = -SETS_SCORES_Y_TRANSLATION_WITH_NAME
+            }
         } else {
             text_name_p1.text = ""
             text_name_p2.text = ""
             text_score_game_p1.translationY = GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME
             text_score_game_p2.translationY = -GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME
-            text_scores_match_p1.translationY = SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME
-            text_scores_match_p2.translationY = -SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME
+            if (ambientMode) {
+                text_name_p1.visibility = View.GONE
+                text_name_p2.visibility = View.GONE
+            } else {
+                text_scores_match_p1.translationY = SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME
+                text_scores_match_p2.translationY = -SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME
+            }
         }
     }
 }

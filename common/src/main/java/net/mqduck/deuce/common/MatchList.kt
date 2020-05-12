@@ -28,34 +28,26 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
-class MatchList : MutableList<DeuceMatch> {
+class MatchList(
+    private val file: File,
+    private val backupFile: File,
+    partialLoadThreshold: Int,
+    partialLoadSize: Int,
+    partialLoaderCallback: () -> Unit
+) : MutableList<DeuceMatch> {
     companion object {
-        val NON_CURRENT_MATCH = DeuceMatch()
+        private val NON_CURRENT_MATCH = DeuceMatch()
         init {
             NON_CURRENT_MATCH.winner = Winner.TEAM1
         }
     }
 
-    private val data: ArrayList<DeuceMatch>
-    val file: File
-    val backupFile: File
+    private var data: ArrayList<DeuceMatch> = ArrayList()
+    private var currentMatch = NON_CURRENT_MATCH
     private var writerThread: Thread? = null
     private var readerThread: Thread? = null
-    private var currentMatch: DeuceMatch = NON_CURRENT_MATCH
 
-    constructor(
-        file: File,
-        backupFile: File,
-        partialLoadThreshold: Int,
-        partialLoadSize: Int,
-        partialLoaderCallback: () -> Unit
-    ) {
-        data = ArrayList()
-        this.file = file
-        this.backupFile = backupFile
-
-        currentMatch.winner = Winner.TEAM1
-
+    init {
         fun loadFile(file: File) {
             val parser = JSONParser()
             val reader = file.bufferedReader()
@@ -74,12 +66,11 @@ class MatchList : MutableList<DeuceMatch> {
                 for (i in 0 until minOf(partialLoadSize, size)) {
                     list.add(jsonObjectToMatch(parser.parse(reader.readLine()) as JSONObject))
                 }
-                data.addAll(list.asReversed())
+                data = ArrayList(list.asReversed())
                 readerThread = thread {
                     try {
                         readRest()
-                        data.clear()
-                        data.addAll(list.asReversed())
+                        data = ArrayList(list.asReversed())
                         partialLoaderCallback()
                     } catch (e: Exception) {
                         Log.d("foo", "Error loading the rest of score list file $file: $e")
@@ -90,13 +81,11 @@ class MatchList : MutableList<DeuceMatch> {
                 data.addAll(list.asReversed())
             }
         }
-
         if (file.exists()) {
             try {
                 loadFile(file)
             } catch (e: Exception) {
                 Log.d("foo", "Error loading scoreList file: $e")
-                data.clear()
                 if (backupFile.exists()) {
                     try {
                         loadFile(backupFile)
@@ -109,10 +98,9 @@ class MatchList : MutableList<DeuceMatch> {
         }
     }
 
-    constructor(file: File, backupFile: File, list: List<DeuceMatch>) {
-        data = ArrayList(list)
-        this.file = file
-        this.backupFile = backupFile
+    fun clean() {
+        readerThread?.join()
+        data = ArrayList(data.toSet().sorted())
     }
 
     private fun jsonObjectToMatch(json: JSONObject): DeuceMatch {
@@ -162,6 +150,7 @@ class MatchList : MutableList<DeuceMatch> {
 
     fun writeToFile() {
         val matchJSONObjectList = data.map { matchToJSONObject(it) }
+        readerThread?.join()
         writerThread?.join()
         writerThread = thread {
             val fileWriter = file.bufferedWriter()

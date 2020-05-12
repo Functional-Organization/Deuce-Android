@@ -19,20 +19,14 @@
 
 <resources>
     <string name="app_name" translatable="false">Deuce</string>
+    <string name="default_name_team1_singles">Myself</string>
+    <string name="default_name_team2_singles">Opponent</string>
+    <string name="default_name_short_team1_doubles">Mine</string>
+    <string name="default_name_short_team2_doubles">Opposing</string>
+    <string name="default_name_team1_doubles">My Team</string>
+    <string name="default_name_team2_doubles">Opposing Team</string>
     <string name="love">Love</string>
-    <string name="best_of_3">Best of three sets</string>
-    <string name="best_of_5">Best of five sets</string>
-    <string name="set_margin_1">Tiebreaker set</string>
-    <string name="best_of_1">One set</string>
-    <string name="set_margin_2">Advantage set</string>
-    <string name="play">Play</string>
     <string name="ad_in">Ad-In</string>
     <string name="ad_out">Ad-Out</string>
     <string name="deuce">Deuce</string>
-    <string name="default_name_team1_singles">Myself</string>
-    <string name="default_name_team2_singles">Opponent</string>
-    <string name="default_name_team1_doubles">Mine</string>
-    <string name="default_name_team2_doubles">Opposing</string>
-    <string name="default_name_long_team1_doubles">My Team</string>
-    <string name="default_name_long_team2_doubles">Opposing Team</string>
 </resources>

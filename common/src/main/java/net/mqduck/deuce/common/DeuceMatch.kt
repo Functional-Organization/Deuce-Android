@@ -57,8 +57,8 @@ class DeuceMatch(
         private var defaultNameTeam2Singles = ""
         private var defaultNameTeam1Doubles = ""
         private var defaultNameTeam2Doubles = ""
-        private var defaultNameLongTeam1Doubles = ""
-        private var defaultNameLongTeam2Doubles = ""
+        private var defaultNameShortTeam1Doubles = ""
+        private var defaultNameShortTeam2Doubles = ""
 
         val CREATOR = object : Parcelable.Creator<DeuceMatch> {
             override fun createFromParcel(parcel: Parcel): DeuceMatch {
@@ -75,8 +75,8 @@ class DeuceMatch(
             defaultNameTeam2Singles = context.resources.getString(R.string.default_name_team2_singles)
             defaultNameTeam1Doubles = context.resources.getString(R.string.default_name_team1_doubles)
             defaultNameTeam2Doubles = context.resources.getString(R.string.default_name_team2_doubles)
-            defaultNameLongTeam1Doubles = context.resources.getString(R.string.default_name_long_team1_doubles)
-            defaultNameLongTeam2Doubles = context.resources.getString(R.string.default_name_long_team2_doubles)
+            defaultNameShortTeam1Doubles = context.resources.getString(R.string.default_name_short_team1_doubles)
+            defaultNameShortTeam2Doubles = context.resources.getString(R.string.default_name_short_team2_doubles)
         }
     }
 
@@ -158,7 +158,7 @@ class DeuceMatch(
         get() = if (nameTeam1.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam1Singles
-                MatchType.DOUBLES -> defaultNameTeam1Doubles
+                MatchType.DOUBLES -> defaultNameShortTeam1Doubles
             }
         } else {
             nameTeam1
@@ -168,7 +168,7 @@ class DeuceMatch(
         get() = if (nameTeam1.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam1Singles
-                MatchType.DOUBLES -> defaultNameLongTeam1Doubles
+                MatchType.DOUBLES -> defaultNameTeam1Doubles
             }
         } else {
             nameTeam1
@@ -178,7 +178,7 @@ class DeuceMatch(
         get() = if (nameTeam2.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam2Singles
-                MatchType.DOUBLES -> defaultNameTeam2Doubles
+                MatchType.DOUBLES -> defaultNameShortTeam2Doubles
             }
         } else {
             nameTeam2
@@ -188,7 +188,7 @@ class DeuceMatch(
         get() = if (nameTeam1.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam2Singles
-                MatchType.DOUBLES -> defaultNameLongTeam2Doubles
+                MatchType.DOUBLES -> defaultNameTeam2Doubles
             }
         } else {
             nameTeam2

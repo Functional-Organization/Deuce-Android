@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                 dm.nameTeam2 = "lkjh ilyp9y9p34t vvce4wf dcdcdcdcdc"
                 matchList.add(dm)
             }
-            matchList = MatchList(matchList.file, matchList.backupFile, matchList.toSet().sorted())
+            matchList.clean()
             matchList.writeToFile()
         }
 
@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                             null
                     }
 
-                    val matchSet = matchList.toMutableSet()
+                    /*val matchSet = matchList.toMutableSet()
                     matchSet.addAll(dataMap.getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
                         DeuceMatch(
                             NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
@@ -221,8 +221,31 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                             matchDataMap.getString(KEY_NAME_TEAM2)
                         )
                     })
-                    matchList = MatchList(matchList.file, matchList.backupFile, matchSet.sorted())
+                    matchList = MatchList(matchList.file, matchList.backupFile, matchSet.sorted())*/
 
+                    matchList.addAll(dataMap.getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
+                        DeuceMatch(
+                            NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
+                            Team.fromOrdinal(matchDataMap.getInt(KEY_SERVER)),
+                            OvertimeRule.fromOrdinal(matchDataMap.getInt(KEY_OVERTIME_RULE)),
+                            MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
+                            PlayTimesData(
+                                matchDataMap.getLong(KEY_MATCH_START_TIME),
+                                matchDataMap.getLong(KEY_MATCH_END_TIME)
+                            ),
+                            PlayTimesList(
+                                matchDataMap.getLongArray(KEY_SETS_START_TIMES),
+                                matchDataMap.getLongArray(KEY_SETS_END_TIMES)
+                            ),
+                            ScoreStack(
+                                matchDataMap.getInt(KEY_SCORE_SIZE),
+                                BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))
+                            ),
+                            matchDataMap.getString(KEY_NAME_TEAM1),
+                            matchDataMap.getString(KEY_NAME_TEAM2)
+                        )
+                    })
+                    matchList.clean()
                     if (currentMatch != null) {
                         matchList.add(currentMatch)
                     }
