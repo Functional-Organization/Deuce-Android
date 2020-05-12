@@ -169,4 +169,9 @@ class DeuceMatch(
         } else {
             nameTeam2
         }
+
+    override var winner get() = mScore.winner
+        set(value) {
+            mScore.winner = value
+        }
 }

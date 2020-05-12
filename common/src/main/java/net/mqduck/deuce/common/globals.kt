@@ -60,6 +60,7 @@ const val KEY_MATCH_LIST = "match_list"
 const val KEY_MATCH_LIST_STATE = "match_list_state"
 const val KEY_DELETE_CURRENT_MATCH = "delete_match"
 const val KEY_MATCH_STATE = "game_state"
+const val KEY_DUMMY = "dummy"
 
 const val PATH_CURRENT_MATCH = "/current_match"
 const val PATH_MATCH_LIST = "/matches"
@@ -73,7 +74,7 @@ const val MATCH_LIST_FILE_BACKUP_NAME = "deuce_matches_backup"
 fun sendSignal(dataClient: DataClient, path: String, urgent: Boolean) {
     val putDataRequest: PutDataRequest =
         PutDataMapRequest.create(path).run {
-            dataMap.putLong("dummy", System.currentTimeMillis())
+            dataMap.putLong(KEY_DUMMY, System.currentTimeMillis())
             asPutDataRequest()
         }
     if (urgent) {

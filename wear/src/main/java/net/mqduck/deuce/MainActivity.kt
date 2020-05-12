@@ -307,7 +307,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
         dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
-        dataMap.putLong("dummy", System.currentTimeMillis())
+        dataMap.putLong(KEY_DUMMY, System.currentTimeMillis())
     }
 
     fun undo() {

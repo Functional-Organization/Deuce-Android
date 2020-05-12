@@ -38,7 +38,7 @@ open class Match(
     open var nameTeam2: String
 ) {
     lateinit var sets: ArrayList<Set>
-    private lateinit var mScore: Score
+    protected lateinit var mScore: Score
     lateinit var serving: Serving
         private set
     var changeover = false
@@ -78,7 +78,7 @@ open class Match(
         }
     }
 
-    val winner get() = mScore.winner
+    open val winner get() = mScore.winner
 
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame

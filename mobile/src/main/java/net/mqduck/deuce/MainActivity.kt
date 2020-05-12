@@ -58,6 +58,12 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
             }
         }
 
+        savedInstanceState?.let {
+            if (savedInstanceState.containsKey(KEY_CURRENT_MATCH)) {
+                matchList.add(savedInstanceState.getParcelable(KEY_CURRENT_MATCH)!!)
+            }
+        }
+
         // TODO: Remove after testing
         //matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
@@ -99,6 +105,13 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     override fun onPause() {
         super.onPause()
         Wearable.getDataClient(this).removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE) {
+            outState.putParcelable(KEY_CURRENT_MATCH, matchList.last())
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {

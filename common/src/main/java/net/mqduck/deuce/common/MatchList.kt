@@ -29,11 +29,19 @@ import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class MatchList : MutableList<DeuceMatch> {
+    companion object {
+        val NON_CURRENT_MATCH = DeuceMatch()
+        init {
+            NON_CURRENT_MATCH.winner = Winner.TEAM1
+        }
+    }
+
     private val data: ArrayList<DeuceMatch>
     val file: File
     val backupFile: File
     private var writerThread: Thread? = null
     private var readerThread: Thread? = null
+    private var currentMatch: DeuceMatch = NON_CURRENT_MATCH
 
     constructor(
         file: File,
@@ -45,6 +53,8 @@ class MatchList : MutableList<DeuceMatch> {
         data = ArrayList()
         this.file = file
         this.backupFile = backupFile
+
+        currentMatch.winner = Winner.TEAM1
 
         fun loadFile(file: File) {
             val parser = JSONParser()
@@ -163,13 +173,17 @@ class MatchList : MutableList<DeuceMatch> {
         }
     }
 
-    override val size get() = data.size
+    override val size get() = if (currentMatch.winner == Winner.NONE) data.size + 1 else data.size
 
     override fun contains(element: DeuceMatch) = data.contains(element)
 
     override fun containsAll(elements: Collection<DeuceMatch>) = data.containsAll(elements)
 
-    override fun get(index: Int) = data[index]
+    override fun get(index: Int) =
+        if (index == lastIndex && currentMatch.winner == Winner.NONE)
+            currentMatch
+        else
+            data[index]
 
     override fun indexOf(element: DeuceMatch) = data.lastIndexOf(element)
 
@@ -183,13 +197,21 @@ class MatchList : MutableList<DeuceMatch> {
     override fun lastIndexOf(element: DeuceMatch) = data.lastIndexOf(element)
 
     override fun add(element: DeuceMatch): Boolean {
+        if (element.winner == Winner.NONE) {
+            currentMatch = element
+            return true
+        }
         readerThread?.join()
         return data.add(element)
     }
 
     override fun add(index: Int, element: DeuceMatch) {
-        readerThread?.join()
-        data.add(index, element)
+        if (element.winner == Winner.NONE) {
+            currentMatch = element
+        } else {
+            readerThread?.join()
+            data.add(index, element)
+        }
     }
 
     override fun addAll(index: Int, elements: Collection<DeuceMatch>): Boolean {
@@ -203,6 +225,7 @@ class MatchList : MutableList<DeuceMatch> {
     }
 
     override fun clear() {
+        currentMatch = NON_CURRENT_MATCH
         readerThread?.join()
         data.clear()
     }
@@ -218,32 +241,63 @@ class MatchList : MutableList<DeuceMatch> {
     }
 
     override fun remove(element: DeuceMatch): Boolean {
+        if (element == currentMatch) {
+            currentMatch = NON_CURRENT_MATCH
+            return true
+        }
         readerThread?.join()
         return data.remove(element)
     }
 
     override fun removeAll(elements: Collection<DeuceMatch>): Boolean {
+        var tf = false
         readerThread?.join()
-        return data.removeAll(elements)
+        for (element in elements) {
+            if (element == currentMatch) {
+                currentMatch = NON_CURRENT_MATCH
+                tf = true
+                break
+            }
+        }
+        return data.removeAll(elements) || tf
     }
 
     override fun removeAt(index: Int): DeuceMatch {
+        if (index == lastIndex) {
+            val match = currentMatch
+            currentMatch = DeuceMatch()
+            currentMatch.winner = Winner.TEAM1
+            return match
+        }
         readerThread?.join()
         return data.removeAt(index)
     }
 
     override fun retainAll(elements: Collection<DeuceMatch>): Boolean {
+        var removeCurrentMatch = true
+        for (element in elements) {
+            if (element == currentMatch)
+            removeCurrentMatch = false
+            break
+        }
+        if (removeCurrentMatch) {
+            currentMatch = NON_CURRENT_MATCH
+        }
         readerThread?.join()
-        return data.retainAll(elements)
+        return data.retainAll(elements) || removeCurrentMatch
     }
 
     override fun set(index: Int, element: DeuceMatch): DeuceMatch {
+        if (index == lastIndex) {
+            val match = currentMatch
+            currentMatch = element
+            return match
+        }
         readerThread?.join()
         return data.set(index, element)
     }
 
     override fun subList(fromIndex: Int, toIndex: Int): MutableList<DeuceMatch> {
-        readerThread?.join()
-        return data.subList(fromIndex, toIndex)
+        TODO("Not yet implemented")
     }
 }
