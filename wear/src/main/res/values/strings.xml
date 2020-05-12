@@ -33,4 +33,8 @@
     <string name="starting_server">Starting Server</string>
     <string name="starting_service_team">Starting Service Team</string>
     <string name="new_match">New Match</string>
+    <string name="clock">Clock</string>
+    <string name="names">Custom Names</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
 </resources>

@@ -95,7 +95,7 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
         } else {
-            if (!mainActivity.preferences.clock) {
+            if (!mainActivity.preferences.showClock) {
                 text_clock.visibility = View.INVISIBLE
             }
 
@@ -298,9 +298,12 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     }
 
     fun updateTeamNames() {
-        if (mainActivity.currentMatch.nameTeam1.isNotEmpty() || mainActivity.currentMatch.nameTeam2.isNotEmpty()) {
-            text_name_p1.text = mainActivity.currentMatch.displayNameTeam1
-            text_name_p2.text = mainActivity.currentMatch.displayNameTeam2
+        if (
+            mainActivity.preferences.showCustomNames
+            && (mainActivity.currentMatch.nameTeam1.isNotEmpty() || mainActivity.currentMatch.nameTeam2.isNotEmpty())
+        ) {
+            text_name_p1.text = mainActivity.currentMatch.displayNameShortTeam1
+            text_name_p2.text = mainActivity.currentMatch.displayNameShortTeam2
             text_score_game_p1.translationY = GAME_SCORE_Y_TRANSLATION_WITH_NAME
             text_score_game_p2.translationY = -GAME_SCORE_Y_TRANSLATION_WITH_NAME
             if (ambientMode) {

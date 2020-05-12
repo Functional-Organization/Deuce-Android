@@ -35,6 +35,7 @@ val DEFAULT_STARTING_SERVER = Team.TEAM1
 val DEFAULT_NUM_SETS = NumSets.THREE
 val DEFAULT_OVERTIME_RULE = OvertimeRule.TIEBREAK
 const val DEFAULT_SHOW_CLOCK = false
+const val DEFAULT_SHOW_TEAM_NAMES = true
 
 // TODO: Check if other should be called DUMMY_ too
 const val DUMMY_NAME_TEAM1 = "Myself"
@@ -44,7 +45,8 @@ const val KEY_NUM_SETS = "num_sets"
 const val KEY_SERVER = "server"
 const val KEY_MATCH_TYPE = "type"
 const val KEY_OVERTIME_RULE = "overtime"
-const val KEY_CLOCK = "clock"
+const val KEY_SHOW_CLOCK = "show_clock"
+const val KEY_SHOW_CUSTOM_NAMES = "show_names"
 const val KEY_SCORE_ARRAY = "score_array"
 const val KEY_SCORE_SIZE = "score_size"
 const val KEY_MATCH_START_TIME = "match_start"

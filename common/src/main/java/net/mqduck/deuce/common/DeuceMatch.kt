@@ -154,7 +154,7 @@ class DeuceMatch(
             }
         }
 
-    val displayNameTeam1
+    val displayNameShortTeam1
         get() = if (nameTeam1.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam1Singles
@@ -164,7 +164,7 @@ class DeuceMatch(
             nameTeam1
         }
 
-    val displayNameTeam1Long
+    val displayNameTeam1
         get() = if (nameTeam1.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam1Singles
@@ -174,7 +174,7 @@ class DeuceMatch(
             nameTeam1
         }
 
-    val displayNameTeam2
+    val displayNameShortTeam2
         get() = if (nameTeam2.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam2Singles
@@ -184,8 +184,8 @@ class DeuceMatch(
             nameTeam2
         }
 
-    val displayNameTeam2Long
-        get() = if (nameTeam1.isEmpty()) {
+    val displayNameTeam2
+        get() = if (nameTeam2.isEmpty()) {
             when (matchType) {
                 MatchType.SINGLES -> defaultNameTeam2Singles
                 MatchType.DOUBLES -> defaultNameTeam2Doubles
