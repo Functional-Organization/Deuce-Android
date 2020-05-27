@@ -62,7 +62,7 @@ class ScoreStack : List<Team>, Parcelable {
     private inner class ListItr(internal var cursor: Int = 0) : ListIterator<Team> {
         override fun hasNext() = cursor < size
 
-        override fun hasPrevious() = cursor != 0
+        override fun hasPrevious() = cursor != 0 && size != 0
 
         override fun next(): Team {
             val player = get(cursor)

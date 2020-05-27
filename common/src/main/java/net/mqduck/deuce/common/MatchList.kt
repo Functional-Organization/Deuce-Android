@@ -35,24 +35,57 @@ class MatchList(
     partialLoadSize: Int,
     partialLoaderCallback: () -> Unit
 ) : MutableList<DeuceMatch> {
+    inner class MatchListIterator(private var cursor: Int = 0) : MutableListIterator<DeuceMatch> {
+        override fun hasNext() = cursor < size
+
+        override fun hasPrevious() = cursor != 0 && size != 0
+
+        override fun next(): DeuceMatch {
+            val match = get(cursor)
+            ++cursor
+            return match
+        }
+
+        override fun nextIndex() = cursor
+
+        override fun previous(): DeuceMatch {
+            --cursor
+            return get(cursor)
+        }
+
+        override fun previousIndex() = cursor - 1
+
+        override fun add(element: DeuceMatch) = this@MatchList.add(cursor, element)
+
+        override fun remove() {
+            this@MatchList.removeAt(cursor)
+        }
+
+        override fun set(element: DeuceMatch) {
+            this@MatchList.set(cursor, element)
+        }
+    }
+
     companion object {
         private val NON_CURRENT_MATCH = DeuceMatch()
+
         init {
             NON_CURRENT_MATCH.winner = Winner.TEAM1
         }
     }
 
-    private var data: ArrayList<DeuceMatch> = ArrayList()
+    private var data = ArrayList<DeuceMatch>()
     private var currentMatch = NON_CURRENT_MATCH
     private var writerThread: Thread? = null
     private var readerThread: Thread? = null
 
     init {
+        // TODO: Doesn't load backup save file if main save file is corrupt past partialLoadThreshold
         fun loadFile(file: File) {
-            val parser = JSONParser()
             val reader = file.bufferedReader()
             val size = reader.readLine().toInt()
             val list = ArrayList<DeuceMatch>(size)
+            val parser = JSONParser()
 
             fun readRest() {
                 var line = reader.readLine()
@@ -78,7 +111,8 @@ class MatchList(
                 }
             } else {
                 readRest()
-                data.addAll(list.asReversed())
+                //data.addAll(list.asReversed())
+                data = ArrayList(list.asReversed())
             }
         }
         if (file.exists()) {
@@ -162,14 +196,33 @@ class MatchList(
         }
     }
 
-    override val size get() = if (currentMatch.winner == Winner.NONE) data.size + 1 else data.size
+    private val hasCurrentMatch get() = currentMatch.isOngoing
 
-    override fun contains(element: DeuceMatch) = data.contains(element)
+    override val size get() = if (hasCurrentMatch) data.size + 1 else data.size
 
-    override fun containsAll(elements: Collection<DeuceMatch>) = data.containsAll(elements)
+    override fun contains(element: DeuceMatch) =
+        data.contains(element) || (hasCurrentMatch && element == currentMatch)
+
+    override fun containsAll(elements: Collection<DeuceMatch>): Boolean {
+        if (hasCurrentMatch) {
+            for (element in elements) {
+                if (!data.contains(element) && element != currentMatch) {
+                    return false
+                }
+            }
+            return true
+        } else {
+            for (element in elements) {
+                if (!data.contains(element)) {
+                    return false
+                }
+            }
+            return true
+        }
+    }
 
     override fun get(index: Int) =
-        if (index == lastIndex && currentMatch.winner == Winner.NONE)
+        if (index == lastIndex && hasCurrentMatch)
             currentMatch
         else
             data[index]
@@ -178,15 +231,18 @@ class MatchList(
 
     override fun isEmpty() = data.isEmpty()
 
-    override fun iterator(): MutableIterator<DeuceMatch> {
-        readerThread?.join()
-        return data.iterator()
+    override fun iterator() = MatchListIterator()
+
+    override fun lastIndexOf(element: DeuceMatch): Int {
+        var index = data.lastIndexOf(element)
+        if (index == -1 && element == currentMatch) {
+            index = data.size
+        }
+        return index
     }
 
-    override fun lastIndexOf(element: DeuceMatch) = data.lastIndexOf(element)
-
     override fun add(element: DeuceMatch): Boolean {
-        if (element.winner == Winner.NONE) {
+        if (element.isOngoing) {
             currentMatch = element
             return true
         }
@@ -195,14 +251,24 @@ class MatchList(
     }
 
     override fun add(index: Int, element: DeuceMatch) {
-        if (element.winner == Winner.NONE) {
-            currentMatch = element
+        if (element.isOngoing) {
+            currentMatch = if (hasCurrentMatch) {
+                if (index == lastIndex)
+                    element
+                else
+                    throw IllegalArgumentException("An unfinished match is only allowed at the end of the list.")
+            } else if (index == data.size) {
+                element
+            } else {
+                throw IllegalArgumentException("An unfinished match is only allowed at the end of the list.")
+            }
         } else {
             readerThread?.join()
             data.add(index, element)
         }
     }
 
+    // TODO: Check for ongoing matches
     override fun addAll(index: Int, elements: Collection<DeuceMatch>): Boolean {
         readerThread?.join()
         return data.addAll(index, elements)
@@ -219,15 +285,9 @@ class MatchList(
         data.clear()
     }
 
-    override fun listIterator(): MutableListIterator<DeuceMatch> {
-        readerThread?.join()
-        return data.listIterator()
-    }
+    override fun listIterator() = MatchListIterator()
 
-    override fun listIterator(index: Int): MutableListIterator<DeuceMatch> {
-        readerThread?.join()
-        return data.listIterator(index)
-    }
+    override fun listIterator(index: Int) = MatchListIterator(index)
 
     override fun remove(element: DeuceMatch): Boolean {
         if (element == currentMatch) {
@@ -254,8 +314,7 @@ class MatchList(
     override fun removeAt(index: Int): DeuceMatch {
         if (index == lastIndex) {
             val match = currentMatch
-            currentMatch = DeuceMatch()
-            currentMatch.winner = Winner.TEAM1
+            currentMatch = NON_CURRENT_MATCH
             return match
         }
         readerThread?.join()
@@ -266,7 +325,7 @@ class MatchList(
         var removeCurrentMatch = true
         for (element in elements) {
             if (element == currentMatch)
-            removeCurrentMatch = false
+                removeCurrentMatch = false
             break
         }
         if (removeCurrentMatch) {

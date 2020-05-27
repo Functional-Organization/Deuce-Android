@@ -20,7 +20,6 @@
 package net.mqduck.deuce
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.wearable.*
@@ -186,43 +185,6 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
             if (dataMap.getBoolean(KEY_MATCH_LIST_STATE, false)) {
                 val dataMapArray = dataMap.getDataMapArrayList(KEY_MATCH_LIST)
                 if (dataMapArray != null) {
-                    val currentMatch = if (dataMap.getBoolean(KEY_DELETE_CURRENT_MATCH)) {
-                        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE) {
-                            matchList.removeAt(matchList.lastIndex)
-                        }
-                        null
-                    } else {
-                        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE)
-                            matchList.removeAt(matchList.lastIndex)
-                        else
-                            null
-                    }
-
-                    /*val matchSet = matchList.toMutableSet()
-                    matchSet.addAll(dataMap.getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
-                        DeuceMatch(
-                            NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
-                            Team.fromOrdinal(matchDataMap.getInt(KEY_SERVER)),
-                            OvertimeRule.fromOrdinal(matchDataMap.getInt(KEY_OVERTIME_RULE)),
-                            MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
-                            PlayTimesData(
-                                matchDataMap.getLong(KEY_MATCH_START_TIME),
-                                matchDataMap.getLong(KEY_MATCH_END_TIME)
-                            ),
-                            PlayTimesList(
-                                matchDataMap.getLongArray(KEY_SETS_START_TIMES),
-                                matchDataMap.getLongArray(KEY_SETS_END_TIMES)
-                            ),
-                            ScoreStack(
-                                matchDataMap.getInt(KEY_SCORE_SIZE),
-                                BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))
-                            ),
-                            matchDataMap.getString(KEY_NAME_TEAM1),
-                            matchDataMap.getString(KEY_NAME_TEAM2)
-                        )
-                    })
-                    matchList = MatchList(matchList.file, matchList.backupFile, matchSet.sorted())*/
-
                     matchList.addAll(dataMap.getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
                         DeuceMatch(
                             NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
@@ -246,10 +208,6 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                         )
                     })
                     matchList.clean()
-                    if (currentMatch != null) {
-                        matchList.add(currentMatch)
-                    }
-
                     matchList.writeToFile()
 
                     scoresListFragment.view.adapter?.notifyDataSetChanged()
@@ -268,7 +226,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                 event.dataItem.also { item ->
                     if (item.uri.path?.compareTo(PATH_CURRENT_MATCH) == 0) {
                         syncCurrentMatch(DataMapItem.fromDataItem(item).dataMap)
-                    } else if (item.uri.path?.compareTo(PATH_MATCH_LIST) == 0) {
+                    } else if (item.uri.path?.compareTo(PATH_FINISHED_MATCHES) == 0) {
                         syncFinishedMatches(DataMapItem.fromDataItem(item).dataMap)
                     }
                 }

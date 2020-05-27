@@ -20,7 +20,6 @@
 package net.mqduck.deuce
 
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
@@ -230,14 +229,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onResume() {
         super.onResume()
         Wearable.getDataClient(this).addListener(this)
-        /*if (matchAdded) {
-            syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
-                writeMatchToDataMap(currentMatch, dataMap)
-            }
-        }
-        if (matchList.isNotEmpty()) {
-            syncMatchList(false)
-        }*/
         syncMatches()
     }
 
@@ -311,7 +302,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     fun undo() {
-        // Because the ScoreFragment may no longer exist after the undo animation completes, undo must be performed
+        // Because the ScoreFragment may no longer exist after the undo animation completes, it *must* be performed
         // in MainActivity.
         if (currentMatch.undo()) {
             image_undo.visibility = View.VISIBLE
@@ -332,12 +323,12 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
             override fun getItemText(pos: Int) = items.list[pos].text
 
-            override fun getItemDrawable(pos: Int): Drawable? = getDrawable(items.list[pos].drawableId)
+            override fun getItemDrawable(pos: Int) = getDrawable(items.list[pos].drawableId)
 
             override fun getCount() = items.list.size
 
             fun enableMatch() {
-                // Probably impossible for this condition to be true
+                // This condition will probably never be true
                 items = if (ambientMode)
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT
                 else
@@ -353,7 +344,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                         return i
                     }
                 }
-                throw java.lang.IllegalArgumentException("Invalid navigation drawer index")
+                throw IllegalArgumentException("$enum is not currently in the navigation drawer.")
             }
 
             fun update() {
@@ -414,18 +405,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
     }
 
-    /*internal fun syncMatchList(deleteCurrentMatch: Boolean) {
-        syncData(dataClient, PATH_MATCH_LIST, true) { dataMap ->
-            dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
-                val matchDataMap = DataMap()
-                writeMatchToDataMap(it, matchDataMap)
-                matchDataMap
-            }))
-            dataMap.putBoolean(KEY_MATCH_LIST_STATE, true)
-            dataMap.putBoolean(KEY_DELETE_CURRENT_MATCH, deleteCurrentMatch)
-        }
-    }*/
-
     internal fun syncMatches() {
         var deleteCurrentMatch = true
 
@@ -437,7 +416,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
 
         if (matchList.isNotEmpty()) {
-            syncData(dataClient, PATH_MATCH_LIST, true) { dataMap ->
+            syncData(dataClient, PATH_FINISHED_MATCHES, true) { dataMap ->
                 dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
                     val matchDataMap = DataMap()
                     writeMatchToDataMap(it, matchDataMap)

@@ -79,9 +79,9 @@ open class Match(
     }
 
     open val winner get() = mScore.winner
-
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
+    val isOngoing get() = winner == Winner.NONE
 
     private fun score(team: Team, updateLogs: Boolean): Winners {
         changeover = false

@@ -65,7 +65,7 @@ const val KEY_MATCH_STATE = "game_state"
 const val KEY_DUMMY = "dummy"
 
 const val PATH_CURRENT_MATCH = "/current_match"
-const val PATH_MATCH_LIST = "/matches"
+const val PATH_FINISHED_MATCHES = "/matches"
 const val PATH_TRANSMISSION_SIGNAL = "/trans_signal"
 const val PATH_REQUEST_MATCHES_SIGNAL = "/match_signal"
 const val PATH_UPDATE_NAMES = "/names"
