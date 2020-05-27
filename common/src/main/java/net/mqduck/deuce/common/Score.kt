@@ -56,7 +56,7 @@ class Score(winMinimum: Int, winMargin: Int) {
      *  The winning team, if any.
      */
     var winner = Winner.NONE
-        private set
+        internal set
 
     private fun updateWinner() {
         winner = when {

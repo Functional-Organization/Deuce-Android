@@ -27,9 +27,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 import java.io.File
 import java.util.*
+import kotlin.random.Random
 
 
-lateinit var mainActivity: MainActivity
+internal lateinit var mainActivity: MainActivity
 
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresListFragment.OnMatchInteractionListener {
@@ -42,51 +43,56 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME))
+        val startTime = System.currentTimeMillis()
+
+        matchList = MatchList(
+            File(filesDir, MATCH_LIST_FILE_NAME),
+            File(filesDir, MATCH_LIST_FILE_BACKUP_NAME),
+            200,
+            20
+        ) {
+            runOnUiThread {
+                scoresListFragment.view.adapter?.notifyDataSetChanged()
+                scoresListFragment.view.scrollToPosition(matchList.lastIndex)
+            }
+        }
+
+        savedInstanceState?.let {
+            if (savedInstanceState.containsKey(KEY_CURRENT_MATCH)) {
+                matchList.add(savedInstanceState.getParcelable(KEY_CURRENT_MATCH)!!)
+            }
+        }
 
         // TODO: Remove after testing
         //matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
-            /*val scoreLog = ScoreStack()
-            for (i in 0 until 48) {
-                scoreLog.push(Team.TEAM1)
-            }
-            matchList.add(
-                DeuceMatch(
-                    NumSets.THREE,
-                    Team.TEAM1,
-                    OvertimeRule.TIEBREAK,
-                    MatchType.SINGLES,
-                    PlayTimesData(416846345451, 416847346451),
-                    PlayTimesList(
-                        longArrayOf(0, 0, 0),
-                        longArrayOf(0, 0, 0)
-                    ),
-                    scoreLog,
-                    "Myself",
-                    "Opponent"
-                )
-            )
-            matchList.add(DeuceMatch())*/
-
-            val rd = Random()
-            for (i in 0..1000) {
+            Log.d("foo", "matchList is empty. Filling with random matches.")
+            val now = System.currentTimeMillis()
+            for (i in 0 until 10000) {
                 val dm = DeuceMatch()
                 while (dm.winner == Winner.NONE) {
-                    dm.score(if (rd.nextBoolean()) Team.TEAM1 else Team.TEAM2)
+                    dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
                 }
+                dm.playTimes.startTime = Random.nextLong(0, now)
+                dm.playTimes.endTime = Random.nextLong(0, now)
+                dm.nameTeam1 = "eilruyhf8o li4ufyh dlkfv hdslkdzx flkj"
+                dm.nameTeam2 = "lkjh ilyp9y9p34t vvce4wf dcdcdcdcdc"
                 matchList.add(dm)
-                matchList.writeToFile()
             }
+            matchList.clean()
+            matchList.writeToFile()
         }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Game.init(this)
+        DeuceMatch.init(this)
 
         scoresListFragment = fragment_scores as ScoresListFragment
         dataClient = Wearable.getDataClient(this)
+
+        Log.d("foo", "elapsed: ${System.currentTimeMillis() - startTime}")
     }
 
     override fun onResume() {
@@ -100,9 +106,14 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         Wearable.getDataClient(this).removeListener(this)
     }
 
-    override fun onDataChanged(dataEvents: DataEventBuffer) {
-        Log.d("foo", "outside")
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE) {
+            outState.putParcelable(KEY_CURRENT_MATCH, matchList.last())
+        }
+        super.onSaveInstanceState(outState)
+    }
 
+    override fun onDataChanged(dataEvents: DataEventBuffer) {
         // TODO: Change to local inline function when support is added to Kotlin
         fun syncCurrentMatch(dataMap: DataMap) {
             when (MatchState.fromOrdinal(dataMap.getInt(KEY_MATCH_STATE))) {
@@ -139,6 +150,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                     }
 
                     scoresListFragment.view.adapter?.notifyDataSetChanged()
+                    scoresListFragment.view.scrollToPosition(matchList.lastIndex)
                 }
                 MatchState.ONGOING -> {
                     Log.d("foo", "updating current match")
@@ -173,20 +185,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
             if (dataMap.getBoolean(KEY_MATCH_LIST_STATE, false)) {
                 val dataMapArray = dataMap.getDataMapArrayList(KEY_MATCH_LIST)
                 if (dataMapArray != null) {
-                    val currentMatch = if (dataMap.getBoolean(KEY_DELETE_CURRENT_MATCH)) {
-                        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE) {
-                            matchList.removeAt(matchList.lastIndex)
-                        }
-                        null
-                    } else {
-                        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE)
-                            matchList.removeAt(matchList.lastIndex)
-                        else
-                            null
-                    }
-
-                    val matchSet = matchList.toMutableSet()
-                    matchSet.addAll(dataMap.getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
+                    matchList.addAll(dataMap.getDataMapArrayList(KEY_MATCH_LIST).map { matchDataMap ->
                         DeuceMatch(
                             NumSets.fromOrdinal(matchDataMap.getInt(KEY_NUM_SETS)),
                             Team.fromOrdinal(matchDataMap.getInt(KEY_SERVER)),
@@ -208,30 +207,26 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
                             matchDataMap.getString(KEY_NAME_TEAM2)
                         )
                     })
-                    matchList = MatchList(matchList.file, matchList.backupFile, matchSet.sorted())
-
-                    if (currentMatch != null) {
-                        matchList.add(currentMatch)
-                    }
-
+                    matchList.clean()
                     matchList.writeToFile()
 
                     scoresListFragment.view.adapter?.notifyDataSetChanged()
 
-                    sendSignal(dataClient, PATH_TRANSMISSION_SIGNAL, true)
+                    sendSignal(dataClient, PATH_TRANSMISSION_SIGNAL, false)
                 } else {
                     Log.d("foo", "dataMapArray is null for some reason")
                 }
             }
         }
 
+        Log.d("foo", "data changed")
         dataEvents.forEach { event ->
             // DataItem changed
             if (event.type == DataEvent.TYPE_CHANGED) {
                 event.dataItem.also { item ->
                     if (item.uri.path?.compareTo(PATH_CURRENT_MATCH) == 0) {
                         syncCurrentMatch(DataMapItem.fromDataItem(item).dataMap)
-                    } else if (item.uri.path?.compareTo(PATH_MATCH_LIST) == 0) {
+                    } else if (item.uri.path?.compareTo(PATH_FINISHED_MATCHES) == 0) {
                         syncFinishedMatches(DataMapItem.fromDataItem(item).dataMap)
                     }
                 }
@@ -241,7 +236,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
         }
     }
 
-    override fun onMatchInteraction(item: Match, position: Int) {
+    override fun onMatchInteraction(item: DeuceMatch, position: Int) {
         scoresListFragment.fragmentManager?.let { fragmentManager ->
             val infoDialog = InfoDialog(item, position, scoresListFragment)
             infoDialog.show(fragmentManager, "info")

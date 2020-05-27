@@ -25,6 +25,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import net.mqduck.deuce.common.DeuceMatch
 import net.mqduck.deuce.common.Match
 import net.mqduck.deuce.common.ScoreStack
 import net.mqduck.deuce.common.Team
@@ -77,7 +78,7 @@ class ScoresListFragment : Fragment() {
      * for more information.
      */
     interface OnMatchInteractionListener {
-        fun onMatchInteraction(item: Match, position: Int)
+        fun onMatchInteraction(item: DeuceMatch, position: Int)
     }
 
     /*companion object {

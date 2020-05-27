@@ -59,8 +59,8 @@ class ScoreRecyclerViewAdapter : RecyclerView.Adapter<ScoreRecyclerViewAdapter.V
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val match = mainActivity.matchList[position]
 
-        holder.view.text_team_1.text = match.nameTeam1
-        holder.view.text_team_2.text = match.nameTeam2
+        holder.view.text_team_1.text = match.displayNameTeam1
+        holder.view.text_team_2.text = match.displayNameTeam2
 
         if (match.winner == Winner.NONE) {
             holder.view.text_date.text = mainActivity.getString(R.string.live)

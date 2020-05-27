@@ -34,11 +34,11 @@ open class Match(
     val playTimes: PlayTimesData,
     var setsTimesLog: PlayTimesList,
     scoreLog: ScoreStack,
-    var nameTeam1: String,
-    var nameTeam2: String
+    open var nameTeam1: String,
+    open var nameTeam2: String
 ) {
     lateinit var sets: ArrayList<Set>
-    private lateinit var mScore: Score
+    protected lateinit var mScore: Score
     lateinit var serving: Serving
         private set
     var changeover = false
@@ -78,10 +78,10 @@ open class Match(
         }
     }
 
-    val winner get() = mScore.winner
-
+    open val winner get() = mScore.winner
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
+    val isOngoing get() = winner == Winner.NONE
 
     private fun score(team: Team, updateLogs: Boolean): Winners {
         changeover = false

@@ -20,6 +20,7 @@
 package net.mqduck.deuce
 
 import android.animation.ObjectAnimator
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
@@ -36,6 +37,10 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
     companion object {
         const val BALL_ANIMATION_DURATION = 250L
         const val UNDO_ANIMATION_DURATION = 700L
+        val GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME = -10 * Resources.getSystem().displayMetrics.density
+        val GAME_SCORE_Y_TRANSLATION_WITH_NAME = -5 * Resources.getSystem().displayMetrics.density
+        val SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME = 10 * Resources.getSystem().displayMetrics.density
+        val SETS_SCORES_Y_TRANSLATION_WITH_NAME = 3 * Resources.getSystem().displayMetrics.density
     }
 
     private var posXBallLeftT1 = 0F
@@ -84,19 +89,21 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
             text_clock.paint.isAntiAlias = false
             text_scores_match_p1.paint.isAntiAlias = false
             text_scores_match_p2.paint.isAntiAlias = false
-            button_score_p1.paint.isAntiAlias = false
-            button_score_p2.paint.isAntiAlias = false
+            text_score_game_p1.paint.isAntiAlias = false
+            text_score_game_p2.paint.isAntiAlias = false
 
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
         } else {
-            if (!mainActivity.preferences.clock) {
+            if (!mainActivity.preferences.showClock) {
                 text_clock.visibility = View.INVISIBLE
             }
 
             button_score_p1.setOnClickListener { score(Team.TEAM1) }
             button_score_p2.setOnClickListener { score(Team.TEAM2) }
         }
+
+        updateTeamNames()
 
         view.post {
             posXBallRightT1 = view.width - posXBallLeftT1 - ball_serving_t1.width
@@ -162,8 +169,8 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         }
 
         val scores = mainActivity.currentMatch.currentGame.getScoreStrings()
-        button_score_p1.text = scores.player1
-        button_score_p2.text = scores.player2
+        text_score_game_p1.text = scores.player1
+        text_score_game_p2.text = scores.player2
 
         if (mainActivity.currentMatch.winner == Winner.NONE) {
             when (mainActivity.currentMatch.serving) {
@@ -287,6 +294,37 @@ class ScoreFragment(private val mainActivity: MainActivity) : Fragment() {
         } else {
             changeover_arrow_down.visibility = View.INVISIBLE
             changeover_arrow_up.visibility = View.INVISIBLE
+        }
+    }
+
+    fun updateTeamNames() {
+        if (
+            mainActivity.preferences.showCustomNames
+            && (mainActivity.currentMatch.nameTeam1.isNotEmpty() || mainActivity.currentMatch.nameTeam2.isNotEmpty())
+        ) {
+            text_name_p1.text = mainActivity.currentMatch.displayNameShortTeam1
+            text_name_p2.text = mainActivity.currentMatch.displayNameShortTeam2
+            text_score_game_p1.translationY = GAME_SCORE_Y_TRANSLATION_WITH_NAME
+            text_score_game_p2.translationY = -GAME_SCORE_Y_TRANSLATION_WITH_NAME
+            if (ambientMode) {
+                text_name_p1.visibility = View.GONE
+                text_name_p2.visibility = View.GONE
+            } else {
+                text_scores_match_p1.translationY = SETS_SCORES_Y_TRANSLATION_WITH_NAME
+                text_scores_match_p2.translationY = -SETS_SCORES_Y_TRANSLATION_WITH_NAME
+            }
+        } else {
+            text_name_p1.text = ""
+            text_name_p2.text = ""
+            text_score_game_p1.translationY = GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME
+            text_score_game_p2.translationY = -GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME
+            if (ambientMode) {
+                text_name_p1.visibility = View.GONE
+                text_name_p2.visibility = View.GONE
+            } else {
+                text_scores_match_p1.translationY = SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME
+                text_scores_match_p2.translationY = -SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME
+            }
         }
     }
 }

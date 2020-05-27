@@ -39,7 +39,11 @@ class DeuceWearPreferences(private val preferences: SharedPreferences) {
         get() = OvertimeRule.fromOrdinal(preferences.getInt(KEY_OVERTIME_RULE, DEFAULT_OVERTIME_RULE.ordinal))
         set(overtime) = preferences.edit().putInt(KEY_OVERTIME_RULE, overtime.ordinal).apply()
 
-    var clock
-        get() = preferences.getBoolean(KEY_CLOCK, DEFAULT_SHOW_CLOCK)
-        set(clock) = preferences.edit().putBoolean(KEY_CLOCK, clock).apply()
+    var showClock
+        get() = preferences.getBoolean(KEY_SHOW_CLOCK, DEFAULT_SHOW_CLOCK)
+        set(show) = preferences.edit().putBoolean(KEY_SHOW_CLOCK, show).apply()
+
+    var showCustomNames
+        get() = preferences.getBoolean(KEY_SHOW_CUSTOM_NAMES, DEFAULT_SHOW_TEAM_NAMES)
+        set(show) = preferences.edit().putBoolean(KEY_SHOW_CUSTOM_NAMES, show).apply()
 }

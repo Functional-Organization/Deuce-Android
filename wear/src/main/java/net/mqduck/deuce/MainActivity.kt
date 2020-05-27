@@ -20,7 +20,6 @@
 package net.mqduck.deuce
 
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.wearable.input.WearableButtons
@@ -133,7 +132,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     internal var currentMatch = DeuceMatch()
     internal lateinit var preferences: DeuceWearPreferences
-    internal lateinit var storage: File
     lateinit var dataClient: DataClient
     internal lateinit var matchList: MatchList
 
@@ -157,19 +155,25 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = DeuceAmbientCallback()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // https://github.com/Subhipster-Collective/Deuce-Android/issues/21
+        // https://github.com/Functional-Organization/Deuce-Android/issues/21
         savedInstanceState?.remove("android:support:fragments")
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Game.init(this)
+        DeuceMatch.init(this)
 
         navigationDrawer = navigation_drawer
 
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
         dataClient = Wearable.getDataClient(this)
-        matchList = MatchList(File(filesDir, MATCH_LIST_FILE_NAME), File(filesDir, MATCH_LIST_FILE_BACKUP_NAME))
+        matchList = MatchList(
+            File(filesDir, MATCH_LIST_FILE_NAME),
+            File(filesDir, MATCH_LIST_FILE_BACKUP_NAME),
+            0,
+            0
+        ) {}
 
         var fragment = FragmentEnum.SETUP
 
@@ -183,8 +187,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             if (savedInstanceState.containsKey(KEY_CURRENT_FRAGMENT)) {
                 fragment = savedInstanceState.getSerializable(KEY_CURRENT_FRAGMENT) as FragmentEnum
             }
-            if (savedInstanceState.containsKey(KEY_MATCH)) {
-                currentMatch = savedInstanceState.getParcelable(KEY_MATCH)!!
+            if (savedInstanceState.containsKey(KEY_CURRENT_MATCH)) {
+                currentMatch = savedInstanceState.getParcelable(KEY_CURRENT_MATCH)!!
             }
             if (savedInstanceState.containsKey(KEY_MATCH_ADDED)) {
                 matchAdded = savedInstanceState.getBoolean(KEY_MATCH_ADDED)
@@ -225,14 +229,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onResume() {
         super.onResume()
         Wearable.getDataClient(this).addListener(this)
-        /*if (matchAdded) {
-            syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
-                writeMatchToDataMap(currentMatch, dataMap)
-            }
-        }
-        if (matchList.isNotEmpty()) {
-            syncMatchList(false)
-        }*/
         syncMatches()
     }
 
@@ -244,7 +240,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putParcelable(KEY_MATCH, currentMatch)
+        outState.putParcelable(KEY_CURRENT_MATCH, currentMatch)
         outState.putSerializable(KEY_CURRENT_FRAGMENT, currentFragment)
         outState.putBoolean(KEY_MATCH_ADDED, matchAdded)
     }
@@ -279,14 +275,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             PlayTimesData(),
             PlayTimesList(),
             ScoreStack(),
-            when (preferences.matchType) {
-                MatchType.SINGLES -> resources.getString(R.string.default_name_team1_singles)
-                MatchType.DOUBLES -> resources.getString(R.string.default_name_team1_doubles)
-            },
-            when (preferences.matchType) {
-                MatchType.SINGLES -> resources.getString(R.string.default_name_team2_singles)
-                MatchType.DOUBLES -> resources.getString(R.string.default_name_team2_doubles)
-            }
+            "",
+            ""
         )
 
         syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
@@ -308,10 +298,11 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
         dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
+        dataMap.putLong(KEY_DUMMY, System.currentTimeMillis())
     }
 
     fun undo() {
-        // Because the ScoreFragment may no longer exist after the undo animation completes, undo must be performed
+        // Because the ScoreFragment may no longer exist after the undo animation completes, it *must* be performed
         // in MainActivity.
         if (currentMatch.undo()) {
             image_undo.visibility = View.VISIBLE
@@ -332,12 +323,12 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
             override fun getItemText(pos: Int) = items.list[pos].text
 
-            override fun getItemDrawable(pos: Int): Drawable? = getDrawable(items.list[pos].drawableId)
+            override fun getItemDrawable(pos: Int) = getDrawable(items.list[pos].drawableId)
 
             override fun getCount() = items.list.size
 
             fun enableMatch() {
-                // Probably impossible for this condition to be true
+                // This condition will probably never be true
                 items = if (ambientMode)
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT
                 else
@@ -353,7 +344,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                         return i
                     }
                 }
-                throw java.lang.IllegalArgumentException("Invalid navigation drawer index")
+                throw IllegalArgumentException("$enum is not currently in the navigation drawer.")
             }
 
             fun update() {
@@ -414,18 +405,6 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
     }
 
-    /*internal fun syncMatchList(deleteCurrentMatch: Boolean) {
-        syncData(dataClient, PATH_MATCH_LIST, true) { dataMap ->
-            dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
-                val matchDataMap = DataMap()
-                writeMatchToDataMap(it, matchDataMap)
-                matchDataMap
-            }))
-            dataMap.putBoolean(KEY_MATCH_LIST_STATE, true)
-            dataMap.putBoolean(KEY_DELETE_CURRENT_MATCH, deleteCurrentMatch)
-        }
-    }*/
-
     internal fun syncMatches() {
         var deleteCurrentMatch = true
 
@@ -437,7 +416,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
 
         if (matchList.isNotEmpty()) {
-            syncData(dataClient, PATH_MATCH_LIST, true) { dataMap ->
+            syncData(dataClient, PATH_FINISHED_MATCHES, true) { dataMap ->
                 dataMap.putDataMapArrayList(KEY_MATCH_LIST, ArrayList(matchList.map {
                     val matchDataMap = DataMap()
                     writeMatchToDataMap(it, matchDataMap)
@@ -450,6 +429,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
+        Log.d("foo", "data changed")
         dataEvents.forEach { event ->
             if (event.type == DataEvent.TYPE_CHANGED) {
                 event.dataItem.also { item ->
@@ -458,17 +438,16 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                         matchList.clear()
                         matchList.writeToFile()
                     } else if (item.uri.path?.compareTo(PATH_REQUEST_MATCHES_SIGNAL) == 0) {
-                        /*if (matchAdded) {
-                            syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
-                                writeMatchToDataMap(currentMatch, dataMap)
-                            }
-                            if (matchList.isNotEmpty()) {
-                                syncMatchList(false)
-                            }
-                        } else if (matchList.isNotEmpty()) {
-                            syncMatchList(true)
-                        }*/
+                        Log.d("foo", "received match request")
+                        syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
+                            writeMatchToDataMap(currentMatch, dataMap)
+                        }
                         syncMatches()
+                    } else if (item.uri.path?.compareTo(PATH_UPDATE_NAMES) == 0) {
+                        val dataMap = DataMapItem.fromDataItem(item).dataMap
+                        currentMatch.nameTeam1 = dataMap.getString(KEY_NAME_TEAM1)
+                        currentMatch.nameTeam2 = dataMap.getString(KEY_NAME_TEAM2)
+                        scoreFragment.updateTeamNames()
                     }
                 }
             }

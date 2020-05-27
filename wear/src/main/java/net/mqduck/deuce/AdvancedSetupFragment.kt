@@ -38,12 +38,22 @@ class AdvancedSetupFragment(val mainActivity: MainActivity) : Fragment() {
 
         radio_clock_hide.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.clock = false
+                mainActivity.preferences.showClock = false
             }
         }
         radio_clock_show.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                mainActivity.preferences.clock = true
+                mainActivity.preferences.showClock = true
+            }
+        }
+        radio_names_hide.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.showCustomNames = false
+            }
+        }
+        radio_names_show.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mainActivity.preferences.showCustomNames = true
             }
         }
     }
@@ -51,10 +61,16 @@ class AdvancedSetupFragment(val mainActivity: MainActivity) : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (mainActivity.preferences.clock) {
+        if (mainActivity.preferences.showClock) {
             radio_clock_show.isChecked = true
         } else {
             radio_clock_hide.isChecked = true
+        }
+
+        if (mainActivity.preferences.showCustomNames) {
+            radio_names_show.isChecked = true
+        } else {
+            radio_names_hide.isChecked = true
         }
     }
 }

@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Clock"
+            android:text="@string/clock"
             android:textSize="18sp" />
 
         <RadioGroup
@@ -55,7 +55,7 @@
                 android:button="@null"
                 android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
                 android:gravity="center_horizontal"
-                android:text="Hide" />
+                android:text="@string/hide" />
 
             <RadioButton
                 android:id="@+id/radio_clock_show"
@@ -65,7 +65,41 @@
                 android:button="@null"
                 android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
                 android:gravity="center_horizontal"
-                android:text="Show" />
+                android:text="@string/show" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/text_show_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/names"
+            android:textSize="18sp" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_names_hide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                android:gravity="center_horizontal"
+                android:text="@string/hide" />
+
+            <RadioButton
+                android:id="@+id/radio_names_show"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableBottom="?android:attr/listChoiceIndicatorSingle"
+                android:gravity="center_horizontal"
+                android:text="@string/show" />
         </RadioGroup>
     </LinearLayout>
 </androidx.wear.widget.BoxInsetLayout>
