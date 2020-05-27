@@ -133,7 +133,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     internal var currentMatch = DeuceMatch()
     internal lateinit var preferences: DeuceWearPreferences
     lateinit var dataClient: DataClient
-    internal lateinit var matchList: MatchList
+    internal lateinit var matchList: WearMatchList
 
     private var setupFragment = SetupFragment(this)
     private var advancedSetupFragment = AdvancedSetupFragment(this)
@@ -168,7 +168,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         preferences = DeuceWearPreferences(PreferenceManager.getDefaultSharedPreferences(this))
         dataClient = Wearable.getDataClient(this)
-        matchList = MatchList(
+        matchList = WearMatchList(
             File(filesDir, MATCH_LIST_FILE_NAME),
             File(filesDir, MATCH_LIST_FILE_BACKUP_NAME),
             0,

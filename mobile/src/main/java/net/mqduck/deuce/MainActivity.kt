@@ -35,7 +35,7 @@ internal lateinit var mainActivity: MainActivity
 class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     ScoresListFragment.OnMatchInteractionListener {
     private lateinit var scoresListFragment: ScoresListFragment
-    internal lateinit var matchList: MatchList
+    internal lateinit var matchList: MobileMatchList
     internal lateinit var dataClient: DataClient
 
     init {
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         val startTime = System.currentTimeMillis()
 
-        matchList = MatchList(
+        matchList = MobileMatchList(
             File(filesDir, MATCH_LIST_FILE_NAME),
             File(filesDir, MATCH_LIST_FILE_BACKUP_NAME),
             200,
