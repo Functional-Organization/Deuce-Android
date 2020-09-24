@@ -26,8 +26,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_advanced_setup.*
 
-class AdvancedSetupFragment(val mainActivity: MainActivity) : Fragment() {
-    val ambientMode = mainActivity.ambientMode
+class AdvancedSetupFragment : Fragment() {
+    val inAmbientMode = mainActivity.inAmbientMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_advanced_setup, container, false)

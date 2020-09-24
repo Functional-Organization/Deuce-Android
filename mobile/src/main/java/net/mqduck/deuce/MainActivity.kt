@@ -32,7 +32,9 @@ import kotlin.random.Random
 
 internal lateinit var mainActivity: MainActivity
 
-class MainActivity : AppCompatActivity(), DataClient.OnDataChangedListener,
+class MainActivity :
+    AppCompatActivity(),
+    DataClient.OnDataChangedListener,
     ScoresListFragment.OnMatchInteractionListener {
     private lateinit var scoresListFragment: ScoresListFragment
     internal lateinit var matchList: MobileMatchList

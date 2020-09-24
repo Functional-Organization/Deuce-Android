@@ -34,7 +34,7 @@ class MobileMatchList(
     inner class MobileMatchListIterator(private var cursor: Int = 0) : MutableListIterator<DeuceMatch> {
         override fun hasNext() = cursor < size
 
-        override fun hasPrevious() = cursor != 0 && size != 0
+        override fun hasPrevious() = cursor != 0
 
         override fun next(): DeuceMatch {
             val match = get(cursor)

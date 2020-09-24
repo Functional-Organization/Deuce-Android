@@ -30,8 +30,8 @@ import net.mqduck.deuce.common.NumSets
 import net.mqduck.deuce.common.Team
 import kotlin.random.Random
 
-class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
-    val ambientMode = mainActivity.ambientMode
+class SetupFragment : Fragment() {
+    val inAmbientMode = mainActivity.inAmbientMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_setup, container, false)
@@ -40,7 +40,7 @@ class SetupFragment(private val mainActivity: MainActivity) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (mainActivity.ambientMode) {
+        if (mainActivity.inAmbientMode) {
             button_start.paint.isAntiAlias = false
             text_players.paint.isAntiAlias = false
             radio_singles.paint.isAntiAlias = false

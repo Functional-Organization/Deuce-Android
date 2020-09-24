@@ -36,6 +36,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 import java.io.File
 
+
+internal lateinit var mainActivity: MainActivity
+
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider, DataClient.OnDataChangedListener {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
@@ -112,7 +115,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
     private inner class DeuceAmbientCallback : AmbientModeSupport.AmbientCallback() {
         override fun onEnterAmbient(ambientDetails: Bundle?) {
-            ambientMode = true
+            inAmbientMode = true
             switchFragment(currentFragment)
 
             navigationDrawer.background.setTint(getColor(R.color.black))
@@ -120,7 +123,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         }
 
         override fun onExitAmbient() {
-            ambientMode = false
+            inAmbientMode = false
             switchFragment(currentFragment)
 
             navigationDrawer.background.setTint(getColor(R.color.lighter_bg_1))
@@ -130,19 +133,23 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         override fun onUpdateAmbient() {}
     }
 
+    init {
+        mainActivity = this
+    }
+
     internal var currentMatch = DeuceMatch()
     internal lateinit var preferences: DeuceWearPreferences
     lateinit var dataClient: DataClient
     internal lateinit var matchList: WearMatchList
 
-    private var setupFragment = SetupFragment(this)
-    private var advancedSetupFragment = AdvancedSetupFragment(this)
-    private var scoreFragment = ScoreFragment(this)
+    private var setupFragment = SetupFragment()
+    private var advancedSetupFragment = AdvancedSetupFragment()
+    private var scoreFragment = ScoreFragment()
 
     private val fragmentManager = supportFragmentManager
     private var currentFragment = FragmentEnum.SETUP
     private var matchAdded = false
-    internal var ambientMode = false
+    internal var inAmbientMode = false
         private set
 
     private lateinit var ambientController: AmbientModeSupport.AmbientController
@@ -329,7 +336,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
             fun enableMatch() {
                 // This condition will probably never be true
-                items = if (ambientMode)
+                items = if (inAmbientMode)
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT
                 else
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH
@@ -351,13 +358,13 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                 items = when (items) {
                     NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH,
                     NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH_AMBIENT ->
-                        if (ambientMode)
+                        if (inAmbientMode)
                             NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH_AMBIENT
                         else
                             NavigationItemList.NAVIGATION_ITEMS_WITHOUT_MATCH
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH,
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT ->
-                        if (ambientMode)
+                        if (inAmbientMode)
                             NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT
                         else
                             NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH
@@ -369,7 +376,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     override fun getTheme(): Resources.Theme {
         //return super.getTheme()
         val theme = super.getTheme()
-        if (ambientMode) {
+        if (inAmbientMode) {
             theme.applyStyle(R.style.DeuceWear_Ambient, true)
         } else {
             theme.applyStyle(R.style.DeuceWear, true)
@@ -385,20 +392,20 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         when (fragment) {
             FragmentEnum.SETUP -> {
-                if (setupFragment.ambientMode != ambientMode) {
-                    setupFragment = SetupFragment(this)
+                if (setupFragment.inAmbientMode != inAmbientMode) {
+                    setupFragment = SetupFragment()
                 }
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, setupFragment).commit()
             }
             FragmentEnum.ADVANCED_SETUP -> {
-                if (advancedSetupFragment.ambientMode != ambientMode) {
-                    advancedSetupFragment = AdvancedSetupFragment(this)
+                if (advancedSetupFragment.inAmbientMode != inAmbientMode) {
+                    advancedSetupFragment = AdvancedSetupFragment()
                 }
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, advancedSetupFragment).commit()
             }
             FragmentEnum.SCORE -> {
-                if (scoreFragment.ambientMode != ambientMode) {
-                    scoreFragment = ScoreFragment(this)
+                if (scoreFragment.inAmbientMode != inAmbientMode) {
+                    scoreFragment = ScoreFragment()
                 }
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, scoreFragment).commit()
             }
