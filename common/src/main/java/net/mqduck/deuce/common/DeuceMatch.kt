@@ -29,8 +29,8 @@ class DeuceMatch(
     startingServer: Team,
     overtimeRule: OvertimeRule,
     matchType: MatchType,
-    playTimes: PlayTimesData,
-    setTimesLog: PlayTimesList,
+    startTime: Long,
+    gameEndTimes: MutableList<Long>,
     scoreLog: ScoreStack,
     nameTeam1: String,
     nameTeam2: String
@@ -46,8 +46,8 @@ class DeuceMatch(
     startingServer,
     overtimeRule,
     matchType,
-    playTimes,
-    setTimesLog,
+    startTime,
+    gameEndTimes,
     scoreLog,
     nameTeam1,
     nameTeam2
@@ -85,8 +85,8 @@ class DeuceMatch(
         DEFAULT_STARTING_SERVER,
         DEFAULT_OVERTIME_RULE,
         DEFAULT_MATCH_TYPE,
-        PlayTimesData(),
-        PlayTimesList(),
+        System.currentTimeMillis(),
+        ArrayList<Long>(),
         ScoreStack(),
         "",
         ""
@@ -97,12 +97,24 @@ class DeuceMatch(
         parcel.readSerializable() as Team,
         parcel.readSerializable() as OvertimeRule,
         parcel.readSerializable() as MatchType,
-        parcel.readParcelable<PlayTimesData>(PlayTimesData::class.java.classLoader)!!,
-        //parcel.createTypedArrayList(PlayTimes.CREATOR)!!,
-        PlayTimesList(parcel.createLongArray()!!, parcel.createLongArray()!!),
+        parcel.readLong(),
+        parcel.createLongArray()!!.toCollection(ArrayList()),
         parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!,
         parcel.readString()!!,
         parcel.readString()!!
+    )
+
+    // TODO: for testing
+    constructor(startTime: Long) : this(
+        DEFAULT_NUM_SETS,
+        DEFAULT_STARTING_SERVER,
+        DEFAULT_OVERTIME_RULE,
+        DEFAULT_MATCH_TYPE,
+        startTime,
+        ArrayList<Long>(),
+        ScoreStack(),
+        "",
+        ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -110,10 +122,8 @@ class DeuceMatch(
         parcel.writeSerializable(startingServer)
         parcel.writeSerializable(overtimeRule)
         parcel.writeSerializable(matchType)
-        parcel.writeParcelable(playTimes, flags)
-        //parcel.writeTypedArray(setsTimesLog.toArray() as Array<PlayTimes>, flags)
-        parcel.writeLongArray(setsTimesLog.getStartTimesArray())
-        parcel.writeLongArray(setsTimesLog.getEndTimesArray())
+        parcel.writeLong(startTime)
+        parcel.writeLongArray(gameEndTimes.toLongArray())
         parcel.writeParcelable(scoreLog, flags)
         parcel.writeString(nameTeam1)
         parcel.writeString(nameTeam2)
@@ -121,19 +131,19 @@ class DeuceMatch(
 
     override fun describeContents() = 0
 
-    override fun compareTo(other: DeuceMatch)/* = playTimes.startTime.compareTo(other.playTimes.startTime)*/: Int {
+    override fun compareTo(other: DeuceMatch): Int {
         Log.d("foo", "comparing")
-        return playTimes.startTime.compareTo(other.playTimes.startTime)
+        return startTime.compareTo(other.startTime)
     }
 
-    override fun equals(other: Any?)/* = other is DeuceMatch && playTimes.startTime == other.playTimes.startTime*/: Boolean {
+    override fun equals(other: Any?): Boolean {
         Log.d("foo", "checking equality")
-        return other is DeuceMatch && playTimes.startTime == other.playTimes.startTime
+        return other is DeuceMatch && startTime == other.startTime
     }
 
-    override fun hashCode()/* = playTimes.startTime.hashCode()*/: Int {
+    override fun hashCode(): Int {
         Log.d("foo", "getting hash code")
-        return playTimes.startTime.hashCode()
+        return startTime.hashCode()
     }
 
     override var nameTeam1 = nameTeam1

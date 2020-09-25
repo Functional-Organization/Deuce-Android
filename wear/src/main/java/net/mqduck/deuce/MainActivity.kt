@@ -26,6 +26,7 @@ import android.support.wearable.input.WearableButtons
 import android.util.Log
 import android.view.*
 import android.view.animation.AlphaAnimation
+import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
@@ -74,7 +75,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             )
         );
 
-        internal enum class NavigationItem(val text: CharSequence, val drawableId: Int, val enum: FragmentEnum) {
+        enum class NavigationItem(val text: CharSequence, val drawableId: Int, val enum: FragmentEnum) {
             NAVIGATION_ITEM_MATCH(
                 "Match",
                 R.drawable.match,
@@ -279,8 +280,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             preferences.startingServer,
             preferences.overtime,
             preferences.matchType,
-            PlayTimesData(),
-            PlayTimesList(),
+            System.currentTimeMillis(),
+            ArrayList(),
             ScoreStack(),
             "",
             ""
@@ -297,10 +298,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataMap.putInt(KEY_SERVER, match.startingServer.ordinal)
         dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
         dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
-        dataMap.putLong(KEY_MATCH_START_TIME, match.playTimes.startTime)
-        dataMap.putLong(KEY_MATCH_END_TIME, match.playTimes.endTime)
-        dataMap.putLongArray(KEY_SETS_START_TIMES, match.setsTimesLog.startTimes.toLongArray())
-        dataMap.putLongArray(KEY_SETS_END_TIMES, match.setsTimesLog.endTimes.toLongArray())
+        dataMap.putLong(KEY_MATCH_START_TIME, match.startTime)
+        dataMap.putLongArray(KEY_GAME_END_TIMES, match.gameEndTimes.toLongArray())
         dataMap.putInt(KEY_SCORE_SIZE, match.scoreLogSize())
         dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLogArray())
         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
@@ -330,7 +329,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
             override fun getItemText(pos: Int) = items.list[pos].text
 
-            override fun getItemDrawable(pos: Int) = getDrawable(items.list[pos].drawableId)
+            override fun getItemDrawable(pos: Int) =
+                ContextCompat.getDrawable(this@MainActivity, items.list[pos].drawableId)
 
             override fun getCount() = items.list.size
 

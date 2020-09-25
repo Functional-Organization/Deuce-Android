@@ -103,11 +103,8 @@ abstract class MatchList (
             Team.fromOrdinal((json[KEY_SERVER] as Long).toInt()),
             OvertimeRule.fromOrdinal((json[KEY_OVERTIME_RULE] as Long).toInt()),
             MatchType.fromOrdinal((json[KEY_MATCH_TYPE] as Long).toInt()),
-            PlayTimesData(json[KEY_MATCH_START_TIME] as Long, json[KEY_MATCH_END_TIME] as Long),
-            PlayTimesList(
-                ArrayList((json[KEY_SETS_START_TIMES] as JSONArray).map { it as Long }),
-                ArrayList((json[KEY_SETS_END_TIMES] as JSONArray).map { it as Long })
-            ),
+            json[KEY_MATCH_START_TIME] as Long,
+            ArrayList((json[KEY_GAME_END_TIMES] as JSONArray).map { it as Long }),
             ScoreStack(
                 (json[KEY_SCORE_SIZE] as Long).toInt(),
                 BitSet.valueOf((json[KEY_SCORE_ARRAY] as JSONArray).map { it as Long }.toLongArray())
@@ -124,14 +121,10 @@ abstract class MatchList (
         json[KEY_SERVER] = match.startingServer.ordinal
         json[KEY_OVERTIME_RULE] = match.overtimeRule.ordinal
         json[KEY_MATCH_TYPE] = match.matchType.ordinal
-        json[KEY_MATCH_START_TIME] = match.playTimes.startTime
-        json[KEY_MATCH_END_TIME] = match.playTimes.endTime
-        val setsStartTimesJSON = JSONArray()
-        setsStartTimesJSON.addAll(match.setsTimesLog.getStartTimesArray().toList())
-        json[KEY_SETS_START_TIMES] = setsStartTimesJSON
-        val setsEndTimesJSON = JSONArray()
-        setsEndTimesJSON.addAll(match.setsTimesLog.getEndTimesArray().toList())
-        json[KEY_SETS_END_TIMES] = setsEndTimesJSON
+        json[KEY_MATCH_START_TIME] = match.startTime
+        val gameEndTimesJSON = JSONArray()
+        gameEndTimesJSON.addAll(match.gameEndTimes)
+        json[KEY_GAME_END_TIMES] = gameEndTimesJSON
         json[KEY_SCORE_SIZE] = match.scoreLog.size
         val scoreLogArrayJSON = JSONArray()
         scoreLogArrayJSON.addAll(match.scoreLog.bitSetToLongArray().toList())

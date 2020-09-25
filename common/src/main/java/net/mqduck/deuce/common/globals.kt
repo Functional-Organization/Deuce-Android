@@ -37,10 +37,6 @@ val DEFAULT_OVERTIME_RULE = OvertimeRule.TIEBREAK
 const val DEFAULT_SHOW_CLOCK = false
 const val DEFAULT_SHOW_TEAM_NAMES = true
 
-// TODO: Check if other should be called DUMMY_ too
-const val DUMMY_NAME_TEAM1 = "Myself"
-const val DUMMY_NAME_TEAM2 = "Opponent"
-
 const val KEY_NUM_SETS = "num_sets"
 const val KEY_SERVER = "server"
 const val KEY_MATCH_TYPE = "type"
@@ -50,9 +46,7 @@ const val KEY_SHOW_CUSTOM_NAMES = "show_names"
 const val KEY_SCORE_ARRAY = "score_array"
 const val KEY_SCORE_SIZE = "score_size"
 const val KEY_MATCH_START_TIME = "match_start"
-const val KEY_MATCH_END_TIME = "match_end"
-const val KEY_SETS_START_TIMES = "sets_starts"
-const val KEY_SETS_END_TIMES = "sets_ends"
+const val KEY_GAME_END_TIMES = "game_ends"
 const val KEY_CURRENT_FRAGMENT = "current_fragment"
 const val KEY_CURRENT_MATCH = "match"
 const val KEY_MATCH_ADDED = "match_added"

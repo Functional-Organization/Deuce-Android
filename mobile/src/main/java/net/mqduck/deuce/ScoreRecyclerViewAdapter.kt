@@ -67,7 +67,7 @@ class ScoreRecyclerViewAdapter : RecyclerView.Adapter<ScoreRecyclerViewAdapter.V
             holder.view.text_date.setTextColor(getColorCompatibly(R.color.secondary_text_red))
             holder.view.text_date.setTypeface(null, Typeface.BOLD)
         } else {
-            holder.view.text_date.text = dateFormat.format(Date(match.playTimes.startTime))
+            holder.view.text_date.text = dateFormat.format(Date(match.startTime))
             holder.view.text_date.setTextColor(getColorCompatibly(R.color.secondary_text))
             holder.view.text_date.setTypeface(null, Typeface.NORMAL)
         }

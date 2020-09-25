@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 
@@ -71,12 +72,10 @@ class MainActivity :
             Log.d("foo", "matchList is empty. Filling with random matches.")
             val now = System.currentTimeMillis()
             for (i in 0 until 10000) {
-                val dm = DeuceMatch()
+                val dm = DeuceMatch(Random.nextLong(0, now))
                 while (dm.winner == Winner.NONE) {
                     dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
                 }
-                dm.playTimes.startTime = Random.nextLong(0, now)
-                dm.playTimes.endTime = Random.nextLong(0, now)
                 dm.nameTeam1 = "eilruyhf8o li4ufyh dlkfv hdslkdzx flkj"
                 dm.nameTeam2 = "lkjh ilyp9y9p34t vvce4wf dcdcdcdcdc"
                 matchList.add(dm)
@@ -126,14 +125,8 @@ class MainActivity :
                         Team.fromOrdinal(dataMap.getInt(KEY_SERVER)),
                         OvertimeRule.fromOrdinal(dataMap.getInt(KEY_OVERTIME_RULE)),
                         MatchType.fromOrdinal(dataMap.getInt(KEY_MATCH_TYPE)),
-                        PlayTimesData(
-                            dataMap.getLong(KEY_MATCH_START_TIME),
-                            dataMap.getLong(KEY_MATCH_END_TIME)
-                        ),
-                        PlayTimesList(
-                            dataMap.getLongArray(KEY_SETS_START_TIMES),
-                            dataMap.getLongArray(KEY_SETS_END_TIMES)
-                        ),
+                        dataMap.getLong(KEY_MATCH_START_TIME),
+                        dataMap.getLongArray(KEY_GAME_END_TIMES).toCollection(ArrayList()),
                         ScoreStack(
                             dataMap.getInt(KEY_SCORE_SIZE),
                             BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
@@ -163,11 +156,7 @@ class MainActivity :
                     }
 
                     val currentMatch = matchList.last()
-                    currentMatch.playTimes.endTime = dataMap.getLong(KEY_MATCH_END_TIME)
-                    currentMatch.setsTimesLog = PlayTimesList(
-                        dataMap.getLongArray(KEY_SETS_START_TIMES),
-                        dataMap.getLongArray(KEY_SETS_END_TIMES)
-                    )
+                    currentMatch.gameEndTimes = dataMap.getLongArray(KEY_GAME_END_TIMES).toCollection(ArrayList())
                     currentMatch.scoreLog = ScoreStack(
                         dataMap.getInt(KEY_SCORE_SIZE),
                         BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
@@ -193,14 +182,8 @@ class MainActivity :
                             Team.fromOrdinal(matchDataMap.getInt(KEY_SERVER)),
                             OvertimeRule.fromOrdinal(matchDataMap.getInt(KEY_OVERTIME_RULE)),
                             MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
-                            PlayTimesData(
-                                matchDataMap.getLong(KEY_MATCH_START_TIME),
-                                matchDataMap.getLong(KEY_MATCH_END_TIME)
-                            ),
-                            PlayTimesList(
-                                matchDataMap.getLongArray(KEY_SETS_START_TIMES),
-                                matchDataMap.getLongArray(KEY_SETS_END_TIMES)
-                            ),
+                            matchDataMap.getLong(KEY_MATCH_START_TIME),
+                            matchDataMap.getLongArray(KEY_GAME_END_TIMES).toCollection(ArrayList()),
                             ScoreStack(
                                 matchDataMap.getInt(KEY_SCORE_SIZE),
                                 BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))
@@ -209,6 +192,11 @@ class MainActivity :
                             matchDataMap.getString(KEY_NAME_TEAM2)
                         )
                     })
+
+                    if (dataMap.getBoolean(KEY_DELETE_CURRENT_MATCH, false) && matchList.last().winner == Winner.NONE) {
+                        matchList.removeAt(matchList.lastIndex)
+                    }
+
                     matchList.clean()
                     matchList.writeToFile()
 
@@ -239,10 +227,11 @@ class MainActivity :
     }
 
     override fun onMatchInteraction(item: DeuceMatch, position: Int) {
-        scoresListFragment.fragmentManager?.let { fragmentManager ->
+        /*scoresListFragment.fragmentManager?.let { fragmentManager ->
             val infoDialog = InfoDialog(item, position, scoresListFragment)
             infoDialog.show(fragmentManager, "info")
-        }
-
+        }*/
+        val infoDialog = InfoDialog(item, position, scoresListFragment)
+        infoDialog.show(scoresListFragment.parentFragmentManager, "info")
     }
 }
