@@ -263,11 +263,12 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        val detector = gestureDetector
+        /*val detector = gestureDetector
         return if (detector == null)
             super.dispatchTouchEvent(ev)
         else
-            detector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
+            detector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)*/
+        return (gestureDetector != null && gestureDetector!!.onTouchEvent(ev)) || super.dispatchTouchEvent(ev)
     }
 
     fun newMatch() {

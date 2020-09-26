@@ -50,25 +50,24 @@ class ScoreFragment : Fragment() {
 
     val inAmbientMode = mainActivity.inAmbientMode
 
-    private val ballServingGreen = if (inAmbientMode)
-        net.mqduck.deuce.common.R.drawable.ball_ambient
-    else
-        net.mqduck.deuce.common.R.drawable.ball_green
+    private val ballServingGreen: Int
+    private val ballServingOrange: Int
+    private val ballNotservingGreen: Int
+    private val ballNotservingOrange: Int
 
-    private val ballServingOrange = if (inAmbientMode)
-        net.mqduck.deuce.common.R.drawable.ball_ambient
-    else
-        net.mqduck.deuce.common.R.drawable.ball_orange
-
-    private val ballNotservingGreen = if (inAmbientMode)
-        net.mqduck.deuce.common.R.drawable.ball_void
-    else
-        net.mqduck.deuce.common.R.drawable.ball_darkgreen
-
-    private val ballNotservingOrange = if (inAmbientMode)
-        net.mqduck.deuce.common.R.drawable.ball_void
-    else
-        net.mqduck.deuce.common.R.drawable.ball_darkorange
+    init {
+        if (inAmbientMode) {
+            ballServingGreen = R.drawable.ball_ambient
+            ballServingOrange = R.drawable.ball_ambient
+            ballNotservingGreen = R.drawable.ball_void
+            ballNotservingOrange = R.drawable.ball_void
+        } else {
+            ballServingGreen = R.drawable.ball_green
+            ballServingOrange = R.drawable.ball_orange
+            ballNotservingGreen = R.drawable.ball_darkgreen
+            ballNotservingOrange = R.drawable.ball_darkorange
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_score, container, false)
@@ -94,6 +93,9 @@ class ScoreFragment : Fragment() {
 
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
+
+            trophy_t1.setImageResource(R.drawable.trophy_ambient)
+            trophy_t2.setImageResource(R.drawable.trophy_ambient)
         } else {
             if (!mainActivity.preferences.showClock) {
                 text_clock.visibility = View.INVISIBLE
@@ -263,11 +265,21 @@ class ScoreFragment : Fragment() {
                     ball_notserving_t1.visibility = View.INVISIBLE
                 }
             }
+
+            trophy_t1.visibility = View.INVISIBLE
+            trophy_t2.visibility = View.INVISIBLE
         } else {
             ball_serving_t1.visibility = View.INVISIBLE
             ball_notserving_t1.visibility = View.INVISIBLE
             ball_serving_t2.visibility = View.INVISIBLE
             ball_notserving_t2.visibility = View.INVISIBLE
+            if (mainActivity.currentMatch.winner == Winner.TEAM1) {
+                trophy_t1.visibility = View.VISIBLE
+                trophy_t2.visibility = View.INVISIBLE
+            } else {
+                trophy_t1.visibility = View.INVISIBLE
+                trophy_t2.visibility = View.VISIBLE
+            }
         }
 
         var textScoresMatchP1 = ""

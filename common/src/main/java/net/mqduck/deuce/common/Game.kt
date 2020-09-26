@@ -58,8 +58,7 @@ class Game(winMinimum: Int, winMargin: Int, private val match: Match, val tiebre
      */
     fun getScoreStrings(): ScoreStrings {
         return when {
-            mScore.winner == Winner.TEAM1 -> ScoreStrings("\uD83C\uDFC6", "")
-            mScore.winner == Winner.TEAM2 -> ScoreStrings("", "\uD83C\uDFC6")
+            mScore.winner != Winner.NONE -> ScoreStrings("", "")
 
             tiebreak -> ScoreStrings(mScore.scoreTeam1.toString(), mScore.scoreTeam2.toString())
 
