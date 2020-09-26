@@ -212,7 +212,4 @@ open class Match(
         }
         return false
     }
-
-    fun scoreLogArray(): LongArray = scoreLog.bitSetToLongArray()
-    fun scoreLogSize() = scoreLog.size
 }

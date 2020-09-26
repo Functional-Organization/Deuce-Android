@@ -143,8 +143,8 @@ class ScoreFragment : Fragment() {
                 syncData(mainActivity.dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)
                     dataMap.putLongArray(KEY_GAME_END_TIMES, mainActivity.currentMatch.gameEndTimes.toLongArray())
-                    dataMap.putInt(KEY_SCORE_SIZE, mainActivity.currentMatch.scoreLogSize())
-                    dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLogArray())
+                    dataMap.putInt(KEY_SCORE_SIZE, mainActivity.currentMatch.scoreLog.size)
+                    dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLog.bitSetToLongArray())
                 }
             }
         }
