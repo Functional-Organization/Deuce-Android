@@ -75,6 +75,7 @@ abstract class MatchList (
                 data = ArrayList(list.asReversed())
             }
         }
+
         if (file.exists()) {
             try {
                 loadFile(file)

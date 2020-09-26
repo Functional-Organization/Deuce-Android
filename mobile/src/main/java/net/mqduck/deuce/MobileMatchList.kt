@@ -104,18 +104,23 @@ class MobileMatchList(
         else
             data[index]
 
-    override fun indexOf(element: DeuceMatch) = data.lastIndexOf(element)
+    override fun indexOf(element: DeuceMatch): Int {
+        val index = data.indexOf(element)
+        if (index == -1 && hasCurrentMatch && element == currentMatch) {
+            return data.size
+        }
+        return index
+    }
 
     override fun isEmpty() = data.isEmpty()
 
     override fun iterator() = MobileMatchListIterator()
 
     override fun lastIndexOf(element: DeuceMatch): Int {
-        var index = data.lastIndexOf(element)
-        if (index == -1 && element == currentMatch) {
-            index = data.size
+        if (hasCurrentMatch && element == currentMatch) {
+            return data.size
         }
-        return index
+        return data.lastIndexOf(element)
     }
 
     override fun listIterator() = MobileMatchListIterator()
