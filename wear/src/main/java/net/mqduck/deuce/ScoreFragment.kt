@@ -37,10 +37,18 @@ class ScoreFragment : Fragment() {
     companion object {
         const val BALL_ANIMATION_DURATION = 250L
         const val UNDO_ANIMATION_DURATION = 700L
-        val GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME = -10 * Resources.getSystem().displayMetrics.density
-        val GAME_SCORE_Y_TRANSLATION_WITH_NAME = -5 * Resources.getSystem().displayMetrics.density
-        val SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME = 10 * Resources.getSystem().displayMetrics.density
-        val SETS_SCORES_Y_TRANSLATION_WITH_NAME = 3 * Resources.getSystem().displayMetrics.density
+        val GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME: Float
+        val GAME_SCORE_Y_TRANSLATION_WITH_NAME: Float
+        val SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME: Float
+        val SETS_SCORES_Y_TRANSLATION_WITH_NAME: Float
+
+        init {
+            val displayDensity = Resources.getSystem().displayMetrics.density
+            GAME_SCORE_Y_TRANSLATION_WITHOUT_NAME = -10F * displayDensity
+            GAME_SCORE_Y_TRANSLATION_WITH_NAME = -5F * displayDensity
+            SETS_SCORES_Y_TRANSLATION_WITHOUT_NAME = 10F * displayDensity
+            SETS_SCORES_Y_TRANSLATION_WITH_NAME = 3F * displayDensity
+        }
     }
 
     private var posXBallLeftT1 = 0F
@@ -142,7 +150,7 @@ class ScoreFragment : Fragment() {
             } else {
                 syncData(mainActivity.dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)
-                    dataMap.putLongArray(KEY_GAME_END_TIMES, mainActivity.currentMatch.gameEndTimes.toLongArray())
+                    dataMap.putLongArray(KEY_SET_END_TIMES, mainActivity.currentMatch.setEndTimes.toLongArray())
                     dataMap.putInt(KEY_SCORE_SIZE, mainActivity.currentMatch.scoreLog.size)
                     dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLog.bitSetToLongArray())
                 }
@@ -273,6 +281,7 @@ class ScoreFragment : Fragment() {
             ball_notserving_t1.visibility = View.INVISIBLE
             ball_serving_t2.visibility = View.INVISIBLE
             ball_notserving_t2.visibility = View.INVISIBLE
+
             if (mainActivity.currentMatch.winner == Winner.TEAM1) {
                 trophy_t1.visibility = View.VISIBLE
                 trophy_t2.visibility = View.INVISIBLE

@@ -32,7 +32,7 @@ open class Match(
     val overtimeRule: OvertimeRule,
     val matchType: MatchType,
     val startTime: Long,
-    var gameEndTimes: MutableList<Long>,
+    var setEndTimes: MutableList<Long>,
     scoreLog: ScoreStack,
     open var nameTeam1: String,
     open var nameTeam2: String
@@ -90,11 +90,12 @@ open class Match(
         val winnerGame = currentGame.score(team)
 
         if (winnerGame != Winner.NONE) {
-            if (updateLogs) {
-                gameEndTimes.add(System.currentTimeMillis())
-            }
             winnerSet = currentSet.score(team)
             if (winnerSet != Winner.NONE) {
+                if (updateLogs) {
+                    setEndTimes.add(System.currentTimeMillis())
+                }
+
                 winnerMatch = mScore.score(team)
                 if (winnerMatch == Winner.NONE) {
                     // Set is over, Match is not
@@ -150,9 +151,9 @@ open class Match(
                 Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT ->
                     if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER3_RIGHT
             }
-        } else if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(
-                Team.TEAM2
-            )) % 2 == 1
+        } else if (
+            currentGame.tiebreak
+            && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 2 == 1
         ) {
             serving = when (serving) {
                 Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT ->

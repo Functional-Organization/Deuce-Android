@@ -126,7 +126,7 @@ class MainActivity :
                         OvertimeRule.fromOrdinal(dataMap.getInt(KEY_OVERTIME_RULE)),
                         MatchType.fromOrdinal(dataMap.getInt(KEY_MATCH_TYPE)),
                         dataMap.getLong(KEY_MATCH_START_TIME),
-                        dataMap.getLongArray(KEY_GAME_END_TIMES).toCollection(ArrayList()),
+                        dataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList()),
                         ScoreStack(
                             dataMap.getInt(KEY_SCORE_SIZE),
                             BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
@@ -156,7 +156,7 @@ class MainActivity :
                     }
 
                     val currentMatch = matchList.last()
-                    currentMatch.gameEndTimes = dataMap.getLongArray(KEY_GAME_END_TIMES).toCollection(ArrayList())
+                    currentMatch.setEndTimes = dataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList())
                     currentMatch.scoreLog = ScoreStack(
                         dataMap.getInt(KEY_SCORE_SIZE),
                         BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
@@ -183,7 +183,7 @@ class MainActivity :
                             OvertimeRule.fromOrdinal(matchDataMap.getInt(KEY_OVERTIME_RULE)),
                             MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
                             matchDataMap.getLong(KEY_MATCH_START_TIME),
-                            matchDataMap.getLongArray(KEY_GAME_END_TIMES).toCollection(ArrayList()),
+                            matchDataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList()),
                             ScoreStack(
                                 matchDataMap.getInt(KEY_SCORE_SIZE),
                                 BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))

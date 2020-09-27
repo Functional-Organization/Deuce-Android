@@ -105,7 +105,7 @@ abstract class MatchList (
             OvertimeRule.fromOrdinal((json[KEY_OVERTIME_RULE] as Long).toInt()),
             MatchType.fromOrdinal((json[KEY_MATCH_TYPE] as Long).toInt()),
             json[KEY_MATCH_START_TIME] as Long,
-            ArrayList((json[KEY_GAME_END_TIMES] as JSONArray).map { it as Long }),
+            ArrayList((json[KEY_SET_END_TIMES] as JSONArray).map { it as Long }),
             ScoreStack(
                 (json[KEY_SCORE_SIZE] as Long).toInt(),
                 BitSet.valueOf((json[KEY_SCORE_ARRAY] as JSONArray).map { it as Long }.toLongArray())
@@ -124,8 +124,8 @@ abstract class MatchList (
         json[KEY_MATCH_TYPE] = match.matchType.ordinal
         json[KEY_MATCH_START_TIME] = match.startTime
         val gameEndTimesJSON = JSONArray()
-        gameEndTimesJSON.addAll(match.gameEndTimes)
-        json[KEY_GAME_END_TIMES] = gameEndTimesJSON
+        gameEndTimesJSON.addAll(match.setEndTimes)
+        json[KEY_SET_END_TIMES] = gameEndTimesJSON
         json[KEY_SCORE_SIZE] = match.scoreLog.size
         val scoreLogArrayJSON = JSONArray()
         scoreLogArrayJSON.addAll(match.scoreLog.bitSetToLongArray().toList())

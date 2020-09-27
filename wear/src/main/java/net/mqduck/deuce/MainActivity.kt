@@ -43,7 +43,7 @@ internal lateinit var mainActivity: MainActivity
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider, DataClient.OnDataChangedListener {
     private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
 
-    //TODO: Find a way to disable anti-aliasing on ambient images
+    //TODO: Find a way to disable anti-aliasing on ambient vector images
     private enum class NavigationItemList(val list: Array<NavigationItem>) {
         NAVIGATION_ITEMS_WITHOUT_MATCH(
             arrayOf(
@@ -300,7 +300,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataMap.putInt(KEY_OVERTIME_RULE, match.overtimeRule.ordinal)
         dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
         dataMap.putLong(KEY_MATCH_START_TIME, match.startTime)
-        dataMap.putLongArray(KEY_GAME_END_TIMES, match.gameEndTimes.toLongArray())
+        dataMap.putLongArray(KEY_SET_END_TIMES, match.setEndTimes.toLongArray())
         dataMap.putInt(KEY_SCORE_SIZE, match.scoreLog.size)
         dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLog.bitSetToLongArray())
         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)

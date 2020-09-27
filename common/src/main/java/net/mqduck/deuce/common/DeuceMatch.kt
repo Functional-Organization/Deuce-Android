@@ -22,7 +22,6 @@ package net.mqduck.deuce.common
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
 
 class DeuceMatch(
     val numSets: NumSets,
@@ -30,7 +29,7 @@ class DeuceMatch(
     overtimeRule: OvertimeRule,
     matchType: MatchType,
     startTime: Long,
-    gameEndTimes: MutableList<Long>,
+    setEndTimes: MutableList<Long>,
     scoreLog: ScoreStack,
     nameTeam1: String,
     nameTeam2: String
@@ -47,7 +46,7 @@ class DeuceMatch(
     overtimeRule,
     matchType,
     startTime,
-    gameEndTimes,
+    setEndTimes,
     scoreLog,
     nameTeam1,
     nameTeam2
@@ -92,7 +91,7 @@ class DeuceMatch(
         ""
     )
 
-    constructor(parcel: Parcel) : this(
+    private constructor(parcel: Parcel) : this(
         parcel.readSerializable() as NumSets,
         parcel.readSerializable() as Team,
         parcel.readSerializable() as OvertimeRule,
@@ -123,7 +122,7 @@ class DeuceMatch(
         parcel.writeSerializable(overtimeRule)
         parcel.writeSerializable(matchType)
         parcel.writeLong(startTime)
-        parcel.writeLongArray(gameEndTimes.toLongArray())
+        parcel.writeLongArray(setEndTimes.toLongArray())
         parcel.writeParcelable(scoreLog, flags)
         parcel.writeString(nameTeam1)
         parcel.writeString(nameTeam2)
@@ -131,20 +130,11 @@ class DeuceMatch(
 
     override fun describeContents() = 0
 
-    override fun compareTo(other: DeuceMatch): Int {
-        Log.d("foo", "comparing")
-        return startTime.compareTo(other.startTime)
-    }
+    override fun compareTo(other: DeuceMatch) =  startTime.compareTo(other.startTime)
 
-    override fun equals(other: Any?): Boolean {
-        Log.d("foo", "checking equality")
-        return other is DeuceMatch && startTime == other.startTime
-    }
+    override fun equals(other: Any?) = other is DeuceMatch && startTime == other.startTime
 
-    override fun hashCode(): Int {
-        Log.d("foo", "getting hash code")
-        return startTime.hashCode()
-    }
+    override fun hashCode() = startTime.hashCode()
 
     override var nameTeam1 = nameTeam1
         set(value) {
@@ -204,7 +194,8 @@ class DeuceMatch(
             nameTeam2
         }
 
-    override var winner get() = mScore.winner
+    override var winner
+        get() = mScore.winner
         set(value) {
             mScore.winner = value
         }

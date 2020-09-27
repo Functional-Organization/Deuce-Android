@@ -44,7 +44,7 @@ class InfoDialog(
         view.start_time.text = timeFormat.format(Date(match.startTime))
         if (match.winner != Winner.NONE) {
             view.label_end_time.visibility = View.VISIBLE
-            view.end_time.text = timeFormat.format(Date(match.gameEndTimes.last()))
+            view.end_time.text = timeFormat.format(Date(match.setEndTimes.last()))
         } else {
             view.label_end_time.visibility = View.INVISIBLE
         }
