@@ -96,7 +96,8 @@ open class Match(
                     setEndTimes.add(System.currentTimeMillis())
                 }
 
-                winnerMatch = mScore.score(team)
+                ++mScore[team]
+                winnerMatch = mScore.winner
                 if (winnerMatch == Winner.NONE) {
                     // Set is over, Match is not
                     sets.add(

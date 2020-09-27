@@ -189,12 +189,12 @@ class ScoreStack : List<Team>, Parcelable {
         }
 
         override fun newArray(size: Int): Array<ScoreStack?> {
-            return Array(size) { ScoreStack() }
+            return arrayOfNulls(size)
         }
     }
 
     /**
      * Returns the underlying bitset representing the Team list converted to a Long array.
      */
-    fun toLongArray() = bitSet.toLongArray()
+    fun toLongArray(): LongArray = bitSet.toLongArray()
 }

@@ -66,27 +66,13 @@ class Score(winMinimum: Int, winMargin: Int) {
         }
     }
 
-    /**
-     * Adds a point to the score of a team.
-     *
-     * @param team The scoring team.
-     * @return The winning team, if any.
-     */
-    fun score(team: Team): Winner {
-        when (team) {
-            Team.TEAM1 -> ++scoreTeam1
-            Team.TEAM2 -> ++scoreTeam2
-        }
-        return winner
-    }
-
-    /**
-     * Returns the current score of a team.
-     *
-     * @param team The team to get the score of.
-     */
-    fun getScore(team: Team) = when (team) {
+    operator fun get(team: Team) = when (team) {
         Team.TEAM1 -> scoreTeam1
         Team.TEAM2 -> scoreTeam2
+    }
+
+    operator fun set(team: Team, score: Int) = when (team) {
+        Team.TEAM1 -> scoreTeam1 = score
+        Team.TEAM2 -> scoreTeam2 = score
     }
 }

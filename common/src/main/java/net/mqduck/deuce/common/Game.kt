@@ -44,14 +44,17 @@ class Game(winMinimum: Int, winMargin: Int, private val match: Match, val tiebre
      * @param team The scoring team.
      * @return The winning team, if any.
      */
-    fun score(team: Team) = mScore.score(team)
+    fun score(team: Team): Winner {
+        ++mScore[team]
+        return mScore.winner
+    }
 
     /**
      * Returns the current score of a team for this game.
      *
      * @param team The team to get the score of.
      */
-    fun getScore(team: Team) = mScore.getScore(team)
+    fun getScore(team: Team) = mScore[team]
 
     /**
      * Returns Strings representing the current game scores in standard tennis terminology.
