@@ -127,10 +127,7 @@ class MainActivity :
                         MatchType.fromOrdinal(dataMap.getInt(KEY_MATCH_TYPE)),
                         dataMap.getLong(KEY_MATCH_START_TIME),
                         dataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList()),
-                        ScoreStack(
-                            dataMap.getInt(KEY_SCORE_SIZE),
-                            BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
-                        ),
+                        ScoreStack(BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))),
                         dataMap.getString(KEY_NAME_TEAM1),
                         dataMap.getString(KEY_NAME_TEAM2)
                     )
@@ -157,10 +154,7 @@ class MainActivity :
 
                     val currentMatch = matchList.last()
                     currentMatch.setEndTimes = dataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList())
-                    currentMatch.scoreLog = ScoreStack(
-                        dataMap.getInt(KEY_SCORE_SIZE),
-                        BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
-                    )
+                    currentMatch.scoreLog = ScoreStack(BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY)))
                 }
                 MatchState.OVER -> {
                     Log.d("foo", "removing current match")
@@ -184,10 +178,7 @@ class MainActivity :
                             MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
                             matchDataMap.getLong(KEY_MATCH_START_TIME),
                             matchDataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList()),
-                            ScoreStack(
-                                matchDataMap.getInt(KEY_SCORE_SIZE),
-                                BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))
-                            ),
+                            ScoreStack(BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))),
                             matchDataMap.getString(KEY_NAME_TEAM1),
                             matchDataMap.getString(KEY_NAME_TEAM2)
                         )

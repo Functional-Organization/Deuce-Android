@@ -27,23 +27,23 @@ import java.util.*
  * A stack of Teams. This can be used a record of points scored.
  */
 class ScoreStack : List<Team>, Parcelable {
-    internal val bitSet: BitSet
+    private val bitSet: BitSet
     override var size: Int
         private set
 
     constructor() {
-        size = 0
         bitSet = BitSet()
+        size = 0
     }
 
-    constructor(parcel: Parcel) {
-        size = parcel.readInt()
-        bitSet = parcel.readSerializable() as BitSet
-    }
-
-    constructor(size: Int, bitSet: BitSet) {
-        this.size = size
+    constructor(bitSet: BitSet) {
         this.bitSet = bitSet
+        this.size = bitSet.length()
+    }
+
+    private constructor(parcel: Parcel) {
+        bitSet = parcel.readSerializable() as BitSet
+        size = bitSet.length()
     }
 
     // TODO: Redundant?
@@ -59,7 +59,7 @@ class ScoreStack : List<Team>, Parcelable {
         }
     }
 
-    private inner class ListItr(internal var cursor: Int = 0) : ListIterator<Team> {
+    private inner class ListItr(var cursor: Int = 0) : ListIterator<Team> {
         override fun hasNext() = cursor < size
 
         override fun hasPrevious() = cursor != 0 && size != 0
@@ -120,9 +120,7 @@ class ScoreStack : List<Team>, Parcelable {
         return -1
     }
 
-    override fun isEmpty(): Boolean {
-        return bitSet.isEmpty
-    }
+    override fun isEmpty() = size == 0
 
     override fun iterator(): Iterator<Team> {
         return Itr()
@@ -154,7 +152,7 @@ class ScoreStack : List<Team>, Parcelable {
         if (fromIndex > toIndex)
             throw IllegalArgumentException("fromIndex($fromIndex) > toIndex($toIndex)")
 
-        return ScoreStack(toIndex - fromIndex, bitSet.get(fromIndex, toIndex))
+        return ScoreStack(bitSet.get(fromIndex, toIndex))
     }
 
     /**
@@ -180,7 +178,6 @@ class ScoreStack : List<Team>, Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(size)
         parcel.writeSerializable(bitSet)
     }
 
@@ -199,5 +196,5 @@ class ScoreStack : List<Team>, Parcelable {
     /**
      * Returns the underlying bitset representing the Team list converted to a Long array.
      */
-    fun bitSetToLongArray() = bitSet.toLongArray()
+    fun toLongArray() = bitSet.toLongArray()
 }
