@@ -136,13 +136,13 @@ class ScoreFragment : Fragment() {
         } else {
             updateDisplay(true)
         }
-        if (mainActivity.currentMatch.winner != Winner.NONE) {
+        if (mainActivity.currentMatch.winner != TeamOrNone.NONE) {
             button_score_p1.isEnabled = false
             button_score_p2.isEnabled = false
         }
 
-        if (winners.game != Winner.NONE) {
-            if (winners.match != Winner.NONE) {
+        if (winners.game != TeamOrNone.NONE) {
+            if (winners.match != TeamOrNone.NONE) {
                 mainActivity.matchList.add(mainActivity.currentMatch)
                 mainActivity.matchList.writeToFile()
                 //mainActivity.syncMatchList(true)
@@ -173,7 +173,7 @@ class ScoreFragment : Fragment() {
         text_score_game_p1.text = scores.player1
         text_score_game_p2.text = scores.player2
 
-        if (mainActivity.currentMatch.winner == Winner.NONE) {
+        if (mainActivity.currentMatch.winner == TeamOrNone.NONE) {
             when (mainActivity.currentMatch.serving) {
                 Serving.PLAYER1_LEFT -> {
                     ball_serving_t1.setImageResource(ballServingGreen)
@@ -281,7 +281,7 @@ class ScoreFragment : Fragment() {
             ball_serving_t2.visibility = View.INVISIBLE
             ball_notserving_t2.visibility = View.INVISIBLE
 
-            if (mainActivity.currentMatch.winner == Winner.TEAM1) {
+            if (mainActivity.currentMatch.winner == TeamOrNone.TEAM1) {
                 trophy_t1.visibility = View.VISIBLE
                 trophy_t2.visibility = View.INVISIBLE
             } else {
@@ -299,7 +299,7 @@ class ScoreFragment : Fragment() {
         text_scores_match_p1.text = textScoresMatchP1.trim()
         text_scores_match_p2.text = textScoresMatchP2.trim()
 
-        if (mainActivity.currentMatch.changeover && mainActivity.currentMatch.winner == Winner.NONE) {
+        if (mainActivity.currentMatch.changeover && mainActivity.currentMatch.winner == TeamOrNone.NONE) {
             changeover_arrow_down.visibility = View.VISIBLE
             changeover_arrow_up.visibility = View.VISIBLE
             fragment_score.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)

@@ -42,7 +42,7 @@ class InfoDialog(
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.info_dialog, scoresListFragment.view, false)
         view.start_time.text = timeFormat.format(Date(match.startTime))
-        if (match.winner != Winner.NONE) {
+        if (match.winner != TeamOrNone.NONE) {
             view.label_end_time.visibility = View.VISIBLE
             view.end_time.text = timeFormat.format(Date(match.setEndTimes.last()))
         } else {
@@ -57,7 +57,7 @@ class InfoDialog(
                 match.nameTeam2 = view.edit_name_team2.text.toString().trim()
                 scoresListFragment.view.adapter?.notifyItemChanged(position)
                 mainActivity.matchList.writeToFile()
-                if (match.winner == Winner.NONE) {
+                if (match.winner == TeamOrNone.NONE) {
                     syncData(mainActivity.dataClient, PATH_UPDATE_NAMES, true) { dataMap ->
                         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
                         dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)

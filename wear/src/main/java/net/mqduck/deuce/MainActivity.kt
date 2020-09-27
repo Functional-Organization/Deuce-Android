@@ -415,7 +415,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     internal fun syncMatches() {
         var deleteCurrentMatch = true
 
-        if (matchAdded && currentMatch.winner == Winner.NONE) {
+        if (matchAdded && currentMatch.winner == TeamOrNone.NONE) {
             deleteCurrentMatch = false
             syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                 writeMatchToDataMap(currentMatch, dataMap)

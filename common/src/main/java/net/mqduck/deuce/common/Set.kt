@@ -33,7 +33,7 @@ class Set(
         games.add(Game(winMinimumGame, winMarginGame, match))
     }
 
-    fun score(team: Team): Winner {
+    fun score(team: Team): TeamOrNone {
         ++mScore[team]
         return mScore.winner
     }

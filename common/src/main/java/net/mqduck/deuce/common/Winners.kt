@@ -19,4 +19,4 @@
 
 package net.mqduck.deuce.common
 
-class Winners(val game: Winner, val set: Winner, val match: Winner)
+class Winners(val game: TeamOrNone, val set: TeamOrNone, val match: TeamOrNone)

@@ -44,7 +44,7 @@ class Game(winMinimum: Int, winMargin: Int, private val match: Match, val tiebre
      * @param team The scoring team.
      * @return The winning team, if any.
      */
-    fun score(team: Team): Winner {
+    fun score(team: Team): TeamOrNone {
         ++mScore[team]
         return mScore.winner
     }
@@ -61,7 +61,7 @@ class Game(winMinimum: Int, winMargin: Int, private val match: Match, val tiebre
      */
     fun getScoreStrings(): ScoreStrings {
         return when {
-            mScore.winner != Winner.NONE -> ScoreStrings("", "")
+            mScore.winner != TeamOrNone.NONE -> ScoreStrings("", "")
 
             tiebreak -> ScoreStrings(mScore.scoreTeam1.toString(), mScore.scoreTeam2.toString())
 
@@ -82,4 +82,18 @@ class Game(winMinimum: Int, winMargin: Int, private val match: Match, val tiebre
             else -> ScoreStrings(strDeuce, strDeuce)
         }
     }
+
+    /**
+     * Returns which team is one point away from winning this game, or none.
+     */
+    val breakPoint
+        get() = when {
+            (mScore.scoreTeam1 == mScore.winMinimum - 1 && mScore.scoreTeam1 - mScore.scoreTeam2 >= mScore.winMargin - 1)
+                    || (mScore.scoreTeam1 >= mScore.winMinimum && mScore.scoreTeam1 - mScore.scoreTeam2 == mScore.winMargin - 1)
+            -> TeamOrNone.TEAM1
+            (mScore.scoreTeam2 == mScore.winMinimum - 1 && mScore.scoreTeam2 - mScore.scoreTeam1 >= mScore.winMargin - 1)
+                    || (mScore.scoreTeam2 >= mScore.winMinimum && mScore.scoreTeam2 - mScore.scoreTeam1 == mScore.winMargin - 1)
+            -> TeamOrNone.TEAM2
+            else -> TeamOrNone.NONE
+        }
 }

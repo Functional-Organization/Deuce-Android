@@ -73,7 +73,7 @@ class MainActivity :
             val now = System.currentTimeMillis()
             for (i in 0 until 10000) {
                 val dm = DeuceMatch(Random.nextLong(0, now))
-                while (dm.winner == Winner.NONE) {
+                while (dm.winner == TeamOrNone.NONE) {
                     dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
                 }
                 dm.nameTeam1 = "eilruyhf8o li4ufyh dlkfv hdslkdzx flkj"
@@ -108,7 +108,7 @@ class MainActivity :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE) {
+        if (matchList.isNotEmpty() && matchList.last().winner == TeamOrNone.NONE) {
             outState.putParcelable(KEY_CURRENT_MATCH, matchList.last())
         }
         super.onSaveInstanceState(outState)
@@ -134,7 +134,7 @@ class MainActivity :
 
                     if (
                         matchList.isNotEmpty() &&
-                        matchList.last().winner == Winner.NONE
+                        matchList.last().winner == TeamOrNone.NONE
                     ) {
                         matchList[matchList.lastIndex] = newMatch
                     } else {
@@ -184,7 +184,7 @@ class MainActivity :
                         )
                     })
 
-                    if (dataMap.getBoolean(KEY_DELETE_CURRENT_MATCH, false) && matchList.last().winner == Winner.NONE) {
+                    if (dataMap.getBoolean(KEY_DELETE_CURRENT_MATCH, false) && matchList.last().winner == TeamOrNone.NONE) {
                         matchList.removeAt(matchList.lastIndex)
                     }
 

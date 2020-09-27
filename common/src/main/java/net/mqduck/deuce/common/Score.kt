@@ -55,14 +55,14 @@ class Score(winMinimum: Int, winMargin: Int) {
     /**
      *  The winning team, if any.
      */
-    var winner = Winner.NONE
+    var winner = TeamOrNone.NONE
         internal set
 
     private fun updateWinner() {
         winner = when {
-            scoreTeam1 >= winMinimum && (scoreTeam1 - scoreTeam2) >= winMargin -> Winner.TEAM1
-            scoreTeam2 >= winMinimum && (scoreTeam2 - scoreTeam1) >= winMargin -> Winner.TEAM2
-            else -> Winner.NONE
+            scoreTeam1 >= winMinimum && (scoreTeam1 - scoreTeam2) >= winMargin -> TeamOrNone.TEAM1
+            scoreTeam2 >= winMinimum && (scoreTeam2 - scoreTeam1) >= winMargin -> TeamOrNone.TEAM2
+            else -> TeamOrNone.NONE
         }
     }
 
