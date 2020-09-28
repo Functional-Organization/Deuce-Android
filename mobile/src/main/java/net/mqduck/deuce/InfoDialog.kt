@@ -41,6 +41,7 @@ class InfoDialog(
         val builder = AlertDialog.Builder(activity)
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.info_dialog, scoresListFragment.view, false)
+        val pointRatioFormat = getString(R.string.format_point_ratio)
         view.start_time.text = timeFormat.format(Date(match.startTime))
         if (match.winner != TeamOrNone.NONE) {
             view.label_end_time.visibility = View.VISIBLE
@@ -50,6 +51,40 @@ class InfoDialog(
         }
         view.edit_name_team1.setText(match.displayNameTeam1)
         view.edit_name_team2.setText(match.displayNameTeam2)
+        view.points_team1.text = match.stats.pointsTeam1.toString()
+        view.points_team2.text = match.stats.pointsTeam2.toString()
+        view.games_won_team1.text = match.stats.gamesWonTeam1.toString()
+        view.games_won_team2.text = match.stats.gamesWonTeam2.toString()
+        view.break_points_team1.text = String.format(
+            pointRatioFormat,
+            match.stats.breakPointsWonTeam1,
+            match.stats.breakPointsPlayedTeam1
+        )
+        view.break_points_team2.text = String.format(
+            pointRatioFormat,
+            match.stats.breakPointsWonTeam2,
+            match.stats.breakPointsPlayedTeam2
+        )
+        view.service_points_team1.text = String.format(
+            pointRatioFormat,
+            match.stats.servicePointsWonTeam1,
+            match.stats.servicePointsPlayedTeam1
+        )
+        view.service_points_team2.text = String.format(
+            pointRatioFormat,
+            match.stats.servicePointsWonTeam2,
+            match.stats.servicePointsPlayedTeam2
+        )
+        view.return_points_team1.text = String.format(
+            pointRatioFormat,
+            match.stats.servicePointsPlayedTeam2 - match.stats.servicePointsWonTeam2,
+            match.stats.servicePointsPlayedTeam2
+        )
+        view.return_points_team2.text = String.format(
+            pointRatioFormat,
+            match.stats.servicePointsPlayedTeam1 - match.stats.servicePointsWonTeam1,
+            match.stats.servicePointsPlayedTeam1
+        )
 
         builder.setView(view)
             .setPositiveButton(resources.getString(R.string.save_changes)) { _, _ ->
