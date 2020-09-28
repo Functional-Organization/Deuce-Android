@@ -33,14 +33,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/start_time" />
+            android:text="@string/start_time"
+            android:textColor="@color/secondary_text" />
 
         <TextView
             android:id="@+id/start_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/secondary_text"
             tools:text="12:00 PM" />
 
         <TextView
@@ -48,14 +48,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/end_time" />
+            android:text="@string/end_time"
+            android:textColor="@color/secondary_text" />
 
         <TextView
             android:id="@+id/end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/secondary_text"
             tools:text="3:00 PM" />
     </LinearLayout>
 
@@ -110,7 +110,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stat_points_won"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/points_team2"
@@ -137,7 +138,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stat_games_won"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/games_won_team2"
@@ -164,7 +166,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stat_break_points"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/break_points_team2"
@@ -191,7 +194,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stat_service_points"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/service_points_team2"
@@ -218,7 +222,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stat_return_points"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/return_points_team2"

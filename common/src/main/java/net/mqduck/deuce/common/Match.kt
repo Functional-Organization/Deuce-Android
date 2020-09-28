@@ -84,34 +84,35 @@ open class Match(
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
     val isOngoing get() = winner == TeamOrNone.NONE
+    val servingTeam get() = when (serving) {
+        Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> Team.TEAM1
+        Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> Team.TEAM2
+    }
 
     private fun score(team: Team, updateLogs: Boolean): Winners {
         changeover = false
         serviceChanged = false
         var winnerMatch = TeamOrNone.NONE
         var winnerSet = TeamOrNone.NONE
-        val servingTeam = when (serving) {
-            Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> Team.TEAM1
-            Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> Team.TEAM2
-        }
+        val currentServingTeam = servingTeam
 
         val winnerGame = currentGame.score(team)
 
         when (team) {
             Team.TEAM1 -> {
                 ++(stats as MutableStats).pointsTeam1
-                if (servingTeam == Team.TEAM1) {
+                if (currentServingTeam == Team.TEAM1) {
                     ++(stats as MutableStats).servicePointsWonTeam1
                 }
             }
             Team.TEAM2 -> {
                 ++(stats as MutableStats).pointsTeam2
-                if (servingTeam == Team.TEAM2) {
+                if (currentServingTeam == Team.TEAM2) {
                     ++(stats as MutableStats).servicePointsWonTeam2
                 }
             }
         }
-        when (servingTeam) {
+        when (currentServingTeam) {
             Team.TEAM1 -> {
                 ++(stats as MutableStats).servicePointsPlayedTeam1
                 if (currentGame.breakPoint == TeamOrNone.TEAM2) {
@@ -130,13 +131,13 @@ open class Match(
             when (team) {
                 Team.TEAM1 -> {
                     ++(stats as MutableStats).gamesWonTeam1
-                    if (servingTeam == Team.TEAM2) {
+                    if (currentServingTeam == Team.TEAM2) {
                         ++(stats as MutableStats).breakPointsWonTeam1
                     }
                 }
                 Team.TEAM2 -> {
                     ++(stats as MutableStats).gamesWonTeam2
-                    if (servingTeam == Team.TEAM1) {
+                    if (currentServingTeam == Team.TEAM1) {
                         ++(stats as MutableStats).breakPointsWonTeam2
                     }
                 }
@@ -270,22 +271,22 @@ open class Match(
         return false
     }
 
-    abstract class Stats {
-        abstract val pointsTeam1: Int
-        abstract val pointsTeam2: Int
-        abstract val gamesWonTeam1: Int
-        abstract val gamesWonTeam2: Int
-        abstract val breakPointsWonTeam1: Int
-        abstract val breakPointsWonTeam2: Int
-        abstract val breakPointsPlayedTeam1: Int
-        abstract val breakPointsPlayedTeam2: Int
-        abstract val servicePointsWonTeam1: Int
-        abstract val servicePointsWonTeam2: Int
-        abstract val servicePointsPlayedTeam1: Int
-        abstract val servicePointsPlayedTeam2: Int
+    interface Stats {
+        val pointsTeam1: Int
+        val pointsTeam2: Int
+        val gamesWonTeam1: Int
+        val gamesWonTeam2: Int
+        val breakPointsWonTeam1: Int
+        val breakPointsWonTeam2: Int
+        val breakPointsPlayedTeam1: Int
+        val breakPointsPlayedTeam2: Int
+        val servicePointsWonTeam1: Int
+        val servicePointsWonTeam2: Int
+        val servicePointsPlayedTeam1: Int
+        val servicePointsPlayedTeam2: Int
     }
 
-    private class MutableStats : Stats() {
+    private class MutableStats : Stats {
         override var pointsTeam1 = 0
         override var pointsTeam2 = 0
         override var gamesWonTeam1 = 0

@@ -46,19 +46,6 @@ class ScoreStack : List<Team>, Parcelable {
         bitSet = parcel.readSerializable() as BitSet
     }
 
-    // TODO: Redundant?
-    private inner class Itr : Iterator<Team> {
-        internal var cursor = 0
-
-        override fun hasNext() = cursor < size
-
-        override fun next(): Team {
-            val player = get(cursor)
-            ++cursor
-            return player
-        }
-    }
-
     private inner class ListItr(var cursor: Int = 0) : ListIterator<Team> {
         override fun hasNext() = cursor < size
 
@@ -123,7 +110,7 @@ class ScoreStack : List<Team>, Parcelable {
     override fun isEmpty() = size == 0
 
     override fun iterator(): Iterator<Team> {
-        return Itr()
+        return ListItr()
     }
 
     override fun lastIndexOf(element: Team): Int {
@@ -195,7 +182,7 @@ class ScoreStack : List<Team>, Parcelable {
     }
 
     /**
-     * Returns the underlying bitset representing the Team list converted to a Long array.
+     * Returns the underlying bit set representing the Team list converted to a Long array.
      */
-    fun toLongArray(): LongArray = bitSet.toLongArray()
+    fun bitsetToLongArray(): LongArray = bitSet.toLongArray()
 }

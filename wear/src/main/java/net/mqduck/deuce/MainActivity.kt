@@ -301,7 +301,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
         dataMap.putLong(KEY_MATCH_START_TIME, match.startTime)
         dataMap.putLongArray(KEY_SET_END_TIMES, match.setEndTimes.toLongArray())
-        dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLog.toLongArray())
+        dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLog.bitsetToLongArray())
         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
         dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
         dataMap.putLong(KEY_DUMMY, System.currentTimeMillis())

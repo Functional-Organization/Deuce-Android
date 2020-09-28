@@ -128,7 +128,7 @@ abstract class MatchList (
         json[KEY_SET_END_TIMES] = gameEndTimesJSON
         json[KEY_SCORE_SIZE] = match.scoreLog.size
         val scoreLogArrayJSON = JSONArray()
-        scoreLogArrayJSON.addAll(match.scoreLog.toLongArray().toList())
+        scoreLogArrayJSON.addAll(match.scoreLog.bitsetToLongArray().toList())
         json[KEY_SCORE_ARRAY] = scoreLogArrayJSON
         json[KEY_NAME_TEAM1] = match.nameTeam1
         json[KEY_NAME_TEAM2] = match.nameTeam2

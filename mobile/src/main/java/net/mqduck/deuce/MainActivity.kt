@@ -70,14 +70,31 @@ class MainActivity :
         //matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
             Log.d("foo", "matchList is empty. Filling with random matches.")
+            val names = arrayOf("Fred", "Wilma", "Barny", "Austin", "Jeff", "Sergey", "Jon", "Nathan", "Jezebel", "Damsel")
             val now = System.currentTimeMillis()
             for (i in 0 until 10000) {
-                val dm = DeuceMatch(Random.nextLong(0, now))
+                val nameTeam1 = names.random()
+                val nameTeam2 = names.filter { it != nameTeam1 }.random()
+                val dm = DeuceMatch(
+                    if (Random.nextBoolean()) NumSets.THREE else NumSets.FIVE,
+                    if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2,
+                    DEFAULT_OVERTIME_RULE,
+                    MatchType.SINGLES,
+                    Random.nextLong(0, now),
+                    ArrayList<Long>(),
+                    ScoreStack(),
+                    nameTeam1,
+                    nameTeam2
+                )
                 while (dm.winner == TeamOrNone.NONE) {
-                    dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
+                    dm.score(
+                        if (Random.nextInt(3) == 2) {
+                            if (dm.servingTeam == Team.TEAM1) Team.TEAM2 else Team.TEAM1
+                        } else {
+                            if (dm.servingTeam == Team.TEAM1) Team.TEAM1 else Team.TEAM2
+                        }
+                    )
                 }
-                dm.nameTeam1 = "eilruyhf8o li4ufyh dlkfv hdslkdzx flkj"
-                dm.nameTeam2 = "lkjh ilyp9y9p34t vvce4wf dcdcdcdcdc"
                 matchList.add(dm)
             }
             matchList.clean()
@@ -193,7 +210,11 @@ class MainActivity :
                         )
                     })
 
-                    if (dataMap.getBoolean(KEY_DELETE_CURRENT_MATCH, false) && matchList.last().winner == TeamOrNone.NONE) {
+                    if (dataMap.getBoolean(
+                            KEY_DELETE_CURRENT_MATCH,
+                            false
+                        ) && matchList.last().winner == TeamOrNone.NONE
+                    ) {
                         matchList.removeAt(matchList.lastIndex)
                     }
 
