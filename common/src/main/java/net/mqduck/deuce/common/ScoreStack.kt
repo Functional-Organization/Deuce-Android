@@ -32,31 +32,18 @@ class ScoreStack : List<Team>, Parcelable {
         private set
 
     constructor() {
-        bitSet = BitSet()
         size = 0
+        bitSet = BitSet()
     }
 
-    constructor(bitSet: BitSet) {
+    constructor(size: Int, bitSet: BitSet) {
+        this.size = size
         this.bitSet = bitSet
-        this.size = bitSet.length()
     }
 
     private constructor(parcel: Parcel) {
+        size = parcel.readInt()
         bitSet = parcel.readSerializable() as BitSet
-        size = bitSet.length()
-    }
-
-    // TODO: Redundant?
-    private inner class Itr : Iterator<Team> {
-        internal var cursor = 0
-
-        override fun hasNext() = cursor < size
-
-        override fun next(): Team {
-            val player = get(cursor)
-            ++cursor
-            return player
-        }
     }
 
     private inner class ListItr(var cursor: Int = 0) : ListIterator<Team> {
@@ -123,7 +110,7 @@ class ScoreStack : List<Team>, Parcelable {
     override fun isEmpty() = size == 0
 
     override fun iterator(): Iterator<Team> {
-        return Itr()
+        return ListItr()
     }
 
     override fun lastIndexOf(element: Team): Int {
@@ -152,7 +139,7 @@ class ScoreStack : List<Team>, Parcelable {
         if (fromIndex > toIndex)
             throw IllegalArgumentException("fromIndex($fromIndex) > toIndex($toIndex)")
 
-        return ScoreStack(bitSet.get(fromIndex, toIndex))
+        return ScoreStack(toIndex - fromIndex, bitSet.get(fromIndex, toIndex))
     }
 
     /**
@@ -178,6 +165,7 @@ class ScoreStack : List<Team>, Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(size)
         parcel.writeSerializable(bitSet)
     }
 
@@ -189,12 +177,12 @@ class ScoreStack : List<Team>, Parcelable {
         }
 
         override fun newArray(size: Int): Array<ScoreStack?> {
-            return Array(size) { ScoreStack() }
+            return arrayOfNulls(size)
         }
     }
 
     /**
-     * Returns the underlying bitset representing the Team list converted to a Long array.
+     * Returns the underlying bit set representing the Team list converted to a Long array.
      */
-    fun toLongArray() = bitSet.toLongArray()
+    fun bitsetLongArray(): LongArray = bitSet.toLongArray()
 }

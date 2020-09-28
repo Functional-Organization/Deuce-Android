@@ -51,6 +51,8 @@ open class Match(
             field = value
             loadScoreLog()
         }
+    var stats: Stats = MutableStats()
+        private set
 
     init {
         this.scoreLog = scoreLog
@@ -58,6 +60,7 @@ open class Match(
 
     private fun loadScoreLog() {
         mScore = Score(winMinimumMatch, winMarginMatch)
+        stats = MutableStats()
         serving = if (startingServer == Team.TEAM1) Serving.PLAYER1_RIGHT else Serving.PLAYER2_RIGHT
         sets = arrayListOf(
             Set(
@@ -80,24 +83,75 @@ open class Match(
     open val winner get() = mScore.winner
     val currentSet get() = sets.last()
     val currentGame get() = currentSet.currentGame
-    val isOngoing get() = winner == Winner.NONE
+    val isOngoing get() = winner == TeamOrNone.NONE
+    val servingTeam get() = when (serving) {
+        Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> Team.TEAM1
+        Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> Team.TEAM2
+    }
 
     private fun score(team: Team, updateLogs: Boolean): Winners {
         changeover = false
         serviceChanged = false
-        var winnerMatch = Winner.NONE
-        var winnerSet = Winner.NONE
+        var winnerMatch = TeamOrNone.NONE
+        var winnerSet = TeamOrNone.NONE
+        val currentServingTeam = servingTeam
+
         val winnerGame = currentGame.score(team)
 
-        if (winnerGame != Winner.NONE) {
+        when (team) {
+            Team.TEAM1 -> {
+                ++(stats as MutableStats).pointsTeam1
+                if (currentServingTeam == Team.TEAM1) {
+                    ++(stats as MutableStats).servicePointsWonTeam1
+                }
+            }
+            Team.TEAM2 -> {
+                ++(stats as MutableStats).pointsTeam2
+                if (currentServingTeam == Team.TEAM2) {
+                    ++(stats as MutableStats).servicePointsWonTeam2
+                }
+            }
+        }
+        when (currentServingTeam) {
+            Team.TEAM1 -> {
+                ++(stats as MutableStats).servicePointsPlayedTeam1
+                if (currentGame.breakPoint == TeamOrNone.TEAM2) {
+                    ++(stats as MutableStats).breakPointsPlayedTeam2
+                }
+            }
+            Team.TEAM2 -> {
+                ++(stats as MutableStats).servicePointsPlayedTeam2
+                if (currentGame.breakPoint == TeamOrNone.TEAM1) {
+                    ++(stats as MutableStats).breakPointsPlayedTeam1
+                }
+            }
+        }
+
+        if (winnerGame != TeamOrNone.NONE) {
+            when (team) {
+                Team.TEAM1 -> {
+                    ++(stats as MutableStats).gamesWonTeam1
+                    if (currentServingTeam == Team.TEAM2) {
+                        ++(stats as MutableStats).breakPointsWonTeam1
+                    }
+                }
+                Team.TEAM2 -> {
+                    ++(stats as MutableStats).gamesWonTeam2
+                    if (currentServingTeam == Team.TEAM1) {
+                        ++(stats as MutableStats).breakPointsWonTeam2
+                    }
+                }
+            }
+
             winnerSet = currentSet.score(team)
-            if (winnerSet != Winner.NONE) {
+            if (winnerSet != TeamOrNone.NONE) {
                 if (updateLogs) {
                     setEndTimes.add(System.currentTimeMillis())
                 }
 
-                winnerMatch = mScore.score(team)
-                if (winnerMatch == Winner.NONE) {
+                ++mScore[team]
+                winnerMatch = mScore.winner
+                if (winnerMatch == TeamOrNone.NONE) {
                     // Set is over, Match is not
                     sets.add(
                         Set(
@@ -192,12 +246,12 @@ open class Match(
             }
         }
 
-        if (updateLogs) {
-            scoreLog.push(team)
-        }
-
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 6 == 0) {
             changeover = true
+        }
+
+        if (updateLogs) {
+            scoreLog.push(team)
         }
 
         return Winners(winnerGame, winnerSet, winnerMatch)
@@ -207,10 +261,43 @@ open class Match(
 
     fun undo(): Boolean {
         if (scoreLog.size != 0) {
+            if (currentSet.scoreP1 == 0 && currentSet.scoreP2 == 0) {
+                setEndTimes.removeAt(setEndTimes.lastIndex)
+            }
             scoreLog.pop()
             loadScoreLog()
             return true
         }
         return false
+    }
+
+    interface Stats {
+        val pointsTeam1: Int
+        val pointsTeam2: Int
+        val gamesWonTeam1: Int
+        val gamesWonTeam2: Int
+        val breakPointsWonTeam1: Int
+        val breakPointsWonTeam2: Int
+        val breakPointsPlayedTeam1: Int
+        val breakPointsPlayedTeam2: Int
+        val servicePointsWonTeam1: Int
+        val servicePointsWonTeam2: Int
+        val servicePointsPlayedTeam1: Int
+        val servicePointsPlayedTeam2: Int
+    }
+
+    private class MutableStats : Stats {
+        override var pointsTeam1 = 0
+        override var pointsTeam2 = 0
+        override var gamesWonTeam1 = 0
+        override var gamesWonTeam2 = 0
+        override var breakPointsWonTeam1 = 0
+        override var breakPointsWonTeam2 = 0
+        override var breakPointsPlayedTeam1 = 0
+        override var breakPointsPlayedTeam2 = 0
+        override var servicePointsWonTeam1 = 0
+        override var servicePointsWonTeam2 = 0
+        override var servicePointsPlayedTeam1 = 0
+        override var servicePointsPlayedTeam2 = 0
     }
 }

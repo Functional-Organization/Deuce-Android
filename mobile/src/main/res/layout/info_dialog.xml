@@ -33,14 +33,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/start_time" />
+            android:text="@string/start_time"
+            android:textColor="@color/secondary_text" />
 
         <TextView
             android:id="@+id/start_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/secondary_text"
             tools:text="12:00 PM" />
 
         <TextView
@@ -48,35 +48,191 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/end_time" />
+            android:text="@string/end_time"
+            android:textColor="@color/secondary_text" />
 
         <TextView
             android:id="@+id/end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/secondary_text"
             tools:text="3:00 PM" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/edit_name_team2"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:autofillHints="personName"
-        android:hint="@string/hint_opposing_name_edit_field"
-        tools:text="@string/default_name_team2_singles" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/edit_name_team1"
+        <EditText
+            android:id="@+id/edit_name_team1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints="personName"
+            android:ems="10"
+            android:hint="@string/hint_your_name_edit_field"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            tools:text="@string/default_name_team1_singles" />
+
+        <EditText
+            android:id="@+id/edit_name_team2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints="personName"
+            android:ems="10"
+            android:hint="@string/hint_opposing_name_edit_field"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            tools:text="@string/default_name_team2_singles" />
+
+    </LinearLayout>
+
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:autofillHints="personName"
-        android:hint="@string/hint_your_name_edit_field"
-        tools:text="@string/default_name_team1_singles" />
+        android:layout_height="match_parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/points_team1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_points_won"
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
+
+            <TextView
+                android:id="@+id/points_team2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/games_won_team1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_games_won"
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
+
+            <TextView
+                android:id="@+id/games_won_team2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/break_points_team1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0/0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_break_points"
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
+
+            <TextView
+                android:id="@+id/break_points_team2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0/0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/service_points_team1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0/0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_service_points"
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
+
+            <TextView
+                android:id="@+id/service_points_team2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0/0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/return_points_team1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0/0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_return_points"
+                android:textAlignment="center"
+                android:textColor="@color/secondary_text" />
+
+            <TextView
+                android:id="@+id/return_points_team2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                tools:text="0/0" />
+        </TableRow>
+    </TableLayout>
 
 </LinearLayout>

@@ -31,7 +31,7 @@ enum class Team {
     }
 }
 
-enum class Winner {
+enum class TeamOrNone {
     NONE, TEAM1, TEAM2;
 }
 

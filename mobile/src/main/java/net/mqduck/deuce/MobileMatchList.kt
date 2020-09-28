@@ -21,7 +21,7 @@ package net.mqduck.deuce
 
 import net.mqduck.deuce.common.DeuceMatch
 import net.mqduck.deuce.common.MatchList
-import net.mqduck.deuce.common.Winner
+import net.mqduck.deuce.common.TeamOrNone
 import java.io.File
 
 class MobileMatchList(
@@ -67,7 +67,7 @@ class MobileMatchList(
 
         init {
             NON_CURRENT_MATCH.winner =
-                Winner.TEAM1
+                TeamOrNone.TEAM1
         }
     }
 

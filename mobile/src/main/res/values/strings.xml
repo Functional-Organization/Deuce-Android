@@ -26,4 +26,10 @@
     <string name="live">LIVE</string>
     <string name="hint_opposing_name_edit_field">Opposing player or team name</string>
     <string name="hint_your_name_edit_field">Your name or team name</string>
+    <string name="stat_points_won">Points Won</string>
+    <string name="stat_games_won">Games Won</string>
+    <string name="stat_break_points">Break Points Won/Played</string>
+    <string name="stat_service_points">Service Points Won/Played</string>
+    <string name="stat_return_points">Return Points Won/Played</string>
+    <string name="format_point_ratio">%1$d/%2$d</string>
 </resources>

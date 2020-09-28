@@ -17,6 +17,6 @@
  * along with Deuce-Android.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.mqduck.deuce.common
+package net.mqduck.deuce
 
-class Winners(val game: TeamOrNone, val set: TeamOrNone, val match: TeamOrNone)
+const val SAVED_STATE_FILE_NAME = "current_match"

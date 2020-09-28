@@ -70,14 +70,31 @@ class MainActivity :
         //matchList.clear()
         if (BuildConfig.DEBUG && matchList.isEmpty()) {
             Log.d("foo", "matchList is empty. Filling with random matches.")
+            val names = arrayOf("Fred", "Wilma", "Barny", "Austin", "Jeff", "Sergey", "Jon", "Nathan", "Jezebel", "Damsel")
             val now = System.currentTimeMillis()
             for (i in 0 until 10000) {
-                val dm = DeuceMatch(Random.nextLong(0, now))
-                while (dm.winner == Winner.NONE) {
-                    dm.score(if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2)
+                val nameTeam1 = names.random()
+                val nameTeam2 = names.filter { it != nameTeam1 }.random()
+                val dm = DeuceMatch(
+                    if (Random.nextBoolean()) NumSets.THREE else NumSets.FIVE,
+                    if (Random.nextBoolean()) Team.TEAM1 else Team.TEAM2,
+                    DEFAULT_OVERTIME_RULE,
+                    MatchType.SINGLES,
+                    Random.nextLong(0, now),
+                    ArrayList<Long>(),
+                    ScoreStack(),
+                    nameTeam1,
+                    nameTeam2
+                )
+                while (dm.winner == TeamOrNone.NONE) {
+                    dm.score(
+                        if (Random.nextInt(3) == 2) {
+                            if (dm.servingTeam == Team.TEAM1) Team.TEAM2 else Team.TEAM1
+                        } else {
+                            if (dm.servingTeam == Team.TEAM1) Team.TEAM1 else Team.TEAM2
+                        }
+                    )
                 }
-                dm.nameTeam1 = "eilruyhf8o li4ufyh dlkfv hdslkdzx flkj"
-                dm.nameTeam2 = "lkjh ilyp9y9p34t vvce4wf dcdcdcdcdc"
                 matchList.add(dm)
             }
             matchList.clean()
@@ -108,7 +125,7 @@ class MainActivity :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (matchList.isNotEmpty() && matchList.last().winner == Winner.NONE) {
+        if (matchList.isNotEmpty() && matchList.last().winner == TeamOrNone.NONE) {
             outState.putParcelable(KEY_CURRENT_MATCH, matchList.last())
         }
         super.onSaveInstanceState(outState)
@@ -127,14 +144,17 @@ class MainActivity :
                         MatchType.fromOrdinal(dataMap.getInt(KEY_MATCH_TYPE)),
                         dataMap.getLong(KEY_MATCH_START_TIME),
                         dataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList()),
-                        ScoreStack(BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))),
+                        ScoreStack(
+                            dataMap.getInt(KEY_SCORE_SIZE),
+                            BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
+                        ),
                         dataMap.getString(KEY_NAME_TEAM1),
                         dataMap.getString(KEY_NAME_TEAM2)
                     )
 
                     if (
                         matchList.isNotEmpty() &&
-                        matchList.last().winner == Winner.NONE
+                        matchList.last().winner == TeamOrNone.NONE
                     ) {
                         matchList[matchList.lastIndex] = newMatch
                     } else {
@@ -154,7 +174,10 @@ class MainActivity :
 
                     val currentMatch = matchList.last()
                     currentMatch.setEndTimes = dataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList())
-                    currentMatch.scoreLog = ScoreStack(BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY)))
+                    currentMatch.scoreLog = ScoreStack(
+                        dataMap.getInt(KEY_SCORE_SIZE),
+                        BitSet.valueOf(dataMap.getLongArray(KEY_SCORE_ARRAY))
+                    )
                 }
                 MatchState.OVER -> {
                     Log.d("foo", "removing current match")
@@ -178,13 +201,20 @@ class MainActivity :
                             MatchType.fromOrdinal(matchDataMap.getInt(KEY_MATCH_TYPE)),
                             matchDataMap.getLong(KEY_MATCH_START_TIME),
                             matchDataMap.getLongArray(KEY_SET_END_TIMES).toCollection(ArrayList()),
-                            ScoreStack(BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))),
+                            ScoreStack(
+                                matchDataMap.getInt(KEY_SCORE_SIZE),
+                                BitSet.valueOf(matchDataMap.getLongArray(KEY_SCORE_ARRAY))
+                            ),
                             matchDataMap.getString(KEY_NAME_TEAM1),
                             matchDataMap.getString(KEY_NAME_TEAM2)
                         )
                     })
 
-                    if (dataMap.getBoolean(KEY_DELETE_CURRENT_MATCH, false) && matchList.last().winner == Winner.NONE) {
+                    if (dataMap.getBoolean(
+                            KEY_DELETE_CURRENT_MATCH,
+                            false
+                        ) && matchList.last().winner == TeamOrNone.NONE
+                    ) {
                         matchList.removeAt(matchList.lastIndex)
                     }
 

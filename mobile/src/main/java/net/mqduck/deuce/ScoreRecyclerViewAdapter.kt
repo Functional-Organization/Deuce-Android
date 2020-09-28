@@ -29,7 +29,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_score.view.*
 import kotlinx.android.synthetic.main.set.view.*
-import net.mqduck.deuce.common.Winner
+import net.mqduck.deuce.common.TeamOrNone
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -62,7 +62,7 @@ class ScoreRecyclerViewAdapter : RecyclerView.Adapter<ScoreRecyclerViewAdapter.V
         holder.view.text_team_1.text = match.displayNameTeam1
         holder.view.text_team_2.text = match.displayNameTeam2
 
-        if (match.winner == Winner.NONE) {
+        if (match.winner == TeamOrNone.NONE) {
             holder.view.text_date.text = mainActivity.getString(R.string.live)
             holder.view.text_date.setTextColor(getColorCompatibly(R.color.secondary_text_red))
             holder.view.text_date.setTypeface(null, Typeface.BOLD)
@@ -73,30 +73,30 @@ class ScoreRecyclerViewAdapter : RecyclerView.Adapter<ScoreRecyclerViewAdapter.V
         }
 
         when (match.winner) {
-            Winner.NONE -> {
+            TeamOrNone.NONE -> {
                 holder.view.text_team_1.setTypeface(null, Typeface.NORMAL)
                 holder.view.text_team_2.setTypeface(null, Typeface.NORMAL)
             }
-            Winner.TEAM1 -> {
+            TeamOrNone.TEAM1 -> {
                 holder.view.text_team_1.setTypeface(null, Typeface.BOLD)
                 holder.view.text_team_2.setTypeface(null, Typeface.NORMAL)
             }
-            Winner.TEAM2 -> {
+            TeamOrNone.TEAM2 -> {
                 holder.view.text_team_1.setTypeface(null, Typeface.NORMAL)
                 holder.view.text_team_2.setTypeface(null, Typeface.BOLD)
             }
         }
 
-        fun addSetScore(setNum: Int, setNumColor: Int, scoreP1: String, scoreP2: String, winner: Winner) {
+        fun addSetScore(setNum: Int, setNumColor: Int, scoreP1: String, scoreP2: String, winner: TeamOrNone) {
             val set = LayoutInflater.from(mainActivity).inflate(R.layout.set, holder.view.sets_container, false)
             set.set_number.text = setNum.toString()
             set.set_number.setTextColor(setNumColor)
             set.team1_set_score.text = scoreP1
             set.team2_set_score.text = scoreP2
 
-            if (winner == Winner.TEAM1) {
+            if (winner == TeamOrNone.TEAM1) {
                 set.team1_set_score.setTypeface(set.team1_set_score.typeface, Typeface.BOLD)
-            } else if (winner == Winner.TEAM2) {
+            } else if (winner == TeamOrNone.TEAM2) {
                 set.team2_set_score.setTypeface(set.team2_set_score.typeface, Typeface.BOLD)
             }
 
@@ -104,7 +104,7 @@ class ScoreRecyclerViewAdapter : RecyclerView.Adapter<ScoreRecyclerViewAdapter.V
         }
 
         holder.view.sets_container.removeAllViews()
-        if (match.winner == Winner.NONE) {
+        if (match.winner == TeamOrNone.NONE) {
             var i = 0
             while (i < match.sets.size) {
                 addSetScore(
@@ -122,7 +122,7 @@ class ScoreRecyclerViewAdapter : RecyclerView.Adapter<ScoreRecyclerViewAdapter.V
                     getColorCompatibly(R.color.tertiary_text),
                     "",
                     "",
-                    Winner.NONE
+                    TeamOrNone.NONE
                 )
                 ++i
             }

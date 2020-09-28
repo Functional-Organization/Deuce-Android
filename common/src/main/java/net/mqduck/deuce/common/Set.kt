@@ -33,7 +33,10 @@ class Set(
         games.add(Game(winMinimumGame, winMarginGame, match))
     }
 
-    fun score(team: Team) = mScore.score(team)
+    fun score(team: Team): TeamOrNone {
+        ++mScore[team]
+        return mScore.winner
+    }
 
     fun addNewGame() {
         if (overtimeRule == OvertimeRule.TIEBREAK && mScore.scoreTeam1 == winMinimum && mScore.scoreTeam2 == winMinimum) {

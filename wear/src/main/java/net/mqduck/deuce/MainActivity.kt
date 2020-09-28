@@ -35,13 +35,27 @@ import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import com.google.android.gms.wearable.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mqduck.deuce.common.*
+import org.json.simple.JSONObject
+import org.json.simple.parser.JSONParser
 import java.io.File
+import java.lang.Exception
 
 
 internal lateinit var mainActivity: MainActivity
 
 class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider, DataClient.OnDataChangedListener {
-    private enum class FragmentEnum { SETUP, ADVANCED_SETUP, SCORE }
+    private enum class FragmentEnum {
+        SETUP, ADVANCED_SETUP, SCORE;
+
+        companion object {
+            fun fromOrdinal(ordinal: Int) = when (ordinal) {
+                SETUP.ordinal -> SETUP
+                ADVANCED_SETUP.ordinal -> ADVANCED_SETUP
+                SCORE.ordinal -> SCORE
+                else -> SETUP
+            }
+        }
+    }
 
     //TODO: Find a way to disable anti-aliasing on ambient vector images
     private enum class NavigationItemList(val list: Array<NavigationItem>) {
@@ -185,13 +199,8 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
 
         var fragment = FragmentEnum.SETUP
 
-        savedInstanceState?.let {
-            /*if (savedInstanceState.containsKey("setupState")) {
-                setupFragment.setInitialSavedState(savedInstanceState.getParcelable("setupState"))
-            }
-            if (savedInstanceState.containsKey("scoreState")) {
-                scoreFragment.setInitialSavedState(savedInstanceState.getParcelable("scoreState"))
-            }*/
+        val savedStateFile = File(filesDir, SAVED_STATE_FILE_NAME)
+        if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_CURRENT_FRAGMENT)) {
                 fragment = savedInstanceState.getSerializable(KEY_CURRENT_FRAGMENT) as FragmentEnum
             }
@@ -200,9 +209,31 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             }
             if (savedInstanceState.containsKey(KEY_MATCH_ADDED)) {
                 matchAdded = savedInstanceState.getBoolean(KEY_MATCH_ADDED)
-                navigationAdapter.enableMatch()
+                if (matchAdded) {
+                    navigationAdapter.enableMatch()
+                }
             }
             navigationAdapter.notifyDataSetChanged()
+        } else if (savedStateFile.exists()) {
+            try {
+                val json = JSONParser().parse(savedStateFile.readText()) as JSONObject
+                val savedMatch = DeuceMatch(json[KEY_CURRENT_MATCH] as JSONObject)
+                val savedFragment = FragmentEnum.fromOrdinal((json[KEY_CURRENT_FRAGMENT] as Long).toInt())
+                val savedMatchAdded = json[KEY_MATCH_ADDED] as Boolean
+
+                fragment = savedFragment
+                currentMatch = savedMatch
+                matchAdded = savedMatchAdded
+                if (matchAdded) {
+                    navigationAdapter.enableMatch()
+                }
+                navigationAdapter.notifyDataSetChanged()
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Error loading saved state file $savedStateFile: $e")
+            }
+        }
+        if (savedStateFile.exists()) {
+            savedStateFile.delete()
         }
 
         navigation_drawer.setAdapter(navigationAdapter)
@@ -253,6 +284,16 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         outState.putBoolean(KEY_MATCH_ADDED, matchAdded)
     }
 
+    override fun onStop() {
+        val json = JSONObject()
+        json[KEY_CURRENT_MATCH] = currentMatch.toJSONObject()
+        json[KEY_CURRENT_FRAGMENT] = currentFragment.ordinal
+        json[KEY_MATCH_ADDED] = matchAdded
+        File(filesDir, SAVED_STATE_FILE_NAME).writeText(json.toJSONString())
+
+        super.onStop()
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return if (keyCode == undoButton && currentFragment == FragmentEnum.SCORE) {
             undo()
@@ -301,7 +342,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         dataMap.putInt(KEY_MATCH_TYPE, match.matchType.ordinal)
         dataMap.putLong(KEY_MATCH_START_TIME, match.startTime)
         dataMap.putLongArray(KEY_SET_END_TIMES, match.setEndTimes.toLongArray())
-        dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLog.toLongArray())
+        dataMap.putLongArray(KEY_SCORE_ARRAY, match.scoreLog.bitsetLongArray())
         dataMap.putString(KEY_NAME_TEAM1, match.nameTeam1)
         dataMap.putString(KEY_NAME_TEAM2, match.nameTeam2)
         dataMap.putLong(KEY_DUMMY, System.currentTimeMillis())
@@ -415,7 +456,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     internal fun syncMatches() {
         var deleteCurrentMatch = true
 
-        if (matchAdded && currentMatch.winner == Winner.NONE) {
+        if (matchAdded && currentMatch.winner == TeamOrNone.NONE) {
             deleteCurrentMatch = false
             syncData(dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                 writeMatchToDataMap(currentMatch, dataMap)
