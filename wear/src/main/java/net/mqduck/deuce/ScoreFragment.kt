@@ -151,6 +151,7 @@ class ScoreFragment : Fragment() {
                 syncData(mainActivity.dataClient, PATH_CURRENT_MATCH, true) { dataMap ->
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)
                     dataMap.putLongArray(KEY_SET_END_TIMES, mainActivity.currentMatch.setEndTimes.toLongArray())
+                    dataMap.putInt(KEY_SCORE_SIZE, mainActivity.currentMatch.scoreLog.size)
                     dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLog.toLongArray())
                 }
             }
