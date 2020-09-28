@@ -22,6 +22,10 @@ package net.mqduck.deuce.common
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import org.json.simple.JSONArray
+import org.json.simple.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DeuceMatch(
     val numSets: NumSets,
@@ -101,6 +105,21 @@ class DeuceMatch(
         parcel.readParcelable<ScoreStack>(ScoreStack::class.java.classLoader)!!,
         parcel.readString()!!,
         parcel.readString()!!
+    )
+
+    constructor(json: JSONObject) : this(
+        NumSets.fromOrdinal((json[KEY_NUM_SETS] as Long).toInt()),
+        Team.fromOrdinal((json[KEY_SERVER] as Long).toInt()),
+        OvertimeRule.fromOrdinal((json[KEY_OVERTIME_RULE] as Long).toInt()),
+        MatchType.fromOrdinal((json[KEY_MATCH_TYPE] as Long).toInt()),
+        json[KEY_MATCH_START_TIME] as Long,
+        ArrayList((json[KEY_SET_END_TIMES] as JSONArray).map { it as Long }),
+        ScoreStack(
+            (json[KEY_SCORE_SIZE] as Long).toInt(),
+            BitSet.valueOf((json[KEY_SCORE_ARRAY] as JSONArray).map { it as Long }.toLongArray())
+        ),
+        json[KEY_NAME_TEAM1] as String,
+        json[KEY_NAME_TEAM2] as String
     )
 
     // TODO: for testing
@@ -199,4 +218,25 @@ class DeuceMatch(
         set(value) {
             mScore.winner = value
         }
+
+    fun toJSONObject(): JSONObject {
+        val json = JSONObject()
+
+        json[KEY_NUM_SETS] = numSets.ordinal
+        json[KEY_SERVER] = startingServer.ordinal
+        json[KEY_OVERTIME_RULE] = overtimeRule.ordinal
+        json[KEY_MATCH_TYPE] = matchType.ordinal
+        json[KEY_MATCH_START_TIME] = startTime
+        val gameEndTimesJSON = JSONArray()
+        gameEndTimesJSON.addAll(setEndTimes)
+        json[KEY_SET_END_TIMES] = gameEndTimesJSON
+        json[KEY_SCORE_SIZE] = scoreLog.size
+        val scoreLogArrayJSON = JSONArray()
+        scoreLogArrayJSON.addAll(scoreLog.bitsetLongArray().toList())
+        json[KEY_SCORE_ARRAY] = scoreLogArrayJSON
+        json[KEY_NAME_TEAM1] = nameTeam1
+        json[KEY_NAME_TEAM2] = nameTeam2
+
+        return json
+    }
 }

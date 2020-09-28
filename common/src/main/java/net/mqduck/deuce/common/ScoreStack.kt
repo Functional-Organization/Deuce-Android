@@ -184,5 +184,5 @@ class ScoreStack : List<Team>, Parcelable {
     /**
      * Returns the underlying bit set representing the Team list converted to a Long array.
      */
-    fun bitsetToLongArray(): LongArray = bitSet.toLongArray()
+    fun bitsetLongArray(): LongArray = bitSet.toLongArray()
 }

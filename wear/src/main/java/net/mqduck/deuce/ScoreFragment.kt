@@ -152,7 +152,7 @@ class ScoreFragment : Fragment() {
                     dataMap.putInt(KEY_MATCH_STATE, MatchState.ONGOING.ordinal)
                     dataMap.putLongArray(KEY_SET_END_TIMES, mainActivity.currentMatch.setEndTimes.toLongArray())
                     dataMap.putInt(KEY_SCORE_SIZE, mainActivity.currentMatch.scoreLog.size)
-                    dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLog.bitsetToLongArray())
+                    dataMap.putLongArray(KEY_SCORE_ARRAY, mainActivity.currentMatch.scoreLog.bitsetLongArray())
                 }
             }
         }
