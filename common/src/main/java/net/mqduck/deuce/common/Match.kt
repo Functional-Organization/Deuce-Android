@@ -94,7 +94,6 @@ open class Match(
             Serving.PLAYER1_LEFT, Serving.PLAYER1_RIGHT, Serving.PLAYER3_LEFT, Serving.PLAYER3_RIGHT -> Team.TEAM1
             Serving.PLAYER2_LEFT, Serving.PLAYER2_RIGHT, Serving.PLAYER4_LEFT, Serving.PLAYER4_RIGHT -> Team.TEAM2
         }
-        val breakPoint = currentGame.breakPoint
 
         val winnerGame = currentGame.score(team)
 
@@ -115,13 +114,13 @@ open class Match(
         when (servingTeam) {
             Team.TEAM1 -> {
                 ++(stats as MutableStats).servicePointsPlayedTeam1
-                if (breakPoint == TeamOrNone.TEAM2) {
+                if (currentGame.breakPoint == TeamOrNone.TEAM2) {
                     ++(stats as MutableStats).breakPointsPlayedTeam2
                 }
             }
             Team.TEAM2 -> {
                 ++(stats as MutableStats).servicePointsPlayedTeam2
-                if (breakPoint == TeamOrNone.TEAM1) {
+                if (currentGame.breakPoint == TeamOrNone.TEAM1) {
                     ++(stats as MutableStats).breakPointsPlayedTeam1
                 }
             }
@@ -131,13 +130,13 @@ open class Match(
             when (team) {
                 Team.TEAM1 -> {
                     ++(stats as MutableStats).gamesWonTeam1
-                    if (breakPoint == TeamOrNone.TEAM1) {
+                    if (servingTeam == Team.TEAM2) {
                         ++(stats as MutableStats).breakPointsWonTeam1
                     }
                 }
                 Team.TEAM2 -> {
                     ++(stats as MutableStats).gamesWonTeam2
-                    if (breakPoint == TeamOrNone.TEAM2) {
+                    if (servingTeam == Team.TEAM1) {
                         ++(stats as MutableStats).breakPointsWonTeam2
                     }
                 }
@@ -246,12 +245,12 @@ open class Match(
             }
         }
 
-        if (updateLogs) {
-            scoreLog.push(team)
-        }
-
         if (currentGame.tiebreak && (currentGame.getScore(Team.TEAM1) + currentGame.getScore(Team.TEAM2)) % 6 == 0) {
             changeover = true
+        }
+
+        if (updateLogs) {
+            scoreLog.push(team)
         }
 
         return Winners(winnerGame, winnerSet, winnerMatch)
