@@ -262,6 +262,10 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
             })
         }
 
+        if (fragment == FragmentEnum.SCORE && currentMatch.winner != TeamOrNone.NONE) {
+            fragment = FragmentEnum.SETUP
+        }
+        setNavigationItem(fragment)
         switchFragment(fragment)
     }
 
@@ -315,6 +319,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
     fun newMatch() {
         matchAdded = true
         navigationAdapter.enableMatch()
+        setNavigationItem(FragmentEnum.SCORE)
         switchFragment(FragmentEnum.SCORE)
 
         currentMatch = DeuceMatch(
@@ -381,6 +386,7 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH_AMBIENT
                 else
                     NavigationItemList.NAVIGATION_ITEMS_WITH_MATCH
+                navigation_drawer.setCurrentItem(getEnumPos(currentFragment), false)
                 update()
             }
 
@@ -425,11 +431,11 @@ class MainActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvi
         return theme
     }
 
+    private fun setNavigationItem(fragment: FragmentEnum) =
+        navigation_drawer.setCurrentItem(navigationAdapter.getEnumPos(fragment), false)
+
     private fun switchFragment(fragment: FragmentEnum) {
-        if (fragment != currentFragment) {
-            currentFragment = fragment
-            navigation_drawer.setCurrentItem(navigationAdapter.getEnumPos(fragment), false)
-        }
+        currentFragment = fragment
 
         when (fragment) {
             FragmentEnum.SETUP -> {
